@@ -2,7 +2,11 @@
 
 # get the current OpenBSD snapshot
 
-REL-27				# "27" for OpenBSD 2.7, etc.
+REL=27				# "27" for OpenBSD 2.7, etc.
+case "$REL" in
+	2[0-6])	EXT=.tar.gz;;
+	*)		EXT=.tgz;;
+esac;
 SITE=ftp.openbsd.org		# where to get it from, 1/4
 PREFIX=pub			# 2/4
 TOP=OpenBSD/snapshots		# 3/4
@@ -54,9 +58,9 @@ fi
 cd ${DIR} || exit
 
 #BSD
-FILES1="MD5 INSTALL.${ARCH} floppy${REL}.fs base${REL}.tar.gz etc${REL}.tar.gz misc${REL}.tar.gz"
-FILES2="comp${REL}.tar.gz game${REL}.tar.gz ssl${REL}.tar.gz man${REL}.tar.gz"
-XFILES="xbase${REL}.tar.gz xfont${REL}.tar.gz xserv${REL}.tar.gz xshare${REL}.tar.gz"
+FILES1="MD5 INSTALL.${ARCH} floppy${REL}.fs base${REL}${EXT} etc${REL}${EXT} misc${REL}${EXT}"
+FILES2="comp${REL}${EXT} game${REL}${EXT} ssl${REL}${EXT} man${REL}${EXT}"
+XFILES="xbase${REL}${EXT} xfont${REL}${EXT} xserv${REL}${EXT} xshare${REL}${EXT}"
 
 case ${ARCH} in
 	i386)	FILES="$FILES1 floppy${REL}B.fs $FILES2";;
@@ -80,8 +84,9 @@ case ${prog} in
 ftp)
 	for f in ${FILES}
 	do
-		echo ${f}
-		ftp ${PROTO}://${SITE}/${PREFIX}/${TOP}/${ARCH}/${f}
+		CMD="ftp ${PROTO}://${SITE}/${PREFIX}/${TOP}/${ARCH}/${f}"
+		echo "--> $CMD"
+		$CMD
 	done
 	;;
 ssh)
