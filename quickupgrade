@@ -25,15 +25,15 @@ DEST=/
 BDIRS="base comp misc man"
 XDIRS="xbase xfont xserv xshare"
 
-DIRS="${BDIRS}"
-#DIRS="${BDIRS} ${XDIRS}"
+#DIRS="${BDIRS}"
+DIRS="${BDIRS} ${XDIRS}"
 #DIRS="${XDIRS}"
 
 for f in ${DIRS}
 do
 	FILE="${f}${REL}.${EXT}"
 	if [ -f ${FILE} ]; then
-		echo "===> $f (${FILE})"
+		echo "===> $f (${FILE})" >&2
 	else
 		echo "Cannot locate file ${FILE}"
 		exit
