@@ -13,14 +13,13 @@ ARCH=i386
 
 DEST=/
 
-# NEVER include etc in this list, or you will die horribly!
-BDIRS="base comp misc man"
-XDIRS="xbase xfont xserv xshare"
-DIRS="${BDIRS}"
+BASE=YES
+X=NO
 
-KERNEL=NOT
 
-MERGEMASTER=NOT
+KERNEL=NO
+
+MERGEMASTER=NO
 
 REL=30				# "26" for OpenBSD 2.6, etc.
 RELDIR=3.0			# same but with a dot
@@ -35,6 +34,7 @@ USAGE="$0 [-a arch][-x][-k][-m]"
 
 function usage {		# give usage message, and exit
 	echo "Usage: $USAGE
+	[-b]	do NOT install BASE
 	[-d dest]	Desination dir [${DEST}]
 	[-a arch]	i386, sparc, etc. [${ARCH}]
 	[-k]	include kernel [don't]
@@ -43,26 +43,36 @@ function usage {		# give usage message, and exit
 	exit 1
 }
 
-while getopts "adkmx" opt 
+while getopts "abdkmx" opt 
 do 
  	 case "$opt" in 
 		a)	ARCH=${OPTARG};;
+		b)	BASE=NO;;
 		d)	DEST=${OPTARG};;
 		k)	KERNEL=YES;;
 		m)	MERGEMASTER=YES;;
-		x)	BDIRS="${BDIRS} ${XDIRS}";;
+		x)	X=YES;;
 		*)	usage;;
 	esac
 done
 shift `expr $OPTIND - 1`		 # leave just filenames
 
+# NEVER include etc in this list, or you will die horribly!
+BDIRS="base comp misc man"
+XDIRS="xbase xfont xserv xshare"
+DIRS=""
+if [ "NO" != ${BASE} ]; then
+	DIRS="${BDIRS}"
+fi
+if [ "YES" = ${X} ]; then
+	DIRS="${DIRS} ${XDIRS}"
+fi
 
 if [ -d /usr/download/OpenBSD/${RELDIR}/${ARCH} ]; then
 	 cd /usr/download/OpenBSD/${RELDIR}/${ARCH} || exit
 elif [ -d ~ftp/pub/OpenBSD/${RELDIR}/${ARCH} ]; then
 	 cd ~ftp/pub/OpenBSD/${RELDIR}/${ARCH} || exit
 fi
-
 
 for f in ${DIRS}
 do
