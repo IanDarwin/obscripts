@@ -32,12 +32,15 @@ fi
 
 # create entries in this format in the passwd and group files.
 # _tftpd:*:79:79::0:0:TFTP daemon:/var/empty:/sbin/nologin
+# _portmap:*:28:
 while read pw_nam pw_uid pw_gecos
 do
 	grep "^$pw_nam" /etc/passwd >/dev/null && continue
 	echo "Missing $pw_nam, adding it..."
-	sudo useradd -c ${pw_gecos} -d /var/empty	\
-            -u ${pw_uid} -g =uid -p '*'	\
+	# cannot use -g =uid as it was only added in 3.4 or 3.5
+	sudo ksh -c "echo ${pw_nam}:*:${pw_uid}: >> /etc/group"
+	sudo useradd -c "${pw_gecos}" -d /var/empty	\
+            -u ${pw_uid} -g ${pw_uid} \
             -s /sbin/nologin ${pw_nam}
 	# OpenBSD's useradd will create the group automatically.
 done <<!
