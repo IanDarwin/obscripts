@@ -12,9 +12,9 @@ KERNEL=NO
 VERBOSE=""
 MERGEMASTER=NO
 
-REL=32				# "26" for OpenBSD 2.6, etc.
-RELDIR=3.2			# same but with a dot
-#RELDIR=snapshots	# when not -stable
+REL=33				# "26" for OpenBSD 2.6, etc.
+RELDIR=3.3			# same but with a dot
+RELDIR=snapshots
 
 case ${REL} in
 	2[0-6])		EXT=tar.gz;;
@@ -30,12 +30,13 @@ function usage {		# give usage message, and exit
 	[-d dest]	Desination dir [${DEST}]
 	[-a arch]	i386, sparc, etc. [${ARCH}]
 	[-k]	include kernel [don't]
+	[-s]	use snapshot [use release]
 	[-x]	include X11 [don't]
 	[-m]	Run MergeMaster when done [don't] (requires full /usr/src)" 2>&1
 	exit 1
 }
 
-while getopts "abdkmxv" opt 
+while getopts "a:bd:kmrxv" opt 
 do 
  	 case "$opt" in 
 		a)	ARCH=${OPTARG};;
@@ -43,6 +44,7 @@ do
 		d)	DEST=${OPTARG};;
 		k)	KERNEL=YES;;
 		m)	MERGEMASTER=YES;;
+		s)	RELDIR=snapshots;;	# snapshots (-current), not -stable
 		x)	X=YES;;
 		v)	VERBOSE='v';;
 		*)	usage;;
@@ -50,7 +52,7 @@ do
 done
 shift `expr $OPTIND - 1`		 # leave just filenames
 
-# Put this AFTER getopts so -h works without sudo
+# Check this AFTER getopts so -h works without sudo
 if [ ! -w / ]; then
 	echo "$0: Need root permission to run"
 	exit 1
