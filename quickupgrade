@@ -2,7 +2,7 @@
 
 # quickupdate -- quickly update base files from snapshot
 
-REL=26				# "26" for OpenBSD 2.6, etc.
+REL=27				# "26" for OpenBSD 2.6, etc.
 #ARCH=sparc
 ARCH=i386
 
