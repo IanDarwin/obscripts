@@ -1,7 +1,7 @@
 #!/bin/sh -u
 
 # get the current OpenBSD snapshot
-# XXX after committing, rename to getobsd (no longer just snaps)
+# XXX after committing, rename to obget (no longer just snaps)
 
 REL=36				# "37" for OpenBSD 3.7, etc.
 SNAPDIR="3.6"		# XXX derive from REL
@@ -11,7 +11,7 @@ TODIR=OpenBSD
 
 SITE=ftp1.ca.openbsd.org		# where to get it from
 FROMDIR=pub/OpenBSD
-ARCH=i386
+ARCH=`uname -m`
 
 prog=ftp			# how to get it, XXX add option to change to scp 
 PROTO=ftp			# how $PROG is to get it, change to e.g http
@@ -28,7 +28,7 @@ else
 fi
 
 
-USAGE="$0 [-s][-a arch ][-b local-Basedir][ -h hostabbrev|fqdn]
+USAGE="$0 [-s][-a arch ][-b local-Basedir][ -f hostabbrev|fqdn]
 -a arch := i386|sparc|hppa|...
 -v -- Verbose
 "
@@ -67,12 +67,13 @@ if [ ! -d ${DIR} ]; then
 fi
 cd ${DIR} || exit
 
-FILES="MD5 index.txt INSTALL.${ARCH} floppy${REL}.fs bsd base${REL}${EXT} cd${REL}.iso etc${REL}${EXT} misc${REL}${EXT} comp${REL}${EXT} game${REL}${EXT} man${REL}${EXT}"
+FILES="MD5 index.txt INSTALL.${ARCH} bsd base${REL}${EXT} cd${REL}.iso etc${REL}${EXT} misc${REL}${EXT} comp${REL}${EXT} game${REL}${EXT} man${REL}${EXT}"
 XFILES="xbase${REL}${EXT} xfont${REL}${EXT} xserv${REL}${EXT} xshare${REL}${EXT}"
 
 case ${ARCH} in
-	i386)	FILES="$FILES floppyB${REL}.fs floppyC${REL}.fs";;
-	sparc*)	FILES="$FILES miniroot${REL}.fs";;
+	amd64)	FILES="$FILES bsd.mp floppy${REL}.fs";;
+	i386)	FILES="$FILES floppy${REL}.fs floppyB${REL}.fs floppyC${REL}.fs";;
+	sparc*)	FILES="$FILES floppy${REL}.fs miniroot${REL}.fs";;
 esac
 
 if [ "" != "NO-X" ]; then
