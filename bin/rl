@@ -116,6 +116,8 @@ do
 		esac
 		cd ${CATALINA_HOME}
 		bin/catalina.sh stop
+		sleep 5				# takes a while
+		mv ${CATALINA_HOME}/logs/catalina.{out,bak} 2>/dev/null
 		rm -f /home/ian/databases/*.data
 		case ${INTERACT} in
 			YES) cmd=run;;
