@@ -46,6 +46,12 @@ do
 	nfs)
 		reload_by_pid mountd
 		;;
+	sendmail)
+		reload_by_pid sendmail
+		;;
+	postfix)
+		postfix reload
+		;;
 	http*|apache)
 		if [ -x /usr/sbin/apachectl ]; then
 			apachectl restart
