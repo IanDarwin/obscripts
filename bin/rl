@@ -42,11 +42,12 @@ do
 		echo "Now please check this logfile..."
 		tail -15 /var/log/daemon
 		;;
-	nat|ipf|ip)
+	nat)
+		pfctl -N /etc/nat.conf
 		# reload ipf data
-		ipf -D -Fa -f /etc/ipf.rules -E
+		#ipf -D -Fa -f /etc/ipf.rules -E
 		# now reload IPNAT data
-		ipnat -CF -f /etc/ipnat.rules
+		#ipnat -CF -f /etc/ipnat.rules
 		;;
 	http*|apache)
 		if [ -x /usr/sbin/apachectl ]; then
@@ -65,11 +66,16 @@ do
 	postfix)
 		postfix reload
 		;;
+	pf)
+		pfctl -R /etc/pf.conf
+		;;
 	sendmail)
 		reload_by_pid sendmail
 		;;
 	tomcat)
 		tomcat stop
+		cd /
+		unset CLASSPATH
 		su www /usr/local/sbin/tomcat start
 		;;
 	*)
