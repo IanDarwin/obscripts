@@ -13,9 +13,9 @@ VERBOSE=""
 MERGEMASTER=NO
 BACKUP=NO
 
-DOWNLOAD=/usr/download		# base dir for finding dist sets
-REL=35				# "26" for OpenBSD 2.6, etc.
-RELDIR=3.5			# same but with a dot
+DOWNLOAD=/home/ian/download/OpenBSD		# base dir for finding dist sets
+REL=36				# "26" for OpenBSD 2.6, etc.
+RELDIR=3.6			# same but with a dot
 #RELDIR=snapshots
 
 EXT=tgz		# on 2[0-6] was EXT=tar.gz;;
@@ -37,7 +37,7 @@ function usage {		# give usage message, and exit
 	exit 1
 }
 
-while getopts "a:bd:ekmp:rxv" opt 
+while getopts "a:bd:ekmp:rsxv" opt 
 do 
  	 case "$opt" in 
 		a)	ARCH=${OPTARG};;
