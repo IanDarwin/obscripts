@@ -12,9 +12,9 @@ KERNEL=NO
 VERBOSE=""
 MERGEMASTER=NO
 
-REL=31				# "26" for OpenBSD 2.6, etc.
-#RELDIR=3.1			# same but with a dot
-RELDIR=snapshots	# when not -stable
+REL=32				# "26" for OpenBSD 2.6, etc.
+RELDIR=3.2			# same but with a dot
+#RELDIR=snapshots	# when not -stable
 
 case ${REL} in
 	2[0-6])		EXT=tar.gz;;
