@@ -2,21 +2,19 @@
 
 # get the current OpenBSD snapshot
 
+
 cd /usr/download/openbsd/i386 || exit
 
-#SITE=ftp://ftp.geek-girl.com/
-#SITE=ftp://ftp.groupbsd.org/
-SITE=http://www.ualberta.ca/
-PREFIX=pub/
-PREFIX=FTP/
+PROTO=ftp
+SITE=ftp.openbsd.org
+PREFIX=pub
 TOP=OpenBSD/snapshots
 ARCH=i386
 VERBOSE=""
+prog=ftp
 
-USAGE="$0 [-a arch ] [ -g|-u]
+USAGE="$0 [-s][-a arch ] [ -h hostabbr|fqdn]
 -a arch := i386|sparc|hppa|...
--g --> geek-girl.com
--u --> ualberta
 -v -- Verbose
 "
 
@@ -25,16 +23,30 @@ function usage {		# give usage message, and exit
 	exit 1
 }
 
-while getopts "aguv" opt 
+while getopts "h:p:sv" opt 
 do 
  	 case "$opt" in 
-		g)	SITE=ftp://ftp.geek-girl.com/;;
-		u)	SITE=ftp://lager.cs.ualberta.ca/;;
+		h)	
+			case "$OPTARG" in
+			geek*) SITE=ftp.geek-girl.com
+					;;
+			lager)	SITE=lager.cs.ualberta.ca
+					;;
+			sq)		SITE=ftp.softquad.com
+					PREFIX=pub/priv
+					;;
+			*)		SITE=${OPTARG};;
+			esac
+			;;
+		p)	PROTO=$optarg;;
+		s)	prog=ssh;;
 		v)	VERBOSE=v;;
 		*)	usage;;
 	esac
 done
 shift `expr $OPTIND - 1`		 # leave just filenames
+
+FILES="MD5 INSTALL.${ARCH} bsd floppy26.fs floppy26B.fs base26.tar.gz etc26.tar.gz game26.tar.gz install-386.txt libssl26.tar.gz man26.tar.gz misc26.tar.gz xbase26.tar.gz xfont26.tar.gz xserv26.tar.gz xshare26.tar.gz"
 
 if [ "" != "${VERBOSE}" ]; then
 	set -x
@@ -44,19 +56,15 @@ if [ $# -ne 0 ]; then
 	usage
 fi
 
-ftp ${SITE}${PREFIX}${TOP}/${ARCH}/MD5
-ftp ${SITE}${PREFIX}${TOP}/${ARCH}/INSTALL.${ARCH}
-ftp ${SITE}${PREFIX}${TOP}/${ARCH}/bsd
-ftp ${SITE}${PREFIX}${TOP}/${ARCH}/floppy26.fs
-ftp ${SITE}${PREFIX}${TOP}/${ARCH}/floppy26B.fs
-ftp ${SITE}${PREFIX}${TOP}/${ARCH}/base26.tar.gz
-ftp ${SITE}${PREFIX}${TOP}/${ARCH}/etc26.tar.gz
-ftp ${SITE}${PREFIX}${TOP}/${ARCH}/game26.tar.gz
-ftp ${SITE}${PREFIX}${TOP}/${ARCH}/install-386.txt
-ftp ${SITE}${PREFIX}${TOP}/${ARCH}/libssl26.tar.gz
-ftp ${SITE}${PREFIX}${TOP}/${ARCH}/man26.tar.gz
-ftp ${SITE}${PREFIX}${TOP}/${ARCH}/misc26.tar.gz
-ftp ${SITE}${PREFIX}${TOP}/${ARCH}/xbase26.tar.gz
-ftp ${SITE}${PREFIX}${TOP}/${ARCH}/xfont26.tar.gz
-ftp ${SITE}${PREFIX}${TOP}/${ARCH}/xserv26.tar.gz
-ftp ${SITE}${PREFIX}${TOP}/${ARCH}/xshare26.tar.gz
+for f in ${FILES}
+do
+	echo ${f}
+	case ${prog} in
+	ftp)
+		ftp ${PROTO}://${SITE}/${PREFIX}/${TOP}/${ARCH}/${f}
+		;;
+	ssh)
+		scp ian@${SITE}:~ftp/${PREFIX}/${TOP}/${ARCH}/${f} .
+		;;
+	esac
+done
