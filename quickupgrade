@@ -21,8 +21,8 @@ BDIRS="base comp misc man"
 XDIRS="xbase xfont xserv xshare"
 
 #DIRS="${BDIRS}"
-DIRS="${BDIRS} ${XDIRS}"
-#DIRS="${XDIRS}"
+#DIRS="${BDIRS} ${XDIRS}"
+DIRS="${XDIRS}"
 
 for f in ${DIRS}
 do
