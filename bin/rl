@@ -44,7 +44,6 @@ do
 		watchlog daemon
 		;;
 	nat|pf|ip)
-	nat)
 		# reload ipf data
 		pfctl -D -Fa -f /etc/ipf.rules -E
 		# reload NAT data
