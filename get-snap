@@ -1,0 +1,58 @@
+#!/bin/sh -u
+
+# get the current OpenBSD snapshot
+
+cd /usr/download/openbsd/i386 || exit
+
+SITE=ftp://ftp.geek-girl.com
+TOP=/pub/OpenBSD/snapshots
+ARCH=i386
+VERBOSE=""
+
+USAGE="$0 [-a arch ] [ -g|-u]
+-a arch := i386|sparc|hppa|...
+-g --> geek-girl.com
+-u --> ualberta
+-v -- Verbose
+"
+
+function usage {		# give usage message, and exit
+	echo "Usage: $USAGE" 2>&1
+	exit 1
+}
+
+while getopts "aguv" opt 
+do 
+ 	 case "$opt" in 
+		g)	SITE=ftp://ftp.geek-girl.com;;
+		u)	SITE=ftp://lager.cs.ualberta.ca;;
+		v)	VERBOSE=v;;
+		*)	usage;;
+	esac
+done
+shift `expr $OPTIND - 1`		 # leave just filenames
+
+if [ "" != "${VERBOSE}" ]; then
+	set -x
+fi
+
+if [ $# -ne 0 ]; then
+	usage
+fi
+
+ftp ${SITE}${TOP}/${ARCH}/MD5
+ftp ${SITE}${TOP}/${ARCH}/INSTALL.${arch}
+ftp ${SITE}${TOP}/${ARCH}/base26.tar.gz
+ftp ${SITE}${TOP}/${ARCH}/bsd
+ftp ${SITE}${TOP}/${ARCH}/etc26.tar.gz
+ftp ${SITE}${TOP}/${ARCH}/floppy26.fs
+ftp ${SITE}${TOP}/${ARCH}/floppy26B.fs
+ftp ${SITE}${TOP}/${ARCH}/game26.tar.gz
+ftp ${SITE}${TOP}/${ARCH}/install-386.txt
+ftp ${SITE}${TOP}/${ARCH}/libssl26.tar.gz
+ftp ${SITE}${TOP}/${ARCH}/man26.tar.gz
+ftp ${SITE}${TOP}/${ARCH}/misc26.tar.gz
+ftp ${SITE}${TOP}/${ARCH}/xbase26.tar.gz
+ftp ${SITE}${TOP}/${ARCH}/xfont26.tar.gz
+ftp ${SITE}${TOP}/${ARCH}/xserv26.tar.gz
+ftp ${SITE}${TOP}/${ARCH}/xshare26.tar.gz
