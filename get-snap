@@ -33,15 +33,7 @@ do
  	 case "$opt" in 
 		a)	ARCH=$OPTARG ;;
 		b)	BASEDIR=$OPTARG ;;
-		h)	
-			case "$OPTARG" in
-			geek*) SITE=ftp.geek-girl.com
-					;;
-			lager)	SITE=lager.cs.ualberta.ca
-					;;
-			*)		SITE=${OPTARG};;
-			esac
-			;;
+		h)	SITE=${OPTARG};;
 		p)	PROTO=$optarg;;
 		s)	prog=ssh;;
 		v)	VERBOSE=v;;
