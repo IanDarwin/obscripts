@@ -97,7 +97,8 @@ fi
 echo "*** REMEMBER TO RUN POSTUPGRADE ***"
 
 if [ "$MERGEMASTER" = "YES" ]; then
-	mergemaster
+	(cd /tmp; tar xzpf - ) < etc${REL}.tgz
+	mergemaster -r /tmp
 else
 	echo "No -m, not running mergemaster" >&2
 fi
