@@ -4,8 +4,12 @@
 
 cd /usr/download/openbsd/i386 || exit
 
-SITE=ftp://ftp.geek-girl.com
-TOP=/pub/OpenBSD/snapshots
+#SITE=ftp://ftp.geek-girl.com/
+#SITE=ftp://ftp.groupbsd.org/
+SITE=http://www.ualberta.ca/
+PREFIX=pub/
+PREFIX=FTP/
+TOP=OpenBSD/snapshots
 ARCH=i386
 VERBOSE=""
 
@@ -24,8 +28,8 @@ function usage {		# give usage message, and exit
 while getopts "aguv" opt 
 do 
  	 case "$opt" in 
-		g)	SITE=ftp://ftp.geek-girl.com;;
-		u)	SITE=ftp://lager.cs.ualberta.ca;;
+		g)	SITE=ftp://ftp.geek-girl.com/;;
+		u)	SITE=ftp://lager.cs.ualberta.ca/;;
 		v)	VERBOSE=v;;
 		*)	usage;;
 	esac
@@ -40,19 +44,19 @@ if [ $# -ne 0 ]; then
 	usage
 fi
 
-ftp ${SITE}${TOP}/${ARCH}/MD5
-ftp ${SITE}${TOP}/${ARCH}/INSTALL.${arch}
-ftp ${SITE}${TOP}/${ARCH}/base26.tar.gz
-ftp ${SITE}${TOP}/${ARCH}/bsd
-ftp ${SITE}${TOP}/${ARCH}/etc26.tar.gz
-ftp ${SITE}${TOP}/${ARCH}/floppy26.fs
-ftp ${SITE}${TOP}/${ARCH}/floppy26B.fs
-ftp ${SITE}${TOP}/${ARCH}/game26.tar.gz
-ftp ${SITE}${TOP}/${ARCH}/install-386.txt
-ftp ${SITE}${TOP}/${ARCH}/libssl26.tar.gz
-ftp ${SITE}${TOP}/${ARCH}/man26.tar.gz
-ftp ${SITE}${TOP}/${ARCH}/misc26.tar.gz
-ftp ${SITE}${TOP}/${ARCH}/xbase26.tar.gz
-ftp ${SITE}${TOP}/${ARCH}/xfont26.tar.gz
-ftp ${SITE}${TOP}/${ARCH}/xserv26.tar.gz
-ftp ${SITE}${TOP}/${ARCH}/xshare26.tar.gz
+ftp ${SITE}${PREFIX}${TOP}/${ARCH}/MD5
+ftp ${SITE}${PREFIX}${TOP}/${ARCH}/INSTALL.${ARCH}
+ftp ${SITE}${PREFIX}${TOP}/${ARCH}/bsd
+ftp ${SITE}${PREFIX}${TOP}/${ARCH}/floppy26.fs
+ftp ${SITE}${PREFIX}${TOP}/${ARCH}/floppy26B.fs
+ftp ${SITE}${PREFIX}${TOP}/${ARCH}/base26.tar.gz
+ftp ${SITE}${PREFIX}${TOP}/${ARCH}/etc26.tar.gz
+ftp ${SITE}${PREFIX}${TOP}/${ARCH}/game26.tar.gz
+ftp ${SITE}${PREFIX}${TOP}/${ARCH}/install-386.txt
+ftp ${SITE}${PREFIX}${TOP}/${ARCH}/libssl26.tar.gz
+ftp ${SITE}${PREFIX}${TOP}/${ARCH}/man26.tar.gz
+ftp ${SITE}${PREFIX}${TOP}/${ARCH}/misc26.tar.gz
+ftp ${SITE}${PREFIX}${TOP}/${ARCH}/xbase26.tar.gz
+ftp ${SITE}${PREFIX}${TOP}/${ARCH}/xfont26.tar.gz
+ftp ${SITE}${PREFIX}${TOP}/${ARCH}/xserv26.tar.gz
+ftp ${SITE}${PREFIX}${TOP}/${ARCH}/xshare26.tar.gz
