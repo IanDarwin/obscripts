@@ -2,16 +2,31 @@
 
 # quickupdate -- quickly update base files from snapshot
 
-cd /usr/download/OpenBSD/i386 || exit
+#ARCH=sparc
+ARCH=i386
+
+cd /usr/download/OpenBSD/${ARCH} || exit
+
+DEST=/
+#DEST=/export/dartboard/root
 
 BDIRS="base comp misc man"
 XDIRS="xbase xfont xserv xshare"
 
-#DIRS="${XDIRS} ${XDIRS}"
-DIRS="${XDIRS}"
+#DIRS="${BDIRS}"
+DIRS="${BDIRS} ${XDIRS}"
+#DIRS="${XDIRS}"
 
 for f in ${DIRS}
 do
 	echo ===== START $f
-	(cd /; sudo tar xvzpf - ) < ${f}26.tar.gz
+	(cd ${DEST} || exit; sudo tar xvzpf - ) < ${f}26.tar.gz
 done
+
+cp bsd ${DEST}/nbsd
+
+cd ${DEST}
+if [ -f bsd -a -f nbsd ]; then
+	mv bsd obsd
+	mv nbsd bsd
+fi
