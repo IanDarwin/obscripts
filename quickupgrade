@@ -4,6 +4,7 @@
 
 REL=29				# "26" for OpenBSD 2.6, etc.
 RELDIR=2.9			# same but with a dot
+RELDIR=snapshots	# when not -stable
 case ${REL} in
 	2[0-6])		EXT=tar.gz;;
 	2[789]|3*)	EXT=tgz;;
@@ -14,8 +15,8 @@ ARCH=i386
 
 if [ -d /usr/download/OpenBSD/${RELDIR}/${ARCH} ]; then
 	 cd /usr/download/OpenBSD/${RELDIR}/${ARCH} || exit
-elif [ -d /ftp/pub/OpenBSD/${RELDIR}/${ARCH} ]; then
-	 cd /ftp/pub/OpenBSD/${RELDIR}/${ARCH} || exit
+elif [ -d ~ftp/pub/OpenBSD/${RELDIR}/${ARCH} ]; then
+	 cd ~ftp/pub/OpenBSD/${RELDIR}/${ARCH} || exit
 fi
 
 DEST=/
@@ -42,7 +43,7 @@ do
 done
 
 if [ -f bsd ]; then
-	cp bsd ${DEST}/nbsd && echo Kernel installed as /nbsd
+	sudo cp bsd ${DEST}/nbsd && echo Kernel installed as /nbsd
 fi
 
 echo "*** REMEMBER TO RUN POSTUPGRADE ***"
