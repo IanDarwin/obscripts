@@ -49,7 +49,7 @@ serv=$1
 		interface gem0
 		;;
 	named|bind)
-		named.reload
+		rndc reload
 		sleep 1
 		echo "Now please check this logfile..."
 		watchlog daemon
