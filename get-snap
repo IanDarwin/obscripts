@@ -47,7 +47,7 @@ do
 done
 shift `expr $OPTIND - 1`		 # leave just filenames
 
-DIR=${BASEDIR}/openbsd/${ARCH}
+DIR=${BASEDIR}/OpenBSD/${ARCH}
 if [ ! -d ${DIR} ]; then
 	mkdir ${DIR}
 fi

@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# quickupdate -- quickly update base files from snapshot
+
+cd /usr/download/OpenBSD/i386 || exit
+
+BDIRS="base comp misc man"
+XDIRS="xbase xfont xserv xshare"
+
+#DIRS="${XDIRS} ${XDIRS}"
+DIRS="${XDIRS}"
+
+for f in ${DIRS}
+do
+	echo ===== START $f
+	(cd /; sudo tar xvzpf - ) < ${f}26.tar.gz
+done
