@@ -7,7 +7,8 @@ case "$REL" in
 	2[0-6])	EXT=.tar.gz;;
 	*)		EXT=.tgz;;
 esac;
-SITE=ftp.openbsd.org		# where to get it from, 1/4
+#SITE=ftp.openbsd.org		# where to get it from, 1/4
+SITE=ftp.darwinsys.com		# where to get it from, 1/4
 PREFIX=pub			# 2/4
 TOP=OpenBSD/snapshots		# 3/4
 ARCH=i386			# 4/4
@@ -63,7 +64,7 @@ FILES2="comp${REL}${EXT} game${REL}${EXT} ssl${REL}${EXT} man${REL}${EXT}"
 XFILES="xbase${REL}${EXT} xfont${REL}${EXT} xserv${REL}${EXT} xshare${REL}${EXT}"
 
 case ${ARCH} in
-	i386)	FILES="$FILES1 floppy${REL}B.fs $FILES2";;
+	i386)	FILES="$FILES1 floppy${REL}B.fs floppy${REL}C.fs $FILES2";;
 	sparc)	FILES="$FILES1 miniroot${REL}.fs $FILES2";;
 	*)	FILES="$FILES1 $FILES2";;
 esac
