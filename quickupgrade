@@ -2,14 +2,9 @@
 
 # quickupdate -- quickly update base files from snapshot
 
-if [ ! -w / ]; then
-	echo "$0: Need root permission to run"
-	exit 1
-fi
-
 # Set defaults before getopt...
 
-ARCH=`uname -s`
+ARCH=`uname -m`
 DEST=/
 BASE=YES
 X=NO
@@ -18,7 +13,7 @@ VERBOSE=""
 MERGEMASTER=NO
 
 REL=31				# "26" for OpenBSD 2.6, etc.
-RELDIR=3.1			# same but with a dot
+#RELDIR=3.1			# same but with a dot
 RELDIR=snapshots	# when not -stable
 
 case ${REL} in
@@ -54,6 +49,12 @@ do
 	esac
 done
 shift `expr $OPTIND - 1`		 # leave just filenames
+
+# Put this AFTER getopts so -h works without sudo
+if [ ! -w / ]; then
+	echo "$0: Need root permission to run"
+	exit 1
+fi
 
 # NEVER include etc in this list, or you will die horribly!
 BDIRS="base comp misc man"
