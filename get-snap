@@ -2,7 +2,7 @@
 
 # get the current OpenBSD snapshot
 
-REL=27				# "27" for OpenBSD 2.7, etc.
+REL=28				# "27" for OpenBSD 2.7, etc.
 case "$REL" in
 	2[0-6])	EXT=.tar.gz;;
 	*)		EXT=.tgz;;
