@@ -32,7 +32,7 @@ do
 					;;
 			lager)	SITE=lager.cs.ualberta.ca
 					;;
-			sq)		SITE=ftp.softquad.com
+			sq)		SITE=gatekeeper.softquad.com
 					PREFIX=pub/priv
 					;;
 			*)		SITE=${OPTARG};;
@@ -56,15 +56,15 @@ if [ $# -ne 0 ]; then
 	usage
 fi
 
-for f in ${FILES}
-do
-	echo ${f}
-	case ${prog} in
-	ftp)
+case ${prog} in
+ftp)
+	for f in ${FILES}
+	do
+		echo ${f}
 		ftp ${PROTO}://${SITE}/${PREFIX}/${TOP}/${ARCH}/${f}
-		;;
-	ssh)
-		scp ian@${SITE}:~ftp/${PREFIX}/${TOP}/${ARCH}/${f} .
-		;;
-	esac
-done
+	done
+	;;
+ssh)
+	scp -r ian@${SITE}:~ftp/${PREFIX}/${TOP}/${ARCH}/ .
+	;;
+esac
