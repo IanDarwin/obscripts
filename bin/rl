@@ -27,8 +27,7 @@ function do_arp {
 	done
 }
 
-for serv
-do
+serv=$1
 	case $serv in
 	-h|-help)
 		do_help
@@ -38,8 +37,11 @@ do
 		do_arp
 		;;
 	dh*)
+		if [ -f /tmp/xx ]; then
+			mv  /tmp/xx /tmp/xx.$$
+		fi
 		zap dhclient
-		dhclient dc0
+		dhclient ${2-dc0}
 		;;
 	named|bind)
 		named.reload
@@ -48,10 +50,10 @@ do
 		watchlog daemon
 		;;
 	nat|pf|ip)
-		# reload ipf data
-		pfctl -D -Fa -f /etc/ipf.rules -E
-		# reload NAT data
-		pfctl -N /etc/nat.conf -R /etc/pf.conf
+		# reload PF and NAT data
+		pfctl -R -f /etc/pf.conf
+		pfctl -N -f /etc/nat.conf
+		pfctl -e
 		;;
 	http*|apache)
 		if [ -x /usr/sbin/apachectl ]; then
@@ -78,7 +80,9 @@ do
 		;;
 	tomcat)
 		unset CLASSPATH
-		cd /usr/local/tomcat
+		export CATALINA_HOME=/usr/local/jakarta-tomcat-4.1.0/
+		export JAVA_HOME=/usr/local/java
+		cd ${CATALINA_HOME}
 		bin/catalina.sh stop
 		bin/catalina.sh start
 		;;
@@ -87,5 +91,4 @@ do
 		reload_by_pid $serv
 		;;
 	esac
-done
 
