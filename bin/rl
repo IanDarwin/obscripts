@@ -76,7 +76,8 @@ do
 		tomcat stop
 		cd /
 		unset CLASSPATH
-		su www /usr/local/sbin/tomcat start
+		#su www /usr/local/sbin/tomcat start
+		/usr/local/sbin/tomcat start
 		;;
 	*)
 		# must be a regular daemon
