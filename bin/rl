@@ -37,6 +37,10 @@ do
 	arp)
 		do_arp
 		;;
+	dh*)
+		zap dhclient
+		dhclient dc0
+		;;
 	named|bind)
 		named.reload
 		sleep 1
@@ -73,11 +77,10 @@ do
 		reload_by_pid sendmail
 		;;
 	tomcat)
-		tomcat stop
-		cd /
 		unset CLASSPATH
-		#su www /usr/local/sbin/tomcat start
-		/usr/local/sbin/tomcat start
+		cd /usr/local/tomcat
+		bin/catalina.sh stop
+		bin/catalina.sh start
 		;;
 	*)
 		# must be a regular daemon
