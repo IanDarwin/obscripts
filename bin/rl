@@ -82,6 +82,8 @@ do
 		pfctl -F all
 		# reload NAT data
 		pfctl -f /etc/pf.conf
+		# reload blocking table (why doesn't persist keep it in?)
+		pfctl -t http-banned -T replace -f /etc/http.block.dat
 		;;
 	http*|apache)
 		if [ -x /usr/sbin/apachectl ]; then
