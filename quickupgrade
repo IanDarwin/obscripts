@@ -16,8 +16,6 @@ if [ -d /usr/download/OpenBSD/${RELDIR}/${ARCH} ]; then
 	 cd /usr/download/OpenBSD/${RELDIR}/${ARCH} || exit
 elif [ -d /ftp/pub/OpenBSD/${RELDIR}/${ARCH} ]; then
 	 cd /ftp/pub/OpenBSD/${RELDIR}/${ARCH} || exit
-else
-	echo "No directory, exiting"
 fi
 
 DEST=/
@@ -33,8 +31,14 @@ DIRS="${BDIRS}"
 
 for f in ${DIRS}
 do
-	echo ===== START $f
-	(cd ${DEST} || exit; sudo tar xvzpf - ) < ${f}${REL}.${EXT}
+	FILE="${f}${REL}.${EXT}"
+	if [ -f ${FILE} ]; then
+		echo "===== START $f (${FILE})"
+	else
+		echo "Cannot locate file ${FILE}"
+		exit
+	fi
+	(cd ${DEST} || exit; sudo tar xvzpf - ) < ${FILE}
 done
 
 if [ -f bsd ]; then
