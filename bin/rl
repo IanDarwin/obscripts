@@ -1,6 +1,7 @@
 #!/bin/sh
 
 # rl - reload various system servers' data
+# $Id$
 
 PROGNAME=$0; export PROGNAME
 
@@ -54,10 +55,12 @@ serv=$1
 		watchlog daemon
 		;;
 	nat|pf|ip)
-		# reload PF and NAT data
-		pfctl -R -f /etc/pf.conf
-		pfctl -N -f /etc/nat.conf
-		pfctl -e
+		# enable, in case this is first time.
+		pfctl -e >/dev/null 2>&1
+		# flush old data
+		pfctl -F all
+		# reload NAT data
+		pfctl -f /etc/pf.conf
 		;;
 	http*|apache)
 		if [ -x /usr/sbin/apachectl ]; then
