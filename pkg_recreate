@@ -1,0 +1,36 @@
+#!/bin/sh -u
+
+
+# pgk_recreate, for when you don't want to recompile but want to move.
+
+TMP=/tmp
+TMP=/c
+
+if [ ! -f +COMMENT -o ! -f +CONTENTS -o ! -f +DESC ]; then
+	echo "Can't find COMMENT, CONTENTS and DESC files, please cd"
+	exit 1
+fi
+
+PKG=`pwd|sed 's/.*\///' `
+echo PKG is ${PKG}
+
+PREFIX=/usr/local
+
+STAGE=`mktemp -d ${TMP}/${PKG}XXXXXXXX`
+echo Staging directory is ${STAGE}
+
+cp -- +COMMENT +CONTENTS +DESC ${STAGE}
+
+TMPLIST=`mktemp ${TMP}/pkg_recreate_XXXXXXXX`
+
+grep '^[^+@]' +CONTENTS > ${TMPLIST}
+
+cd ${PREFIX}	# e.g., /usr/local
+
+cpio -pamdl < ${TMPLIST} ${STAGE}
+
+cd ${STAGE}
+
+echo "--> Packaging..."
+tar czf ${TMP}/${PKG}.tgz *
+echo "--> Created package in ${TMP}/${PKG}.tgz"
