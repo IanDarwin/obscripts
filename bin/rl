@@ -27,6 +27,11 @@ function do_arp {
 	done
 }
 
+function interface {
+		zap -y dhclient
+		dhclient $1
+}
+
 serv=$1
 	case $serv in
 	-h|-help)
@@ -36,12 +41,11 @@ serv=$1
 	arp)
 		do_arp
 		;;
-	dh*)
-		if [ -f /tmp/xx ]; then
-			mv  /tmp/xx /tmp/xx.$$
-		fi
-		zap dhclient
-		dhclient ${2-dc0}
+	dc*)
+		interface dc0
+		;;
+	gem*)
+		interface gem0
 		;;
 	named|bind)
 		named.reload
@@ -85,6 +89,9 @@ serv=$1
 		cd ${CATALINA_HOME}
 		bin/catalina.sh stop
 		bin/catalina.sh start
+		;;
+	wi*)
+		interface wi0
 		;;
 	*)
 		# must be a regular daemon
