@@ -46,9 +46,12 @@ do
 	nfs)
 		reload_by_pid mountd
 		;;
-	http*)
-		#kill -HUP `cat /var/www/logs/httpd.pid`
-		apachectl restart
+	http*|apache)
+		if [ -x /usr/sbin/apachectl ]; then
+			apachectl restart
+		else
+			kill -HUP `cat /var/www/logs/httpd.pid`
+		fi
 		;;
 	*)
 		# must be a regular daemon
