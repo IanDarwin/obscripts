@@ -11,6 +11,7 @@ X=NO
 KERNEL=NO
 VERBOSE=""
 MERGEMASTER=NO
+BACKUP=NO
 
 REL=33				# "26" for OpenBSD 2.6, etc.
 RELDIR=3.3			# same but with a dot
@@ -29,6 +30,7 @@ function usage {		# give usage message, and exit
 	[-b]	do NOT install BASE
 	[-d dest]	Desination dir [${DEST}]
 	[-a arch]	i386, sparc, etc. [${ARCH}]
+	[-e]	exec format has changed, backup executables first
 	[-k]	include kernel [don't]
 	[-s]	use snapshot [use release]
 	[-x]	include X11 [don't]
@@ -36,12 +38,13 @@ function usage {		# give usage message, and exit
 	exit 1
 }
 
-while getopts "a:bd:kmrxv" opt 
+while getopts "a:bd:ekmrxv" opt 
 do 
  	 case "$opt" in 
 		a)	ARCH=${OPTARG};;
 		b)	BASE=NO;;
 		d)	DEST=${OPTARG};;
+		e)	BACKUP=YES;;
 		k)	KERNEL=YES;;
 		m)	MERGEMASTER=YES;;
 		s)	RELDIR=snapshots;;	# snapshots (-current), not -stable
@@ -74,6 +77,17 @@ if [ -d /usr/download/OpenBSD/${RELDIR}/${ARCH} ]; then
 elif [ -d ~ftp/pub/OpenBSD/${RELDIR}/${ARCH} ]; then
 	 cd ~ftp/pub/OpenBSD/${RELDIR}/${ARCH} || exit
 fi
+
+case ${BACKUP} in
+	YES)
+		for dir in /bin /usr/bin /sbin /usr/sbin
+		do echo "Backing up $dir..."
+			cp -r $dir $dir.backup
+			PATH=$dir.backup:$PATH
+		done
+exit
+		;;
+esac
 
 for f in ${DIRS}
 do
