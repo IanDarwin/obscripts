@@ -54,4 +54,8 @@ _tcpdump 76 tcpdump
 _dhcp 77 dhcp programs
 _mopd 78 MOP daemon
 _tftpd 79 TFTP daemon
+_rbootd 80 rbootd Daemon
+_afs 81 afs daemon
+_ppp 82 PPP utilities
+_ntp 83 NTP Daemon
 !
