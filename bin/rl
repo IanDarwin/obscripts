@@ -70,7 +70,7 @@ do
 		;;
 	tomcat)
 		tomcat stop
-		tomcat start
+		su www /usr/local/sbin/tomcat start
 		;;
 	*)
 		# must be a regular daemon
