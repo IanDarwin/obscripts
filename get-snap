@@ -2,7 +2,7 @@
 
 # get the current OpenBSD snapshot
 
-
+REL-27				# "27" for OpenBSD 2.7, etc.
 SITE=ftp.openbsd.org		# where to get it from, 1/4
 PREFIX=pub			# 2/4
 TOP=OpenBSD/snapshots		# 3/4
@@ -53,13 +53,14 @@ if [ ! -d ${DIR} ]; then
 fi
 cd ${DIR} || exit
 
-FILES1="MD5 INSTALL.${ARCH} bsd floppy26.fs base26.tar.gz etc26.tar.gz misc26.tar.gz"
-FILES2="comp26.tar.gz game26.tar.gz ssl26.tar.gz man26.tar.gz"
-XFILES="xbase26.tar.gz xfont26.tar.gz xserv26.tar.gz xshare26.tar.gz"
+#BSD
+FILES1="MD5 INSTALL.${ARCH} floppy${REL}.fs base${REL}.tar.gz etc${REL}.tar.gz misc${REL}.tar.gz"
+FILES2="comp${REL}.tar.gz game${REL}.tar.gz ssl${REL}.tar.gz man${REL}.tar.gz"
+XFILES="xbase${REL}.tar.gz xfont${REL}.tar.gz xserv${REL}.tar.gz xshare${REL}.tar.gz"
 
 case ${ARCH} in
-	i386)	FILES="$FILES1 floppy26B.fs $FILES2";;
-	sparc)	FILES="$FILES1 miniroot26.fs $FILES2";;
+	i386)	FILES="$FILES1 floppy${REL}B.fs $FILES2";;
+	sparc)	FILES="$FILES1 miniroot${REL}.fs $FILES2";;
 	*)	FILES="$FILES1 $FILES2";;
 esac
 
