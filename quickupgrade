@@ -10,6 +10,7 @@ cd /usr/download/OpenBSD/${ARCH} || exit
 DEST=/
 #DEST=/export/dartboard/root
 
+# NEVER include etc in this list, or you will die horribly!
 BDIRS="base comp misc man"
 XDIRS="xbase xfont xserv xshare"
 
