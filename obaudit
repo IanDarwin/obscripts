@@ -1,0 +1,57 @@
+#!/bin/sh
+
+# obaudit - check the state of an OpenBSD system
+
+uname -a
+
+if [ -f /usr/src/Makefile ]; then
+	echo 'Some /usr/src present: \'
+	ls -l /usr/src
+else
+	echo "No /usr/src"
+fi
+if [ -f /etc/pf.conf ]; then
+	echo "pf.conf found:\c"
+	ls -l /etc/pf.conf
+fi
+if [ -f /etc/ipf.conf ]; then
+	echo '** Warning: ipf.conf found **\c'
+	if [ -f /etc/pf.conf ]; then
+		echo '(AND pf.conf too; needs cleanup?) **'
+	else
+		echo '(but NO pf.conf; may need to rename it) **'
+	fi
+else
+	echo "No ipf.conf"
+fi
+if [ -f /etc/nat.conf ]; then
+	echo '** Warning: nat.conf found, may need to merge into pf.conf **'
+else
+	echo "No nat.conf"
+fi
+
+# create entries in this format in the passwd and group files.
+# _tftpd:*:79:79::0:0:TFTP daemon:/var/empty:/sbin/nologin
+while read pw_nam pw_uid pw_gecos
+do
+	grep "^$pw_nam" /etc/passwd >/dev/null && continue
+	echo "Missing $pw_nam, adding it..."
+	sudo useradd -c ${pw_gecos} -d /var/empty	\
+            -u ${pw_uid} -g =uid -p '*'	\
+            -s /sbin/nologin ${pw_nam}
+	# OpenBSD's useradd will create the group automatically.
+done <<!
+_portmap 28 portmap
+_identd 29 identd
+_rstatd 30 rpc.rstatd
+_rusersd 32 rpc.rusersd
+_fingerd 33 fingerd
+_x11 35 X server
+_syslogd 73 Syslog Daemon
+_pflogd 74 pflogd privsep
+_bgpd 75 BGP Daemon
+_tcpdump 76 tcpdump
+_dhcp 77 dhcp programs
+_mopd 78 MOP daemon
+_tftpd 79 TFTP daemon
+!
