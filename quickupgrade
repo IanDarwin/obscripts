@@ -2,6 +2,7 @@
 
 # quickupdate -- quickly update base files from snapshot
 
+REL=26				# "26" for OpenBSD 2.6, etc.
 #ARCH=sparc
 ARCH=i386
 
@@ -21,13 +22,15 @@ DIRS="${BDIRS} ${XDIRS}"
 for f in ${DIRS}
 do
 	echo ===== START $f
-	(cd ${DEST} || exit; sudo tar xvzpf - ) < ${f}26.tar.gz
+	(cd ${DEST} || exit; sudo tar xvzpf - ) < ${f}${REL}.tar.gz
 done
 
-cp bsd ${DEST}/nbsd
+if [ -f bsd ]; then
+	cp bsd ${DEST}/nbsd
 
-cd ${DEST}
-if [ -f bsd -a -f nbsd ]; then
-	mv bsd obsd
-	mv nbsd bsd
+	cd ${DEST}
+	if [ -f bsd -a -f nbsd ]; then
+		mv bsd obsd
+		mv nbsd bsd
+	fi
 fi
