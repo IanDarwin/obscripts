@@ -7,7 +7,7 @@ PROGNAME=$0; export PROGNAME
 function reload_by_pid {
 	serv=$1
 	if [ -f /var/run/$serv.pid ]; then
-		kill -HUP `cat /var/run/$serv.pid`
+		kill -HUP `sed -e 1q /var/run/$serv.pid`
 	else
 		echo >&2 "Sorry, $PROGNAME doesn't know how to reload $serv ."
 	fi
