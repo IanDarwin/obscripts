@@ -15,7 +15,7 @@ function reload_by_pid {
 
 function do_help {
 	echo "$0 reloads servers. Services available include:"
-	echo "ipnat ipf `cd /var/run; ls *.pid|sed 's/\.pid//g' `"
+	echo "nat pf `cd /var/run; ls *.pid|sed 's/\.pid//g' `"
 }
 
 function do_arp {
@@ -39,15 +39,16 @@ do
 		;;
 	named|bind)
 		named.reload
+		sleep 1
 		echo "Now please check this logfile..."
-		tail -15 /var/log/daemon
+		watchlog daemon
 		;;
+	nat|pf|ip)
 	nat)
-		pfctl -N /etc/nat.conf
 		# reload ipf data
-		#ipf -D -Fa -f /etc/ipf.rules -E
-		# now reload IPNAT data
-		#ipnat -CF -f /etc/ipnat.rules
+		pfctl -D -Fa -f /etc/ipf.rules -E
+		# reload NAT data
+		pfctl -N /etc/nat.conf -R /etc/pf.conf
 		;;
 	http*|apache)
 		if [ -x /usr/sbin/apachectl ]; then
