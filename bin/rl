@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/ksh
 
 # rl - reload various system servers' data
 # $Id$
@@ -33,7 +33,25 @@ function interface {
 		dhclient $1
 }
 
-serv=$1
+USAGE="$0 [-i][-v] service"
+
+function usage {		# give usage message, and exit
+	echo "Usage: $USAGE" 2>&1
+	exit 1
+}
+
+while getopts "iv" opt 
+do 
+ 	 case "$opt" in 
+		i)	INTERACT=YES;;
+		v)	VERBOSE=-v;;
+		*)	usage;;
+	esac
+done
+shift `expr $OPTIND - 1`		 # leave just filenames
+
+for serv
+do
 	case $serv in
 	-h|-help)
 		do_help
@@ -90,11 +108,20 @@ serv=$1
 		;;
 	tomcat)
 		unset CLASSPATH
-		export CATALINA_HOME=/usr/local/jakarta-tomcat-4.1.0/
-		export JAVA_HOME=/usr/local/java
+		case `uname` in
+		Darwin)	export CATALINA_HOME=~/tomcat;;
+		*)		export CATALINA_HOME=/usr/local/tomcat/
+				export JAVA_HOME=/usr/local/java
+				;;
+		esac
 		cd ${CATALINA_HOME}
 		bin/catalina.sh stop
-		bin/catalina.sh start
+		rm -f /home/ian/databases/*.data
+		case ${INTERACT} in
+			YES) cmd=run;;
+			""|*) cmd=start;;
+		esac
+		bin/catalina.sh ${cmd}
 		;;
 	wi*)
 		interface wi0
@@ -104,4 +131,4 @@ serv=$1
 		reload_by_pid $serv
 		;;
 	esac
-
+done
