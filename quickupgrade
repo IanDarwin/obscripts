@@ -3,6 +3,7 @@
 # quickupdate -- quickly update base files from snapshot
 
 REL=28				# "26" for OpenBSD 2.6, etc.
+RELDIR=2.8			# same but with a dot
 case ${REL} in
 	2[0-6])		EXT=tar.gz;;
 	2[789]|3*)	EXT=tgz;;
@@ -11,7 +12,13 @@ esac
 #ARCH=sparc
 ARCH=i386
 
-cd /usr/download/OpenBSD/${ARCH} || exit
+if [ -d /usr/download/OpenBSD/${RELDIR}/${ARCH} ]; then
+	 cd /usr/download/OpenBSD/${RELDIR}/${ARCH} || exit
+elif [ -d /ftp/pub/OpenBSD/${RELDIR}/${ARCH} ]; then
+	 cd /ftp/pub/OpenBSD/${RELDIR}/${ARCH} || exit
+else
+	echo "No directory, exiting"
+fi
 
 DEST=/
 #DEST=/export/dartboard/root
@@ -20,8 +27,8 @@ DEST=/
 BDIRS="base comp misc man"
 XDIRS="xbase xfont xserv xshare"
 
-#DIRS="${BDIRS}"
-DIRS="${BDIRS} ${XDIRS}"
+DIRS="${BDIRS}"
+#DIRS="${BDIRS} ${XDIRS}"
 #DIRS="${XDIRS}"
 
 for f in ${DIRS}
