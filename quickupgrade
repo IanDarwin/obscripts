@@ -10,15 +10,11 @@ fi
 # Set defaults before getopt...
 
 ARCH=i386
-
 DEST=/
-
 BASE=YES
 X=NO
-
-
 KERNEL=NO
-
+VERBOSE=""
 MERGEMASTER=NO
 
 REL=30				# "26" for OpenBSD 2.6, etc.
@@ -30,20 +26,21 @@ case ${REL} in
 	2[789]|3*)	EXT=tgz;;
 esac
 
-USAGE="$0 [-a arch][-x][-k][-m]"
+USAGE="$0 [-a arch][-b][-d dest][-x][-k][-m][-v]"
 
 function usage {		# give usage message, and exit
 	echo "Usage: $USAGE
+	[-v]	add -v to 'tar x' command.
 	[-b]	do NOT install BASE
 	[-d dest]	Desination dir [${DEST}]
 	[-a arch]	i386, sparc, etc. [${ARCH}]
 	[-k]	include kernel [don't]
 	[-x]	include X11 [don't]
-	[-m]	Run MergeMaster when done [don't]" 2>&1
+	[-m]	Run MergeMaster when done [don't] (requires full /usr/src)" 2>&1
 	exit 1
 }
 
-while getopts "abdkmx" opt 
+while getopts "abdkmxv" opt 
 do 
  	 case "$opt" in 
 		a)	ARCH=${OPTARG};;
@@ -52,6 +49,7 @@ do
 		k)	KERNEL=YES;;
 		m)	MERGEMASTER=YES;;
 		x)	X=YES;;
+		v)	VERBOSE='v';;
 		*)	usage;;
 	esac
 done
@@ -83,7 +81,7 @@ do
 		echo "Cannot locate file ${FILE}"
 		exit
 	fi
-	(cd ${DEST} || exit; tar xvzpf - ) < ${FILE}
+	(cd ${DEST} || exit; tar xzpf${VERBOSE} - ) < ${FILE}
 done
 
 if [ "$KERNEL" = "YES" ]; then
@@ -99,10 +97,7 @@ fi
 echo "*** REMEMBER TO RUN POSTUPGRADE ***"
 
 if [ "$MERGEMASTER" = "YES" ]; then
-	cp ./etc${REL}.${EXT} /tmp
-	cd /tmp
-	tar xzf ./etc${REL}.${EXT}
-	mergemaster -m ./etc
+	mergemaster
 else
 	echo "No -m, not running mergemaster" >&2
 fi
