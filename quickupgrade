@@ -13,14 +13,12 @@ VERBOSE=""
 MERGEMASTER=NO
 BACKUP=NO
 
-REL=33				# "26" for OpenBSD 2.6, etc.
-RELDIR=3.3			# same but with a dot
-RELDIR=snapshots
+DOWNLOAD=/usr/download		# base dir for finding dist sets
+REL=35				# "26" for OpenBSD 2.6, etc.
+RELDIR=3.5			# same but with a dot
+#RELDIR=snapshots
 
-case ${REL} in
-	2[0-6])		EXT=tar.gz;;
-	2[789]|3*)	EXT=tgz;;
-esac
+EXT=tgz		# on 2[0-6] was EXT=tar.gz;;
 
 USAGE="$0 [-a arch][-b][-d dest][-x][-k][-m][-v]"
 
@@ -32,13 +30,14 @@ function usage {		# give usage message, and exit
 	[-a arch]	i386, sparc, etc. [${ARCH}]
 	[-e]	exec format has changed, backup executables first
 	[-k]	include kernel [don't]
+	[-p]	prefix for finding download files [/usr/download || ~ftp]
 	[-s]	use snapshot [use release]
 	[-x]	include X11 [don't]
 	[-m]	Run MergeMaster when done [don't] (requires full /usr/src)" 2>&1
 	exit 1
 }
 
-while getopts "a:bd:ekmrxv" opt 
+while getopts "a:bd:ekmp:rxv" opt 
 do 
  	 case "$opt" in 
 		a)	ARCH=${OPTARG};;
@@ -47,6 +46,7 @@ do
 		e)	BACKUP=YES;;
 		k)	KERNEL=YES;;
 		m)	MERGEMASTER=YES;;
+		p)	DOWNLOAD=${OPTARG};;
 		s)	RELDIR=snapshots;;	# snapshots (-current), not -stable
 		x)	X=YES;;
 		v)	VERBOSE='v';;
@@ -72,8 +72,8 @@ if [ "YES" = ${X} ]; then
 	DIRS="${DIRS} ${XDIRS}"
 fi
 
-if [ -d /usr/download/OpenBSD/${RELDIR}/${ARCH} ]; then
-	 cd /usr/download/OpenBSD/${RELDIR}/${ARCH} || exit
+if [ -d ${DOWNLOAD}/${RELDIR}/${ARCH} ]; then
+	cd ${DOWNLOAD}/${RELDIR}/${ARCH} || exit
 elif [ -d ~ftp/pub/OpenBSD/${RELDIR}/${ARCH} ]; then
 	 cd ~ftp/pub/OpenBSD/${RELDIR}/${ARCH} || exit
 fi
@@ -85,7 +85,6 @@ case ${BACKUP} in
 			cp -r $dir $dir.backup
 			PATH=$dir.backup:$PATH
 		done
-exit
 		;;
 esac
 
