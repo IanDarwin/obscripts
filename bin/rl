@@ -1,0 +1,58 @@
+#!/bin/sh -f
+
+# rl - reload various system servers' data
+
+PROGNAME=$0; export PROGNAME
+
+function reload_by_pid {
+	serv=$1
+	if [ -f /var/run/$serv.pid ]; then
+		kill -HUP `cat /var/run/$serv.pid`
+	else
+		echo >&2 "Sorry, $PROGNAME doesn't know how to reload $serv ."
+	fi
+}
+
+function do_help {
+	echo "$0 reloads servers. Services available include:"
+	echo "ipnat ipf `cd /var/run; ls *.pid|sed 's/\.pid//g' `"
+}
+
+function do_arp {
+	ETHERS=/etc/ethers
+	# format is: 08:00:20:04:e3:f0       dartboard
+	cat ${ETHERS} | while read ether_addr hostname
+	do
+		arp -s ${hostname} ${ether_addr} temp
+	done
+}
+
+for serv
+do
+	case $serv in
+	-h|-help)
+		do_help
+		exit
+		;;
+	arp)
+		do_arp
+		;;
+	nat|ipf|ip)
+		# reload ipf data
+		ipf -D -Fa -f /etc/ipf.rules -E
+		# now reload IPNAT data
+		ipnat -CF -f /etc/ipnat.rules
+		;;
+	nfs)
+		reload_by_pid mountd
+		;;
+	http*)
+		kill -HUP `cat /var/www/logs/httpd.pid`
+		;;
+	*)
+		# must be a regular daemon
+		reload_by_pid $serv
+		;;
+	esac
+done
+
