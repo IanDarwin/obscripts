@@ -47,7 +47,8 @@ do
 		reload_by_pid mountd
 		;;
 	http*)
-		kill -HUP `cat /var/www/logs/httpd.pid`
+		#kill -HUP `cat /var/www/logs/httpd.pid`
+		apachectl restart
 		;;
 	*)
 		# must be a regular daemon
