@@ -37,6 +37,11 @@ do
 	arp)
 		do_arp
 		;;
+	named|bind)
+		named.reload
+		echo "Now please check this logfile..."
+		tail -15 /var/log/daemon
+		;;
 	nat|ipf|ip)
 		# reload ipf data
 		ipf -D -Fa -f /etc/ipf.rules -E
@@ -56,7 +61,11 @@ do
 		if [ -x /usr/sbin/apachectl ]; then
 			apachectl restart
 		else
-			kill -HUP `cat /var/www/logs/httpd.pid`
+			if [ -f /var/www/logs/httpd.pid ]; then
+				kill -HUP `cat /var/www/logs/httpd.pid`
+			else
+				echo "Can't find either apachectl or httpd.pid, sorry"
+			fi;
 		fi
 		;;
 	*)
