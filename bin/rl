@@ -48,15 +48,6 @@ do
 		# now reload IPNAT data
 		ipnat -CF -f /etc/ipnat.rules
 		;;
-	nfs)
-		reload_by_pid mountd
-		;;
-	sendmail)
-		reload_by_pid sendmail
-		;;
-	postfix)
-		postfix reload
-		;;
 	http*|apache)
 		if [ -x /usr/sbin/apachectl ]; then
 			apachectl restart
@@ -67,6 +58,19 @@ do
 				echo "Can't find either apachectl or httpd.pid, sorry"
 			fi;
 		fi
+		;;
+	nfs)
+		reload_by_pid mountd
+		;;
+	postfix)
+		postfix reload
+		;;
+	sendmail)
+		reload_by_pid sendmail
+		;;
+	tomcat)
+		tomcat stop
+		tomcat start
 		;;
 	*)
 		# must be a regular daemon
