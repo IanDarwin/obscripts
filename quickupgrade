@@ -2,8 +2,8 @@
 
 # quickupdate -- quickly update base files from snapshot
 
-REL=28				# "26" for OpenBSD 2.6, etc.
-RELDIR=2.8			# same but with a dot
+REL=29				# "26" for OpenBSD 2.6, etc.
+RELDIR=2.9			# same but with a dot
 case ${REL} in
 	2[0-6])		EXT=tar.gz;;
 	2[789]|3*)	EXT=tgz;;
@@ -42,13 +42,7 @@ do
 done
 
 if [ -f bsd ]; then
-	cp bsd ${DEST}/nbsd
-
-	cd ${DEST}
-	if [ -f bsd -a -f nbsd ]; then
-		mv bsd obsd
-		mv nbsd bsd
-	fi
+	cp bsd ${DEST}/nbsd && echo Kernel installed as /nbsd
 fi
 
 echo "*** REMEMBER TO RUN POSTUPGRADE ***"
