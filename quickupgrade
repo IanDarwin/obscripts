@@ -33,7 +33,7 @@ for f in ${DIRS}
 do
 	FILE="${f}${REL}.${EXT}"
 	if [ -f ${FILE} ]; then
-		echo "===== START $f (${FILE})"
+		echo "===> $f (${FILE})"
 	else
 		echo "Cannot locate file ${FILE}"
 		exit
