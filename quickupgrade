@@ -9,7 +9,7 @@ fi
 
 # Set defaults before getopt...
 
-ARCH=i386
+ARCH=`uname -s`
 DEST=/
 BASE=YES
 X=NO
@@ -17,8 +17,8 @@ KERNEL=NO
 VERBOSE=""
 MERGEMASTER=NO
 
-REL=30				# "26" for OpenBSD 2.6, etc.
-RELDIR=3.0			# same but with a dot
+REL=31				# "26" for OpenBSD 2.6, etc.
+RELDIR=3.1			# same but with a dot
 RELDIR=snapshots	# when not -stable
 
 case ${REL} in
