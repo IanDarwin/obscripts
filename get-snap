@@ -3,17 +3,16 @@
 # get the current OpenBSD snapshot
 
 
-cd /usr/download/openbsd/i386 || exit
+SITE=ftp.openbsd.org		# where to get it from, 1/4
+PREFIX=pub			# 2/4
+TOP=OpenBSD/snapshots		# 3/4
+ARCH=i386			# 4/4
+prog=ftp			# how to get it, changes to scp with -s
+PROTO=ftp			# how $PROG is to get it, change to e.g http
+VERBOSE=""			# how chattily to get it
+BASEDIR=/usr/download/		# where to put it locally
 
-PROTO=ftp
-SITE=ftp.openbsd.org
-PREFIX=pub
-TOP=OpenBSD/snapshots
-ARCH=i386
-VERBOSE=""
-prog=ftp
-
-USAGE="$0 [-s][-a arch ] [ -h hostabbr|fqdn]
+USAGE="$0 [-s][-a arch ][-b local-Basedir][ -h hostabbrev|fqdn]
 -a arch := i386|sparc|hppa|...
 -v -- Verbose
 "
@@ -23,9 +22,11 @@ function usage {		# give usage message, and exit
 	exit 1
 }
 
-while getopts "h:p:sv" opt 
+while getopts "a:b:h:p:sv" opt 
 do 
  	 case "$opt" in 
+		a)	ARCH=$OPTARG ;;
+		b)	BASEDIR=$OPTARG ;;
 		h)	
 			case "$OPTARG" in
 			geek*) SITE=ftp.geek-girl.com
@@ -46,7 +47,25 @@ do
 done
 shift `expr $OPTIND - 1`		 # leave just filenames
 
-FILES="MD5 INSTALL.${ARCH} bsd floppy26.fs floppy26B.fs base26.tar.gz etc26.tar.gz game26.tar.gz install-386.txt libssl26.tar.gz man26.tar.gz misc26.tar.gz xbase26.tar.gz xfont26.tar.gz xserv26.tar.gz xshare26.tar.gz"
+DIR=${BASEDIR}/openbsd/${ARCH}
+if [ ! -d ${DIR} ]; then
+	mkdir ${DIR}
+fi
+cd ${DIR} || exit
+
+FILES1="MD5 INSTALL.${ARCH} bsd floppy26.fs base26.tar.gz etc26.tar.gz misc26.tar.gz"
+FILES2="comp26.tar.gz game26.tar.gz ssl26.tar.gz man26.tar.gz"
+XFILES="xbase26.tar.gz xfont26.tar.gz xserv26.tar.gz xshare26.tar.gz"
+
+case ${ARCH} in
+	i386)	FILES="$FILES1 floppy26B.fs $FILES2";;
+	sparc)	FILES="$FILES1 miniroot26.fs $FILES2";;
+	*)	FILES="$FILES1 $FILES2";;
+esac
+
+if [ "" != "NO-X" ]; then
+	FILES="$FILES $XFILES"
+fi
 
 if [ "" != "${VERBOSE}" ]; then
 	set -x
