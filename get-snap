@@ -3,8 +3,9 @@
 # get the current OpenBSD snapshot
 # XXX after committing, rename to obget (no longer just snaps)
 
-REL=36				# "37" for OpenBSD 3.7, etc.
-SNAPDIR="3.6"		# XXX derive from REL
+REL=37					# "37" for OpenBSD 3.7, etc.
+RELEASEDIR=3.7			# As above but with "."
+SNAPDIR="snapshots"		# XXX derive from REL
 EXT=.tgz
 
 TODIR=OpenBSD
@@ -28,7 +29,7 @@ else
 fi
 
 
-USAGE="$0 [-s][-a arch ][-b local-Basedir][ -f hostabbrev|fqdn]
+USAGE="$0 [-s][-a arch ][-b local-Basedir][ -f host]
 -a arch := i386|sparc|hppa|...
 -v -- Verbose
 "
@@ -52,7 +53,12 @@ do
 			esac
 			;;
 		h)	PROTO=http;;
-		s)	SNAPDIR="snapshots";;
+		s)	SNAPDIR="${RELEASEDIR}"
+			echo "****************************************************"
+			echo "$0: -s means to NOT use snapshot, using ${RELEASEDIR}"
+			echo "****************************************************"
+			echo -n "OK? "; read answer
+			;;
 		v)	VERBOSE=v;;
 		x)	NO-X=YES;;
 		*)	usage;;
@@ -67,12 +73,13 @@ if [ ! -d ${DIR} ]; then
 fi
 cd ${DIR} || exit
 
-FILES="MD5 index.txt INSTALL.${ARCH} bsd base${REL}${EXT} cd${REL}.iso etc${REL}${EXT} misc${REL}${EXT} comp${REL}${EXT} game${REL}${EXT} man${REL}${EXT}"
-XFILES="xbase${REL}${EXT} xfont${REL}${EXT} xserv${REL}${EXT} xshare${REL}${EXT}"
+FILES="MD5 index.txt INSTALL.${ARCH} bsd bsd.rd bsd.mp base${REL}${EXT} cd${REL}.iso etc${REL}${EXT} misc${REL}${EXT} comp${REL}${EXT} game${REL}${EXT} man${REL}${EXT}"
+XFILES="xbase${REL}${EXT} xetc${REL}${EXT}  xfont${REL}${EXT} xserver${REL}${EXT} xshare${REL}${EXT}"
 
 case ${ARCH} in
-	amd64)	FILES="$FILES bsd.mp floppy${REL}.fs";;
-	i386)	FILES="$FILES floppy${REL}.fs floppyB${REL}.fs floppyC${REL}.fs";;
+	amd64)	FILES="$FILES floppy${REL}.fs";;
+	i386)	FILES="$FILES floppy${REL}.fs floppyB${REL}.fs";;
+	macppc)	FILES="$FILES bsd.tbxi";;
 	sparc*)	FILES="$FILES floppy${REL}.fs miniroot${REL}.fs";;
 esac
 
@@ -94,7 +101,7 @@ ftp)
 	do
 		CMD="ftp ${PROTO}://${SITE}/${FROMDIR}/${SNAPDIR}/${ARCH}/${f}"
 		echo "--> $CMD"
-		$CMD || exit
+		$CMD
 	done
 	;;
 ssh)
