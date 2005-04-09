@@ -99,6 +99,10 @@ do
 	nfs)
 		reload_by_pid mountd
 		;;
+	openvpn)
+		zap -y /usr/local/sbin/openvpn
+		grep "/usr/local/sbin/openvpn --" /etc/rc.local | sh -x
+		;;
 	postfix)
 		postfix reload
 		;;
