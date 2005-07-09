@@ -14,8 +14,8 @@ MERGEMASTER=NO
 BACKUP=NO
 
 DOWNLOAD=/home/ian/download/OpenBSD		# base dir for finding dist sets
-REL=36				# "26" for OpenBSD 2.6, etc.
-RELDIR=3.6			# same but with a dot
+REL=37				# "26" for OpenBSD 2.6, etc.
+RELDIR=3.7			# same but with a dot
 #RELDIR=snapshots
 
 EXT=tgz		# on 2[0-6] was EXT=tar.gz;;
