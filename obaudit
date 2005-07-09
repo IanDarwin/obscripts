@@ -63,4 +63,5 @@ _ppp 82 PPP utilities
 _ntp 83 NTP Daemon
 _ftp 84 FTP Daemon
 _ospfd 85 OSPF Daemon
+_hostapd 86 HostAP Daemon
 !
