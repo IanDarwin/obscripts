@@ -109,6 +109,12 @@ do
 	pf)
 		pfctl -R /etc/pf.conf
 		;;
+	ppp*)
+		echo Beware of suicide here:
+		zap -s9 pppd
+		sleep 1
+		sudo pppd call sympatico
+		;;
 	sendmail)
 		reload_by_pid sendmail
 		;;
