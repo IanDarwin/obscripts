@@ -13,12 +13,13 @@ VERBOSE=""
 MERGEMASTER=NO
 BACKUP=NO
 
-DOWNLOAD=/home/ian/download/OpenBSD		# base dir for finding dist sets
-REL=37				# "26" for OpenBSD 2.6, etc.
-RELDIR=3.7			# same but with a dot
-#RELDIR=snapshots
+REL=38				# "26" for OpenBSD 2.6, etc.
+RELDIR=3.8			# same but with a dot
+RELDIR=snapshots
 
-EXT=tgz		# on 2[0-6] was EXT=tar.gz;;
+EXT=tgz
+
+DOWNLOAD=$HOME/download/OpenBSD		# base dir for finding dist sets
 
 USAGE="$0 [-a arch][-b][-d dest][-x][-k][-m][-v]"
 
@@ -47,7 +48,7 @@ do
 		k)	KERNEL=YES;;
 		m)	MERGEMASTER=YES;;
 		p)	DOWNLOAD=${OPTARG};;
-		s)	RELDIR=snapshots;;	# snapshots (-current), not -stable
+		s)	RELDIR="3.7";;	# stable, not snapshots
 		x)	X=YES;;
 		v)	VERBOSE='v';;
 		*)	usage;;
@@ -55,11 +56,24 @@ do
 done
 shift `expr $OPTIND - 1`		 # leave just filenames
 
+if [ -d ${DOWNLOAD}/${RELDIR}/${ARCH} ]; then
+	cd ${DOWNLOAD}/${RELDIR}/${ARCH} || exit
+elif [ -d ~ftp/pub/OpenBSD/${RELDIR}/${ARCH} ]; then
+	 cd ~ftp/pub/OpenBSD/${RELDIR}/${ARCH} || exit
+fi
+
 # Check this AFTER getopts so -h works without sudo
 if [ ! -w / ]; then
 	echo "$0: Need root permission to run"
 	exit 1
 fi
+
+echo -n "OK to run quickupgrade on host `hostname` from ${PWD}? [nyq]"
+read ans
+case ${ans} in
+	y*)	;;
+	*)	exit 1;;
+esac
 
 # NEVER include etc in this list, or you will die horribly!
 BDIRS="base comp misc man"
@@ -70,12 +84,6 @@ if [ "NO" != ${BASE} ]; then
 fi
 if [ "YES" = ${X} ]; then
 	DIRS="${DIRS} ${XDIRS}"
-fi
-
-if [ -d ${DOWNLOAD}/${RELDIR}/${ARCH} ]; then
-	cd ${DOWNLOAD}/${RELDIR}/${ARCH} || exit
-elif [ -d ~ftp/pub/OpenBSD/${RELDIR}/${ARCH} ]; then
-	 cd ~ftp/pub/OpenBSD/${RELDIR}/${ARCH} || exit
 fi
 
 case ${BACKUP} in
@@ -92,7 +100,7 @@ for f in ${DIRS}
 do
 	FILE="${f}${REL}.${EXT}"
 	if [ -f ${FILE} ]; then
-		echo "===> $f (${FILE})" >&2
+		echo "===> `pwd`/$f (${FILE})" >&2
 	else
 		echo "Cannot locate file ${FILE}"
 		exit
