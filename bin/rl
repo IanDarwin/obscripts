@@ -35,9 +35,12 @@ function usage {		# give usage message, and exit
 	exit 1
 }
 
-while getopts "iv" opt 
+while getopts "hiv" opt 
 do 
  	 case "$opt" in 
+		h)	do_help
+			exit
+			;;
 		i)	INTERACT=YES;;
 		v)	VERBOSE=-v;;
 		*)	usage;;
@@ -48,7 +51,7 @@ shift `expr $OPTIND - 1`		 # leave just filenames
 for serv
 do
 	case $serv in
-	-h|-help)
+	help)
 		do_help
 		exit
 		;;
