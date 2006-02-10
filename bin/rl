@@ -16,7 +16,7 @@ function reload_by_pid {
 
 function do_help {
 	echo "$0 reloads servers. Services available include:"
-	echo "nat pf `cd /var/run; ls *.pid|sed 's/\.pid//g' `"
+	echo "pf `cd /var/run; ls *.pid|sed 's/\.pid//g' `"
 }
 
 function do_arp {
@@ -26,11 +26,6 @@ function do_arp {
 	do
 		arp -s ${hostname} ${ether_addr} temp
 	done
-}
-
-function interface {
-		zap -y dhclient
-		dhclient $1
 }
 
 USAGE="$0 [-i][-v] service"
@@ -60,11 +55,12 @@ do
 	arp)
 		do_arp
 		;;
-	dc*)
-		interface dc0
+	asterisk)
+		asterisk -r -x reload
 		;;
-	gem*)
-		interface gem0
+	dc*|gem*|rl*|wi*)
+		rm -f /var/db/dhclient.leases.${serv}
+		dhclient ${serv}
 		;;
 	named|bind)
 		#rndc reload
@@ -83,7 +79,9 @@ do
 		# reload NAT data
 		pfctl -f /etc/pf.conf
 		# reload blocking table (why doesn't persist keep it in?)
-		pfctl -t http-banned -T replace -f /etc/http.block.dat
+		if [ -f /etc/httpd.block.dat ]; then
+			pfctl -t http-banned -T replace -f /etc/http.block.dat
+		fi
 		;;
 	http*|apache)
 		if [ -x /usr/sbin/apachectl ]; then
@@ -99,7 +97,7 @@ do
 	nfs)
 		reload_by_pid mountd
 		;;
-	openvpn)
+	openvpn|vpn)
 		zap -y /usr/local/sbin/openvpn
 		grep "/usr/local/sbin/openvpn --" /etc/rc.local | sh -x
 		;;
@@ -136,9 +134,6 @@ do
 			""|*) cmd=start;;
 		esac
 		bin/catalina.sh ${cmd}
-		;;
-	wi*)
-		interface wi0
 		;;
 	*)
 		# must be a regular daemon
