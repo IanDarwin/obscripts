@@ -81,6 +81,8 @@ do
 		pfctl -F all
 		# reload NAT data
 		pfctl -f /etc/pf.conf
+		# reload spamd
+		/usr/libexec/spamd-setup -d
 		# reload blocking table (why doesn't persist keep it in?)
 		if [ -f /etc/httpd.block.dat ]; then
 			pfctl -t http-banned -T replace -f /etc/http.block.dat
