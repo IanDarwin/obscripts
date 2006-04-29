@@ -1,37 +1,38 @@
 #!/bin/sh -u
 
 # get the current OpenBSD snapshot
-# XXX after committing, rename to obget (no longer just snaps)
 
-REL=37					# "37" for OpenBSD 3.7, etc.
-RELEASEDIR=3.7			# As above but with "."
-SNAPDIR="snapshots"		# XXX derive from REL
+REL=38				# "37" for OpenBSD 3.7, etc.
+RELEASEDIR=`echo $REL | sed -e 's/./&./'`	# e.g., "3.7" etc.
+SNAPDIR="snapshots"
+
+
 EXT=.tgz
+PATT='*'					# what go get
 
-TODIR=OpenBSD
-
-SITE=ftp1.ca.openbsd.org		# where to get it from
+SITE=ftp1.ca.openbsd.org	# where to get it from
 FROMDIR=pub/OpenBSD
+
+TODIR=OpenBSD				# where to put it
+
 ARCH=`uname -m`
 
-prog=ftp			# how to get it, XXX add option to change to scp 
-PROTO=ftp			# how $PROG is to get it, change to e.g http
+PROTO=ftp			# how to get it, other options http scp 
 VERBOSE=""			# how chattily to get it
 
 # Where to put it
-if [ -d ~ftp/pub ]; then
-	BASEDIR=~ftp/pub/${TODIR}		# where to put it locally
-elif [ -d ~/download ]; then
+if [ -d ~/download ]; then
 	BASEDIR=~/download/${TODIR}
+elif [ -d ~ftp/pub ]; then
+	BASEDIR=~ftp/pub/${TODIR}		# where to put it locally
 else
 	echo "No download directory found" >&2
 	exit 1
 fi
 
-
-USAGE="$0 [-s][-a arch ][-b local-Basedir][ -f host]
+USAGE="$0 [-s][-a arch ][-b local-Basedir][ -f host] [-p patt]
 -a arch := i386|sparc|hppa|...
--v -- Verbose
+-h use http 
 "
 
 function usage {		# give usage message, and exit
@@ -39,7 +40,7 @@ function usage {		# give usage message, and exit
 	exit 1
 }
 
-while getopts "a:b:f:hsvx" opt 
+while getopts "a:b:f:hp:s" opt 
 do 
  	 case "$opt" in 
 		a)	ARCH=$OPTARG ;;
@@ -53,6 +54,7 @@ do
 			esac
 			;;
 		h)	PROTO=http;;
+		p)	PATT=${OPTARG};;
 		s)	SNAPDIR="${RELEASEDIR}"
 			echo "****************************************************"
 			echo "$0: -s means to NOT use snapshot, using ${RELEASEDIR}"
@@ -60,7 +62,6 @@ do
 			echo -n "OK? "; read answer
 			;;
 		v)	VERBOSE=v;;
-		x)	NO-X=YES;;
 		*)	usage;;
 	esac
 done
@@ -73,38 +74,22 @@ if [ ! -d ${DIR} ]; then
 fi
 cd ${DIR} || exit
 
-FILES="MD5 index.txt INSTALL.${ARCH} bsd bsd.rd bsd.mp base${REL}${EXT} cd${REL}.iso etc${REL}${EXT} misc${REL}${EXT} comp${REL}${EXT} game${REL}${EXT} man${REL}${EXT}"
-XFILES="xbase${REL}${EXT} xetc${REL}${EXT}  xfont${REL}${EXT} xserver${REL}${EXT} xshare${REL}${EXT}"
-
-case ${ARCH} in
-	amd64)	FILES="$FILES floppy${REL}.fs";;
-	i386)	FILES="$FILES floppy${REL}.fs floppyB${REL}.fs";;
-	macppc)	FILES="$FILES bsd.tbxi";;
-	sparc*)	FILES="$FILES floppy${REL}.fs miniroot${REL}.fs";;
-esac
-
-if [ "" != "NO-X" ]; then
-	FILES="$FILES $XFILES"
-fi
-
-if [ "" != "${VERBOSE}" ]; then
-	set -x
-fi
 
 if [ $# -ne 0 ]; then
 	usage
 fi
 
-case ${prog} in
+case ${PROTO} in
 ftp)
-	for f in ${FILES}
-	do
-		CMD="ftp ${PROTO}://${SITE}/${FROMDIR}/${SNAPDIR}/${ARCH}/${f}"
-		echo "--> $CMD"
-		$CMD
-	done
+	set -x
+	ftp -a ftp://${SITE}/${FROMDIR}/${SNAPDIR}/${ARCH}/${PATT}
+	;;
+http)
+	set -x
+	ftp -a http://${SITE}/${FROMDIR}/${SNAPDIR}/${ARCH}/${PATT}
 	;;
 ssh)
-	scp -r ian@${SITE}:~ftp/${PREFIX}/${TOP}/${ARCH}/ .
+	set -x
+	scp -r ian@${SITE}:~ftp/${PREFIX}/${TOP}/${ARCH}/${PATT} .
 	;;
 esac
