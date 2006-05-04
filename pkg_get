@@ -1,0 +1,26 @@
+#!/bin/sh
+
+DEST=/
+ARCH=`uname -s`
+
+# getopts here
+
+ARCH=amd64
+
+DIR=/usr/ports/packages/$ARCH/all
+
+FETCHURL="ftp://rt.fm/pub/OpenBSD/snapshots/packages/$ARCH"
+
+cd ${DEST}/${DIR}/ || exit
+
+echo "Getting packages from ${FETCHURL} to `pwd`."
+
+for pkg in $*
+do
+	echo "==>" $pkg
+	if [ -f $pkg.tgz ]; then
+		echo Already here
+	else
+		ftp $FETCHURL/$pkg.tgz
+	fi
+done
