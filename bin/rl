@@ -118,6 +118,12 @@ do
 		sleep 1
 		sudo pppd call sympatico
 		;;
+	squid)
+		pkill -TERM squid
+		sleep 1
+		pkill -9 squid
+		/usr/local/sbin/squid
+		;;
 	sendmail)
 		reload_by_pid sendmail
 		;;
