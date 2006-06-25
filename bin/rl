@@ -61,7 +61,7 @@ do
 	asterisk)
 		asterisk -r -x reload
 		;;
-	dc*|gem*|rl*|wi*)
+	ath*|dc*|gem*|rl*|wi*)
 		rm -f /var/db/dhclient.leases.${serv}
 		dhclient ${serv}
 		;;
