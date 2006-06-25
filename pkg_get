@@ -1,11 +1,25 @@
 #!/bin/sh
 
 DEST=/
-ARCH=`uname -s`
+ARCH=`uname -m`
 
 # getopts here
 
-ARCH=amd64
+USAGE="$0 [-v] old new"
+
+function usage {		# give usage message, and exit
+	echo "Usage: $USAGE" 2>&1
+	exit 1
+}
+
+while getopts "a:" opt 
+do 
+ 	 case "$opt" in 
+		a)	ARCH=${OPTARG};;
+		*)	usage;;
+	esac
+done
+shift `expr $OPTIND - 1`		 # leave just filenames
 
 DIR=/usr/ports/packages/$ARCH/all
 
