@@ -2,10 +2,9 @@
 
 # get the current OpenBSD snapshot
 
-REL=38				# "37" for OpenBSD 3.7, etc.
+REL=39				# "37" for OpenBSD 3.7, etc.
 RELEASEDIR=`echo $REL | sed -e 's/./&./'`	# e.g., "3.7" etc.
 SNAPDIR="snapshots"
-
 
 EXT=.tgz
 PATT='*'					# what go get
