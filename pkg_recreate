@@ -1,36 +1,21 @@
 #!/bin/sh -u
 
-
 # pgk_recreate, for when you don't want to recompile but want to move.
 
-TMP=/tmp
-TMP=/c
+cd ${pkgs} || {
+	echo "Can't get packages dir ${pkgs}, creating package in home dir" >&2
+	cd
+}
 
-if [ ! -f +COMMENT -o ! -f +CONTENTS -o ! -f +DESC ]; then
-	echo "Can't find COMMENT, CONTENTS and DESC files, please cd"
-	exit 1
-fi
+for PKG in $*
+do
+	PKG_DIR=/var/db/pkg/${PKG}
+	if [ -d ${PKG_DIR} ]; then
+		echo "--> Packaging ${PKG}..." >&2
 
-PKG=`pwd|sed 's/.*\///' `
-echo PKG is ${PKG}
-
-PREFIX=/usr/local
-
-STAGE=`mktemp -d ${TMP}/${PKG}XXXXXXXX`
-echo Staging directory is ${STAGE}
-
-cp -- +COMMENT +CONTENTS +DESC ${STAGE}
-
-TMPLIST=`mktemp ${TMP}/pkg_recreate_XXXXXXXX`
-
-grep '^[^+@]' +CONTENTS > ${TMPLIST}
-
-cd ${PREFIX}	# e.g., /usr/local
-
-cpio -pamdl < ${TMPLIST} ${STAGE}
-
-cd ${STAGE}
-
-echo "--> Packaging..."
-tar czf ${TMP}/${PKG}.tgz *
-echo "--> Created package in ${TMP}/${PKG}.tgz"
+		pkg_create -f ${PKG_DIR}/+CONTENTS &&
+			echo "--> Created package in $PWD/${PKG}.tgz" >&2
+	else
+		echo "Can't locate package dir ${PKG_DIR}" >&2
+	fi
+done

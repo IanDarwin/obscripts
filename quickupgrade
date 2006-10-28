@@ -13,8 +13,8 @@ VERBOSE=""
 MERGEMASTER=NO
 BACKUP=NO
 
-REL=39				# "26" for OpenBSD 2.6, etc.
-RELDIR=3.9			# same but with a dot
+REL=40				# "26" for OpenBSD 2.6, etc.
+RELDIR=4.0			# same but with a dot
 RELDIR=snapshots
 
 EXT=tgz
@@ -68,7 +68,7 @@ if [ ! -w / ]; then
 	exit 1
 fi
 
-echo -n "OK to run quickupgrade on host `hostname` from ${PWD}? [nyq]"
+echo -n "quickupgrade ${RELDIR}/${REL} on `hostname` from ${PWD}? [nyq]"
 read ans
 case ${ans} in
 	y*)	;;
@@ -117,6 +117,10 @@ if [ "$KERNEL" = "YES" ]; then
 else
 	echo "No -k argument, not installing kernel." >&2
 fi
+
+echo "Rebuilding /dev..."
+cd /dev
+sh MAKEDEV all
 
 echo "*** REMEMBER TO RUN POSTUPGRADE ***"
 

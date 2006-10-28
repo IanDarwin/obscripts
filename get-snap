@@ -2,7 +2,7 @@
 
 # get the current OpenBSD snapshot
 
-REL=39				# "37" for OpenBSD 3.7, etc.
+REL=40				# "37" for OpenBSD 3.7, etc.
 RELEASEDIR=`echo $REL | sed -e 's/./&./'`	# e.g., "3.7" etc.
 SNAPDIR="snapshots"
 
@@ -18,6 +18,7 @@ ARCH=`uname -m`
 
 PROTO=ftp			# how to get it, other options http scp 
 VERBOSE=""			# how chattily to get it
+ECHO=""
 
 # Where to put it
 if [ -d ~/download ]; then
@@ -39,12 +40,12 @@ function usage {		# give usage message, and exit
 	exit 1
 }
 
-while getopts "a:b:f:hp:s" opt 
+while getopts "a:b:f:h:np:sw" opt 
 do 
  	 case "$opt" in 
 		a)	ARCH=$OPTARG ;;
 		b)	BASEDIR=$OPTARG ;;
-		f)	
+		f|h)
 			case "$OPTARG" in
 			dos) SITE=ftp.darwinsys.com;;
 			ob|sunsite) SITE=ftp.openbsd.org;;
@@ -52,7 +53,8 @@ do
 			*)		SITE=${OPTARG};;
 			esac
 			;;
-		h)	PROTO=http;;
+		n)	ECHO=echo;;
+		w)	PROTO=http;;
 		p)	PATT=${OPTARG};;
 		s)	SNAPDIR="${RELEASEDIR}"
 			echo "****************************************************"
@@ -81,14 +83,14 @@ fi
 case ${PROTO} in
 ftp)
 	set -x
-	ftp -a ftp://${SITE}/${FROMDIR}/${SNAPDIR}/${ARCH}/${PATT}
+	${ECHO} ftp -a ftp://${SITE}/${FROMDIR}/${SNAPDIR}/${ARCH}/${PATT}
 	;;
 http)
 	set -x
-	ftp -a http://${SITE}/${FROMDIR}/${SNAPDIR}/${ARCH}/${PATT}
+	${ECHO} ftp -a http://${SITE}/${FROMDIR}/${SNAPDIR}/${ARCH}/${PATT}
 	;;
 ssh)
 	set -x
-	scp -r ian@${SITE}:~ftp/${PREFIX}/${TOP}/${ARCH}/${PATT} .
+	${ECHO} scp -r ian@${SITE}:~ftp/${PREFIX}/${TOP}/${ARCH}/${PATT} .
 	;;
 esac
