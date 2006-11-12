@@ -61,6 +61,16 @@ do
 	asterisk)
 		asterisk -r -x reload
 		;;
+	ath0@h)
+		rm -f /var/db/dhclient.leases.ath0
+		ifconfig ath0 nwid lhnet nwkey 'topsecret'
+		dhclient ath0
+		;;
+	ural0@h)
+		rm -f /var/db/dhclient.leases.ural0
+		ifconfig ural0 nwid lhnet nwkey 'topsecret'
+		dhclient ural0
+		;;
 	ath*|dc*|gem*|rl*|wi*)
 		rm -f /var/db/dhclient.leases.${serv}
 		dhclient ${serv}
