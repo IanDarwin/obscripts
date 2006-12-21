@@ -75,6 +75,10 @@ do
 		rm -f /var/db/dhclient.leases.${serv}
 		dhclient ${serv}
 		;;
+	jabber*)
+		zap -y "perl -w -x /usr/local/sbin/jabberd"
+		/usr/local/sbin/jabberd </dev/null &
+		;;
 	named|bind)
 		#rndc reload
 		rndc stop
@@ -123,19 +127,18 @@ do
 		pfctl -R /etc/pf.conf
 		;;
 	ppp*)
-		echo Beware of suicide here:
-		zap -s9 pppd
+		pkill -9 pppd
 		sleep 1
 		sudo pppd call sympatico
+		;;
+	sendmail)
+		reload_by_pid sendmail
 		;;
 	squid)
 		pkill -TERM squid
 		sleep 1
 		pkill -9 squid
 		/usr/local/sbin/squid
-		;;
-	sendmail)
-		reload_by_pid sendmail
 		;;
 	tomcat)
 		unset CLASSPATH
@@ -149,7 +152,6 @@ do
 		bin/catalina.sh stop
 		sleep 5				# takes a while
 		mv ${CATALINA_HOME}/logs/catalina.{out,bak} 2>/dev/null
-		rm -f /home/ian/databases/*.data
 		case ${INTERACT} in
 			YES) cmd=run;;
 			""|*) cmd=start;;
