@@ -68,6 +68,7 @@ if [ ! -w / ]; then
 	exit 1
 fi
 
+ls -l 
 echo -n "quickupgrade ${RELDIR}/${REL} on `hostname` from ${PWD}? [nyq]"
 read ans
 case ${ans} in
