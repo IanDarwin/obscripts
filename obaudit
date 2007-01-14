@@ -50,6 +50,7 @@ _rstatd 30 rpc.rstatd
 _rusersd 32 rpc.rusersd
 _fingerd 33 fingerd
 _x11 35 X server
+_isakmpd 68 isakmpd privsep
 _syslogd 73 Syslog Daemon
 _pflogd 74 pflogd privsep
 _bgpd 75 BGP Daemon
