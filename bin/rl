@@ -99,11 +99,6 @@ do
 		# reload NAT data
 		pfctl -f /etc/pf.conf
 		case `hostname` in
-		gw.darwinsys.com)
-			if [ -f /etc/httpd.block.dat ]; then
-				pfctl -t http-banned -T replace -f /etc/http.block.dat
-			fi
-			;;
 		www.darwinsys.com)
 			# reload spamd
 			/usr/libexec/spamd-setup -d
