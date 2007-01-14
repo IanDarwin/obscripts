@@ -98,19 +98,21 @@ do
 		pfctl -e >/dev/null 2>&1
 		# reload NAT data
 		pfctl -f /etc/pf.conf
-<<<<<<< rl
-		# reload blocking table
-		if [ -f /etc/httpd.block.dat ]; then
-			pfctl -t http-banned -T replace -f /etc/http.block.dat
-		fi
-=======
-		# reload spamd
-		/usr/libexec/spamd-setup -d
-		# reload blocking table (why doesn't persist keep it in?)
-		if [ -f /etc/httpd.block.dat ]; then
-			pfctl -t http-banned -T replace -f /etc/http.block.dat
-		fi
->>>>>>> 1.32
+		case `hostname` in
+		gw.darwinsys.com)
+			if [ -f /etc/httpd.block.dat ]; then
+				pfctl -t http-banned -T replace -f /etc/http.block.dat
+			fi
+			;;
+		www.darwinsys.com)
+			# reload spamd
+			/usr/libexec/spamd-setup -d
+			# reload blocking table (why doesn't persist keep it in?)
+			if [ -f /etc/httpd.block.dat ]; then
+				pfctl -t http-banned -T replace -f /etc/http.block.dat
+			fi
+		;;
+		esac
 		;;
 	http*|apache)
 		if [ -x /usr/sbin/apachectl ]; then
