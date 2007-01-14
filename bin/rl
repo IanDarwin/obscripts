@@ -55,11 +55,9 @@ do
 		do_help
 		exit
 		;;
-	arp)
-		do_arp
-		;;
-	asterisk)
-		asterisk -r -x reload
+	*0)					# rl0, sis0, ath0, etc.
+		rm -f /var/db/dhclient.leases.${serv}
+		dhclient ${serv}
 		;;
 	ath0@h)
 		rm -f /var/db/dhclient.leases.ath0
@@ -71,9 +69,16 @@ do
 		ifconfig ural0 nwid lhnet nwkey `cat ~/.nwkeys/lhnet`
 		dhclient ural0
 		;;
-	*0)
-		rm -f /var/db/dhclient.leases.${serv}
-		dhclient ${serv}
+	arp)
+		do_arp
+		;;
+	dhcpd)
+		pkill dhcpd
+		. /etc/rc.conf.local
+		/usr/sbin/dhcpd ${dhcpd_flags}
+		;;
+	asterisk)
+		asterisk -r -x reload
 		;;
 	jabber*)
 		zap -y "perl -w -x /usr/local/sbin/jabberd"
@@ -91,16 +96,21 @@ do
 	nat|pf|ip)
 		# enable, in case this is first time.
 		pfctl -e >/dev/null 2>&1
-		# flush old data
-		pfctl -F all
 		# reload NAT data
 		pfctl -f /etc/pf.conf
+<<<<<<< rl
+		# reload blocking table
+		if [ -f /etc/httpd.block.dat ]; then
+			pfctl -t http-banned -T replace -f /etc/http.block.dat
+		fi
+=======
 		# reload spamd
 		/usr/libexec/spamd-setup -d
 		# reload blocking table (why doesn't persist keep it in?)
 		if [ -f /etc/httpd.block.dat ]; then
 			pfctl -t http-banned -T replace -f /etc/http.block.dat
 		fi
+>>>>>>> 1.32
 		;;
 	http*|apache)
 		if [ -x /usr/sbin/apachectl ]; then
