@@ -80,6 +80,10 @@ do
 	asterisk)
 		asterisk -r -x reload
 		;;
+	ipsec)
+		kill -HUP `cat /var/run/isakmpd.pid
+		ipsecctl -f /etc/ipsec.conf
+		;;
 	jabber*)
 		zap -y "perl -w -x /usr/local/sbin/jabberd"
 		/usr/local/sbin/jabberd </dev/null &
