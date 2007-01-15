@@ -81,7 +81,7 @@ do
 		asterisk -r -x reload
 		;;
 	ipsec)
-		kill -HUP `cat /var/run/isakmpd.pid
+		kill -HUP `cat /var/run/isakmpd.pid`
 		ipsecctl -f /etc/ipsec.conf
 		;;
 	jabber*)
