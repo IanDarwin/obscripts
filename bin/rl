@@ -78,7 +78,8 @@ do
 		/usr/sbin/dhcpd ${dhcpd_flags}
 		;;
 	asterisk)
-		asterisk -r -x reload
+		asterisk -rx reload
+		ps -ax | grep >/dev/null asterisk || sudo /usr/local/sbin/asterisk >/tmp/asterisk.log &
 		;;
 	ipsec)
 		kill -HUP `cat /var/run/isakmpd.pid`
