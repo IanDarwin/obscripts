@@ -30,9 +30,8 @@ else
 	exit 1
 fi
 
-USAGE="$0 [-s][-a arch ][-b local-Basedir][ -f host] [-p patt]
+USAGE="$0 [-s][-a arch ][-b local-Basedir][-f|-h host] [-p patt]
 -a arch := i386|sparc|hppa|...
--h use http 
 "
 
 function usage {		# give usage message, and exit
@@ -49,6 +48,7 @@ do
 			case "$OPTARG" in
 			dos) SITE=ftp.darwinsys.com;;
 			ob|sunsite) SITE=ftp.openbsd.org;;
+			ftp*)	SITE=${OPTARG}.usa.openbsd.org;;
 			rtfm) SITE=rt.fm;;
 			*)		SITE=${OPTARG};;
 			esac
