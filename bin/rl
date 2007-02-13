@@ -96,7 +96,7 @@ do
 
 		sleep 1
 		echo "Now please check this logfile..."
-		watchlog daemon
+		watchlog -n25 daemon
 		;;
 	nat|pf|ip)
 		# enable, in case this is first time.
