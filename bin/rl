@@ -107,12 +107,12 @@ do
 		www.darwinsys.com)
 			# reload spamd
 			/usr/libexec/spamd-setup -d
-			# reload blocking table (why doesn't persist keep it in?)
-			if [ -f /etc/httpd.block.dat ]; then
-				pfctl -t http-banned -T replace -f /etc/http.block.dat
-			fi
 		;;
 		esac
+		# reload blocking table 
+		if [ -f /etc/httpd.block.dat ]; then
+			pfctl -t http-banned -T replace -f /etc/http.block.dat
+		fi
 		;;
 	http*|apache)
 		if [ -x /usr/sbin/apachectl ]; then
