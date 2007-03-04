@@ -55,7 +55,7 @@ do
 		do_help
 		exit
 		;;
-	*0)					# rl0, sis0, ath0, etc.
+	*[01])					# rl0, sis0, ath0, etc.
 		rm -f /var/db/dhclient.leases.${serv}
 		dhclient ${serv}
 		;;
@@ -114,6 +114,9 @@ do
 			pfctl -t http-banned -T replace -f /etc/http.block.dat
 		fi
 		;;
+	nagios)
+		nagios -v /etc/nagios/nagios.cfg && pkill -HUP nagios
+		;;
 	http*|apache)
 		if [ -x /usr/sbin/apachectl ]; then
 			apachectl restart
@@ -134,6 +137,9 @@ do
 		;;
 	postfix)
 		postfix reload
+		;;
+	postgres*)
+		/usr/local/bin/pg_ctl  reload -D /var/postgresql/data
 		;;
 	pf)
 		pfctl -R /etc/pf.conf
