@@ -1,0 +1,8 @@
+#!/bin/sh
+
+cd $pdb || exit
+
+for pkg in .??* partial*
+do
+	pkg_delete $pkg
+done
