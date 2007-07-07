@@ -115,7 +115,10 @@ do
 		fi
 		;;
 	nagios)
-		nagios -v /etc/nagios/nagios.cfg && pkill -HUP nagios
+		nagios -v /etc/nagios/nagios.cfg && {
+			pkill nagios
+			nagios -d /etc/nagios/nagios.cfg
+		}
 		;;
 	http*|apache)
 		if [ -x /usr/sbin/apachectl ]; then
