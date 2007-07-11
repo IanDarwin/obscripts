@@ -1,0 +1,5 @@
+#!/bin/sh
+
+set -v
+
+ls $pdb | wc -l
