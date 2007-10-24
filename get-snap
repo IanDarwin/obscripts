@@ -7,7 +7,7 @@ RELEASEDIR=`echo $REL | sed -e 's/./&./'`	# e.g., "3.7" etc.
 SNAPDIR="snapshots"
 
 EXT=.tgz
-PATT='*'					# what go get
+PATT='[a-hj-z]*'		# what to go get, exclude HUGE install*.iso
 
 SITE=ftp1.ca.openbsd.org	# where to get it from
 FROMDIR=pub/OpenBSD
@@ -46,11 +46,14 @@ do
 		b)	BASEDIR=$OPTARG ;;
 		f|h)
 			case "$OPTARG" in
-			dos) SITE=ftp.darwinsys.com;;
+			dos)	SITE=ftp.darwinsys.com;;
+			gulus)	SITE=gulus.usherbrooke.ca
+				FROMDIR=pub/distro/OpenBSD
+				;;
 			ob|sunsite) SITE=ftp.openbsd.org;;
-			ftp*)	SITE=${OPTARG}.usa.openbsd.org;;
-			rtfm) SITE=rt.fm;;
-			*)		SITE=${OPTARG};;
+			ftp*)	SITE=${OPTARG};;
+			rtfm)	SITE=rt.fm;;
+			*)	SITE=${OPTARG};;
 			esac
 			;;
 		n)	ECHO=echo;;
