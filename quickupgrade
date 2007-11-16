@@ -13,8 +13,8 @@ VERBOSE=""
 MERGEMASTER=NO
 BACKUP=NO
 
-REL=41				# "26" for OpenBSD 2.6, etc.
-RELDIR=4.1			# same but with a dot
+REL=42				# "26" for OpenBSD 2.6, etc.
+RELDIR=4.2			# same but with a dot
 RELDIR=snapshots
 
 EXT=tgz
