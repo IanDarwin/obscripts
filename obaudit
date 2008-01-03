@@ -66,4 +66,8 @@ _ftp 84 FTP Daemon
 _ospfd 85 OSPF Daemon
 _hostapd 86 HostAP Daemon
 _dvmrpd 87 DVMRP Daemon
+_ripd   88 RIP Daemon
+_relayd 89 Relay Daemon
+_ospf6d 90 OSPF6 Daemon
 !
+grep '^_hoststated:' /etc/passwd && echo "Warning: must remove hoststated user"
