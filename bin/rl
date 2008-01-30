@@ -101,7 +101,7 @@ do
 	nat|pf|ip)
 		# enable, in case this is first time.
 		pfctl -e >/dev/null 2>&1
-		# reload NAT data
+		# reload pf configuraton
 		pfctl -f /etc/pf.conf
 		case `hostname` in
 		www.darwinsys.com)
