@@ -56,18 +56,7 @@ do
 		exit
 		;;
 	*[01])					# rl0, sis0, ath0, etc.
-		rm -f /var/db/dhclient.leases.${serv}
-		dhclient ${serv}
-		;;
-	ath0@h)
-		rm -f /var/db/dhclient.leases.ath0
-		ifconfig ath0 nwid lhnet nwkey `cat ~/.nwkeys/lhnet`
-		dhclient ath0
-		;;
-	ural0@h)
-		rm -f /var/db/dhclient.leases.ural0
-		ifconfig ural0 nwid lhnet nwkey `cat ~/.nwkeys/lhnet`
-		dhclient ural0
+		sh /etc/netstart ${serv}
 		;;
 	arp)
 		do_arp
