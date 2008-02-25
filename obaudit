@@ -69,5 +69,6 @@ _dvmrpd 87 DVMRP Daemon
 _ripd   88 RIP Daemon
 _relayd 89 Relay Daemon
 _ospf6d 90 OSPF6 Daemon
+_snmpd 91 91 SNMP Daemon
 !
 grep '^_hoststated:' /etc/passwd && echo "Warning: must remove hoststated user"
