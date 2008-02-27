@@ -2,12 +2,12 @@
 
 # get the current OpenBSD snapshot
 
-REL=40				# "37" for OpenBSD 3.7, etc.
-RELEASEDIR=`echo $REL | sed -e 's/./&./'`	# e.g., "3.7" etc.
+REL=43				# "37" for OpenBSD 3.7, etc.
+RELDIR=`echo $REL | sed -e 's/./&./'`	# e.g., "3.7" etc.
 SNAPDIR="snapshots"
 
 EXT=.tgz
-PATT='[a-hj-z]*'		# what to go get, exclude HUGE install*.iso
+PATT='[Ia-hj-z]*'		# what to go get, exclude HUGE install*.iso
 
 SITE=ftp1.ca.openbsd.org	# where to get it from
 FROMDIR=pub/OpenBSD
@@ -49,6 +49,7 @@ do
 			dos)	SITE=ftp.darwinsys.com;;
 			gulus)	SITE=gulus.usherbrooke.ca
 				FROMDIR=pub/distro/OpenBSD
+				PROTO=http
 				;;
 			ob|sunsite) SITE=ftp.openbsd.org;;
 			ftp*)	SITE=${OPTARG};;
@@ -59,9 +60,9 @@ do
 		n)	ECHO=echo;;
 		w)	PROTO=http;;
 		p)	PATT=${OPTARG};;
-		s)	SNAPDIR="${RELEASEDIR}"
+		s)	SNAPDIR="${RELDIR}"
 			echo "****************************************************"
-			echo "$0: -s means to NOT use snapshot, using ${RELEASEDIR}"
+			echo "$0: -s means to NOT use snapshot, using ${RELDIR}"
 			echo "****************************************************"
 			echo -n "OK? "; read answer
 			;;

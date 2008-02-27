@@ -13,8 +13,8 @@ VERBOSE=""
 MERGEMASTER=NO
 BACKUP=NO
 
-REL=42				# "26" for OpenBSD 2.6, etc.
-RELDIR=4.2			# same but with a dot
+REL=43				# "26" for OpenBSD 2.6, etc.
+RELDIR=`echo $REL | sed -e 's/./&./'`	# e.g., "3.7" etc.
 RELDIR=snapshots
 
 EXT=tgz
@@ -122,8 +122,6 @@ fi
 echo "Rebuilding /dev..."
 cd /dev
 sh MAKEDEV all
-
-echo "*** REMEMBER TO RUN POSTUPGRADE ***"
 
 if [ "$MERGEMASTER" = "YES" ]; then
 	(cd /tmp; tar xzpf - ) < etc${REL}.tgz
