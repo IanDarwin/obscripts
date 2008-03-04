@@ -20,6 +20,14 @@ PROTO=ftp			# how to get it, other options http scp
 VERBOSE=""			# how chattily to get it
 ECHO=""
 
+# how to get it - Linux lacks a working FTP command
+case $(uname) in
+	OpenBSD)	FTP="ftp -a";;
+	Linux)		FTP=wget;;
+	*)	echo No FTP set for $(uname)
+		exit 1;;
+esac
+
 # Where to put it
 if [ -d ~/download ]; then
 	BASEDIR=~/download/${TODIR}
@@ -87,11 +95,11 @@ fi
 case ${PROTO} in
 ftp)
 	set -x
-	${ECHO} ftp -a ftp://${SITE}/${FROMDIR}/${SNAPDIR}/${ARCH}/${PATT}
+	${ECHO} $FTP ftp://${SITE}/${FROMDIR}/${SNAPDIR}/${ARCH}/${PATT}
 	;;
 http)
 	set -x
-	${ECHO} ftp -a http://${SITE}/${FROMDIR}/${SNAPDIR}/${ARCH}/${PATT}
+	${ECHO} $FTP http://${SITE}/${FROMDIR}/${SNAPDIR}/${ARCH}/${PATT}
 	;;
 ssh)
 	set -x
