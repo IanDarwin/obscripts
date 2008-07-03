@@ -13,7 +13,7 @@ VERBOSE=""
 MERGEMASTER=NO
 BACKUP=NO
 
-REL=43				# "26" for OpenBSD 2.6, etc.
+REL=44				# "26" for OpenBSD 2.6, etc.
 RELDIR=`echo $REL | sed -e 's/./&./'`	# e.g., "3.7" etc.
 RELDIR=snapshots
 
@@ -34,7 +34,7 @@ function usage {		# give usage message, and exit
 	[-p]	prefix for finding download files [/usr/download || ~ftp]
 	[-s]	use snapshot [use release]
 	[-x]	include X11 [don't]
-	[-m]	Run MergeMaster when done [don't] (requires full /usr/src)" 2>&1
+	[-m]	Run sysmerge when done [don't] (requires full /usr/src)" 2>&1
 	exit 1
 }
 
@@ -63,8 +63,8 @@ elif [ -d ~ftp/pub/OpenBSD/${RELDIR}/${ARCH} ]; then
 fi
 
 # Check this AFTER getopts so -h works without sudo
-if [ ! -w / ]; then
-	echo "$0: Need root permission to run"
+if [ ! -w ${DEST} ]; then
+	echo "$0: Need write permission on ${DEST}"
 	exit 1
 fi
 
@@ -111,7 +111,7 @@ done
 
 if [ "$KERNEL" = "YES" ]; then
 	if [ -f bsd ]; then
-		cp bsd ${DEST}/nbsd && echo Kernel installed as /nbsd
+		cp bsd ${DEST}/nbsd && echo Kernel installed as ${DEST}/nbsd
 	else
 		echo "File ./bsd not found, not installing /bsd" >&2
 	fi
@@ -120,18 +120,18 @@ else
 fi
 
 echo "Rebuilding /dev..."
-cd /dev
+cd ${DEST}/dev
 sh MAKEDEV all
 
 if [ "$MERGEMASTER" = "YES" ]; then
 	(cd /tmp; tar xzpf - ) < etc${REL}.tgz
-	mergemaster -r /tmp
+	sysmerge
 else
 	echo "No -m, not running mergemaster" >&2
 fi
 
-if [ -r /upgrade.site ]; then
-	echo "Running /upgrade.site" >&2
-	cd /
+if [ -r ${DEST}/upgrade.site ]; then
+	echo "Running ${DEST}/upgrade.site" >&2
+	cd ${DEST}
 	sh ./upgrade.site
 fi
