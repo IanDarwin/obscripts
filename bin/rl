@@ -131,7 +131,15 @@ do
 		postfix reload
 		;;
 	postgres*)
-		/usr/local/bin/pg_ctl  reload -D /var/postgresql/data
+		cd /var/postgresql
+		if [ -f /var/postgresql/data/postmaster.pid ]; then
+			sudo -u _postgresql /usr/local/bin/pg_ctl  reload -D /var/postgresql/data
+		else
+			sudo -u _postgresql nohup /usr/local/bin/pg_ctl start \
+			    -D /var/postgresql/data -l /var/postgresql/logfile \
+			    -o '-D /var/postgresql/data' # >/dev/null
+		fi
+
 		;;
 	pf)
 		pfctl -R /etc/pf.conf
