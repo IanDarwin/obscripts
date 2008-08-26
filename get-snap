@@ -1,4 +1,4 @@
-#!/bin/sh -u
+#!/bin/ksh -u
 
 # get the current OpenBSD snapshot
 
