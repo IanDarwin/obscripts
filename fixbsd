@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# fix - enable/disable devices from GENERIC that I don't want.
+
+config -e -f ${*-/bsd} <<!
+
+disable radeondrm*
+disable uscanner*
+disable umodem*
+#disable uberry*
+quit
+!
