@@ -124,7 +124,7 @@ do
 		reload_by_pid mountd
 		;;
 	openvpn|vpn)
-		pkill /usr/local/sbin/openvpn
+		pkill openvpn
 		grep "/usr/local/sbin/openvpn --" /etc/rc.local | sh -x
 		;;
 	postfix)
