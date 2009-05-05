@@ -39,7 +39,7 @@ else
 fi
 
 USAGE="$0 [-s][-a arch ][-b local-Basedir][-f|-h host] [-p patt]
--a arch := i386|sparc|hppa|...
+-a arch := i386|amd64|sparc|hppa|...
 "
 
 function usage {		# give usage message, and exit
