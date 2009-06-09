@@ -9,7 +9,7 @@ SNAPDIR="snapshots"
 EXT=.tgz
 PATT='[Ia-hj-z]*'		# what to go get, exclude HUGE install*.iso
 
-SITE=ftp1.ca.openbsd.org	# where to get it from
+SITE=${PKG_SITE-ftp1.ca.openbsd.org}	# where to get it from
 FROMDIR=pub/OpenBSD
 
 TODIR=OpenBSD				# where to put it
@@ -62,6 +62,15 @@ do
 			ob|sunsite) SITE=ftp.openbsd.org;;
 			ftp*)	SITE=${OPTARG};;
 			rtfm)	SITE=rt.fm;;
+			kent) # http://www.mirrorservice.org/pub/OpenBSD/
+				SITE=www.mirrorservice.org/
+				PROTO=http
+				;;
+			uk) # http://mirror.public-internet.co.uk/ftp/OpenBSD/
+				SITE=mirror.public-internet.co.uk
+				FROMDIR=/ftp/OpenBSD
+				PROTO=http
+				;;
 			*)	SITE=${OPTARG};;
 			esac
 			;;
