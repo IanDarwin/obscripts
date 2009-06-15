@@ -72,5 +72,8 @@ _ospf6d 90 OSPF6 Daemon
 _snmpd 91 91 SNMP Daemon
 _rtadvd 92 92 IPv6 Router Advertisement Daemon
 _ypldap 93 93 YP to LDAP Daemon
+_btd 94 94 Bluetooth Daemon
+_smtpd 95 95 SMTP Daemon
+_rwalld 96 95 rwall Daemon
 !
 grep '^_hoststated:' /etc/passwd && echo "Warning: must remove hoststated user"
