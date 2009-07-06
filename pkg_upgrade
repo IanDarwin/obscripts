@@ -1,0 +1,5 @@
+#!/bin/sh
+
+set -x
+
+pkg_add -vui -Fupdate
