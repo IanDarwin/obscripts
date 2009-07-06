@@ -152,6 +152,10 @@ do
 	sendmail)
 		reload_by_pid sendmail
 		;;
+	smtpd)
+		pkill smtpd
+		/usr/sbin/smtpd
+		;;
 	squid)
 		pkill -TERM squid
 		sleep 1
