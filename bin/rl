@@ -95,7 +95,7 @@ do
 		case `hostname` in
 		www.darwinsys.com)
 			# reload spamd
-			/usr/libexec/spamd-setup -d
+			/usr/libexec/spamd-setup -d -D
 		;;
 		esac
 		# reload blocking table 
@@ -104,9 +104,10 @@ do
 		fi
 		;;
 	nagios)
-		nagios -v /etc/nagios/nagios.cfg && {
+		# N.B. Invoke in check mode before pkilling old and starting new.
+		sudo -u _nagios nagios -v /etc/nagios/nagios.cfg && {
 			pkill nagios
-			nagios -d /etc/nagios/nagios.cfg
+			sudo -u _nagios nagios -d /etc/nagios/nagios.cfg
 		}
 		;;
 	http*|apache)
@@ -131,6 +132,7 @@ do
 		postfix reload
 		;;
 	postgres*)
+		# /usr/local/bin/pg_ctl restart -D /var/postgresql/data
 		cd /var/postgresql
 		if [ -f /var/postgresql/data/postmaster.pid ]; then
 			sudo -u _postgresql /usr/local/bin/pg_ctl  reload -D /var/postgresql/data
@@ -139,7 +141,6 @@ do
 			    -D /var/postgresql/data -l /var/postgresql/logfile \
 			    -o '-D /var/postgresql/data' # >/dev/null
 		fi
-
 		;;
 	pf)
 		pfctl -R /etc/pf.conf
