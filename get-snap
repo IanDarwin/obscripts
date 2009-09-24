@@ -60,8 +60,10 @@ do
 				PROTO=http
 				;;
 			ob|sunsite) SITE=ftp.openbsd.org;;
-			ftp*)	SITE=${OPTARG};;
-			rtfm)	SITE=rt.fm;;
+			ftp*)	SITE=${OPTARG}
+				;;
+			24-7)	SITE=mirrors.24-7-solutions.net
+				;;
 			kent) # http://www.mirrorservice.org/pub/OpenBSD/
 				SITE=www.mirrorservice.org/
 				PROTO=http
