@@ -87,22 +87,6 @@ do
 		echo "Now please check this logfile..."
 		watchlog -n25 daemon
 		;;
-	nat|pf|ip)
-		# enable, in case this is first time.
-		pfctl -e >/dev/null 2>&1
-		# reload pf configuraton
-		pfctl -f /etc/pf.conf
-		case `hostname` in
-		www.darwinsys.com)
-			# reload spamd
-			/usr/libexec/spamd-setup -d -D
-		;;
-		esac
-		# reload blocking table 
-		if [ -f /etc/httpd.block.dat ]; then
-			pfctl -t http-banned -T replace -f /etc/http.block.dat
-		fi
-		;;
 	nagios)
 		# N.B. Invoke in check mode before pkilling old and starting new.
 		sudo -u _nagios nagios -v /etc/nagios/nagios.cfg && {
@@ -143,7 +127,8 @@ do
 		fi
 		;;
 	pf)
-		pfctl -R /etc/pf.conf
+		pfctl -e /etc/pf.conf 2>/dev/null
+		pfctl -f /etc/pf.conf
 		;;
 	ppp*)
 		pkill -9 pppd
@@ -156,6 +141,10 @@ do
 	smtpd)
 		pkill smtpd
 		/usr/sbin/smtpd
+		;;
+	spam*)
+		# reload spamd
+		/usr/libexec/spamd-setup -d -D
 		;;
 	squid)
 		pkill -TERM squid
