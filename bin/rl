@@ -55,7 +55,7 @@ do
 		do_help
 		exit
 		;;
-	*[01])					# rl0, sis0, ath0, etc.
+	*[012])					# rl0, sis0, ath0, etc.
 		sh /etc/netstart ${serv}
 		;;
 	arp)
