@@ -9,14 +9,14 @@ SNAPDIR="snapshots"
 EXT=.tgz
 PATT='[Ia-hj-z]*'		# what to go get, exclude HUGE install*.iso
 
-SITE=${PKG_SITE-ftp1.ca.openbsd.org}	# where to get it from
+SITE=${PKG_SITE-ftp.openbsd.org}	# where to get it from
 FROMDIR=pub/OpenBSD
 
 TODIR=OpenBSD				# where to put it
 
 ARCH=`uname -m`
 
-PROTO=ftp			# how to get it, other options http scp 
+PROTO=http			# how to get it, other options http scp 
 VERBOSE=""			# how chattily to get it
 ECHO=""
 
@@ -54,10 +54,10 @@ do
 		b)	BASEDIR=$OPTARG ;;
 		f|h)
 			case "$OPTARG" in
+			cerias) SITE=osmirrors.cerias.purdue.edu ;;
 			dos)	SITE=ftp.darwinsys.com;;
 			gulus)	SITE=gulus.usherbrooke.ca
 				FROMDIR=pub/distro/OpenBSD
-				PROTO=http
 				;;
 			ob|sunsite) SITE=ftp.openbsd.org;;
 			ftp*)	SITE=${OPTARG}
@@ -66,12 +66,10 @@ do
 				;;
 			kent) # http://www.mirrorservice.org/pub/OpenBSD/
 				SITE=www.mirrorservice.org/
-				PROTO=http
 				;;
 			uk) # http://mirror.public-internet.co.uk/ftp/OpenBSD/
 				SITE=mirror.public-internet.co.uk
 				FROMDIR=/ftp/OpenBSD
-				PROTO=http
 				;;
 			*)	SITE=${OPTARG};;
 			esac
