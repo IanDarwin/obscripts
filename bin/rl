@@ -61,6 +61,10 @@ do
 	arp)
 		do_arp
 		;;
+	cups*)
+		pkill cupsd
+		cupsd
+		;;
 	dhcpd)
 		pkill dhcpd
 		. /etc/rc.conf.local
