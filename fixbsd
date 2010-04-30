@@ -4,9 +4,8 @@
 
 config -e -f ${*-/bsd} <<!
 
-disable radeondrm*
-disable uscanner*
+disable uhci*
+disable ehci*
 disable umodem*
-#disable uberry*
 quit
 !

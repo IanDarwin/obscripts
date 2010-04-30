@@ -96,6 +96,9 @@ case ${BACKUP} in
 		done
 		;;
 esac
+# This one backup step we do anyway, just in case
+cp /sbin/reboot /sbin/oreboot
+
 
 for f in ${DIRS}
 do
