@@ -13,9 +13,10 @@ VERBOSE=""
 MERGEMASTER=NO
 BACKUP=NO
 
-REL=46				# "26" for OpenBSD 2.6, etc.
-RELDIR=`echo $REL | sed -e 's/./&./'`	# e.g., "3.7" etc.
-RELDIR=snapshots
+REL=47				# "46" for OpenBSD 4.6, etc.
+RELDIR=`echo $REL | sed -e 's/./&./'`	# e.g., "4.6" etc.
+SNAPDIR=snapshots
+DIR=${SNAPDIR}
 
 EXT=tgz
 
@@ -48,7 +49,7 @@ do
 		k)	KERNEL=YES;;
 		m)	MERGEMASTER=YES;;
 		p)	DOWNLOAD=${OPTARG};;
-		s)	RELDIR="3.7";;	# stable, not snapshots
+		s)	DIR=${RELDIR};;	# stable, not snapshots
 		x)	X=YES;;
 		v)	VERBOSE='v';;
 		*)	usage;;
@@ -56,10 +57,10 @@ do
 done
 shift `expr $OPTIND - 1`		 # leave just filenames
 
-if [ -d ${DOWNLOAD}/${RELDIR}/${ARCH} ]; then
-	cd ${DOWNLOAD}/${RELDIR}/${ARCH} || exit
-elif [ -d ~ftp/pub/OpenBSD/${RELDIR}/${ARCH} ]; then
-	 cd ~ftp/pub/OpenBSD/${RELDIR}/${ARCH} || exit
+if [ -d ${DOWNLOAD}/${DIR}/${ARCH} ]; then
+	cd ${DOWNLOAD}/${DIR}/${ARCH} || exit
+elif [ -d ~ftp/pub/OpenBSD/${DIR}/${ARCH} ]; then
+	 cd ~ftp/pub/OpenBSD/${DIR}/${ARCH} || exit
 fi
 
 # Check this AFTER getopts so -h works without sudo
@@ -69,7 +70,7 @@ if [ ! -w ${DEST} ]; then
 fi
 
 ls -l 
-echo -n "quickupgrade ${RELDIR}/${REL} on `hostname` from ${PWD}? [nyq]"
+echo -n "quickupgrade ${DIR}/${REL} on `hostname` from ${PWD}? [nyq]"
 read ans
 case ${ans} in
 	y*)	;;
