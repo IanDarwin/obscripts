@@ -77,6 +77,6 @@ _smtpd 95 95 SMTP Daemon
 _rwalld 96 96 rwall Daemon
 _nsd 97 97 NSD Daemon
 _ldpd 98 98 LDPD Daemon
-_sndio 98 98 sndio privsep
+_sndio 99 99 sndio privsep
 !
 grep '^_hoststated:' /etc/passwd && echo "Warning: must remove hoststated user"
