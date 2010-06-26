@@ -6,7 +6,7 @@ uname -a
 
 if [ -f /usr/src/Makefile ]; then
 	echo 'Some /usr/src present: \'
-	ls -l /usr/src
+	ls -C /usr/src
 else
 	echo "No /usr/src"
 fi
@@ -19,13 +19,13 @@ if [ -f /etc/ipf.conf ]; then
 	if [ -f /etc/pf.conf ]; then
 		echo '(AND pf.conf too; needs cleanup?) **'
 	else
-		echo '(but NO pf.conf; may need to rename it) **'
+		echo '(but NO pf.conf; need to rename and update it) **'
 	fi
 else
 	echo "No ipf.conf"
 fi
 if [ -f /etc/nat.conf ]; then
-	echo '** Warning: nat.conf found, may need to merge into pf.conf **'
+	echo '** Warning: nat.conf found, need to merge into pf.conf **'
 else
 	echo "No nat.conf"
 fi
@@ -78,5 +78,26 @@ _rwalld 96 96 rwall Daemon
 _nsd 97 97 NSD Daemon
 _ldpd 98 98 LDPD Daemon
 _sndio 99 99 sndio privsep
+_ldapd 100 100 LDAP Daemon
+_iked 101 101 IKEv2 Daemon
 !
+
 grep '^_hoststated:' /etc/passwd && echo "Warning: must remove hoststated user"
+
+if [ -f /usr/bin/f77 ]; then
+	echo "Fortran binary still in base, time to rm it?"
+fi
+
+case $(arch -k) in
+	amd64|sparc64)
+		if cc -v | grep 'gcc version 3' >/dev/null; then
+			echo cc: gcc4 arch still has gcc v3!!
+		else
+			echo cc: OK
+		fi
+		;;
+	*)
+		echo cc: not checked
+	;;
+esac
+
