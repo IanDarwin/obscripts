@@ -89,15 +89,15 @@ if [ -f /usr/bin/f77 ]; then
 fi
 
 case $(arch -k) in
-	amd64|sparc64)
+	vax|moko)
+		echo cc: not checked
+		;;
+	*)
 		if cc -v | grep 'gcc version 3' >/dev/null; then
 			echo cc: gcc4 arch still has gcc v3!!
 		else
 			echo cc: OK
 		fi
 		;;
-	*)
-		echo cc: not checked
-	;;
 esac
 
