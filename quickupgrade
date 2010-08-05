@@ -13,7 +13,7 @@ VERBOSE=""
 MERGEMASTER=NO
 BACKUP=NO
 
-REL=47				# "46" for OpenBSD 4.6, etc.
+REL=48				# "46" for OpenBSD 4.6, etc.
 RELDIR=`echo $REL | sed -e 's/./&./'`	# e.g., "4.6" etc.
 SNAPDIR=snapshots
 DIR=${SNAPDIR}
