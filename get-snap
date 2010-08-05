@@ -2,11 +2,11 @@
 
 # get the current OpenBSD snapshot
 
-REL=47				# "37" for OpenBSD 3.7, etc.
+REL=48				# "37" for OpenBSD 3.7, etc.
 RELDIR=`echo $REL | sed -e 's/./&./'`	# e.g., "3.7" etc.
 SNAPDIR="snapshots"
 
-EXT=.tgz
+EXT=tgz
 PATT='[Ia-hj-z]*'		# what to go get, exclude HUGE install*.iso
 
 SITE=${PKG_SITE-ftp.openbsd.org}	# where to get it from
@@ -29,12 +29,12 @@ case $(uname) in
 esac
 
 # Where to put it
-if [ -d ~/download ]; then
-	BASEDIR=~/download/${TODIR}
+if [ -d ~/pub ]; then
+	BASEDIR=~/pub/${TODIR}
 elif [ -d ~ftp/pub ]; then
 	BASEDIR=~ftp/pub/${TODIR}		# where to put it locally
 else
-	echo "No download directory found" >&2
+	echo "No pub directory found" >&2
 	exit 1
 fi
 
@@ -89,7 +89,14 @@ do
 done
 shift `expr $OPTIND - 1`		 # leave just filenames
 
-# Where to download it to
+# Now that 'arch' is set, we can figure out the files to get
+PLAINFILES="bsd bsd.rd bsd.mp INSTALL.${arch} cd${REL}.iso"
+BASE_SETS="{base,comp,etc,games,man,misc}$REL.${EXT}"
+X_SETS="{xbase,xetc,xshare,xserv,xfont}$REL.${EXT}"
+FILES="${PLAINFILES} ${BASE_SETS} ${X_SETS}"
+FILES="${PLAINFILES} ${BASE_SETS}"		# XXX
+
+# Where to pub it to
 DIR=${BASEDIR}/${SNAPDIR}/${ARCH}
 if [ ! -d ${DIR} ]; then
 	mkdir -p ${DIR}
@@ -102,13 +109,11 @@ if [ $# -ne 0 ]; then
 fi
 
 case ${PROTO} in
-ftp)
+ftp|http)
 	set -x
-	${ECHO} $FTP ftp://${SITE}/${FROMDIR}/${SNAPDIR}/${ARCH}/${PATT}
-	;;
-http)
-	set -x
-	${ECHO} $FTP http://${SITE}/${FROMDIR}/${SNAPDIR}/${ARCH}/${PATT}
+	for f in ${FILES}
+	do ${ECHO} $FTP ${PROTO}://${SITE}/${FROMDIR}/${SNAPDIR}/${ARCH}/${f}
+	done
 	;;
 ssh)
 	set -x
