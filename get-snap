@@ -90,11 +90,10 @@ done
 shift `expr $OPTIND - 1`		 # leave just filenames
 
 # Now that 'arch' is set, we can figure out the files to get
-PLAINFILES="bsd bsd.rd bsd.mp INSTALL.${arch} cd${REL}.iso"
+PLAINFILES="INSTALL.${arch} bsd bsd.rd bsd.mp cd${REL}.iso cdboot cdbr floppy${REL}.fs"
 BASE_SETS="{base,comp,etc,games,man,misc}$REL.${EXT}"
 X_SETS="{xbase,xetc,xshare,xserv,xfont}$REL.${EXT}"
 FILES="${PLAINFILES} ${BASE_SETS} ${X_SETS}"
-FILES="${PLAINFILES} ${BASE_SETS}"		# XXX
 
 # Where to pub it to
 DIR=${BASEDIR}/${SNAPDIR}/${ARCH}
