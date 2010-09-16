@@ -20,7 +20,7 @@ DIR=${SNAPDIR}
 
 EXT=tgz
 
-DOWNLOAD=$HOME/download/OpenBSD		# base dir for finding dist sets
+DOWNLOAD=$HOME/pub/OpenBSD		# base dir for finding dist sets
 
 USAGE="$0 [-a arch][-b][-d dest][-x][-k][-m][-v]"
 
