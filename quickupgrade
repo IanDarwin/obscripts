@@ -141,7 +141,7 @@ fi
 echo "Rebuilding /dev..."
 case "${REMOTEHOST}" in
 localhost) cd ${DEST}/dev; sh MAKEDEV all;;
-*) ssh ${REMOTEHOST) "cd ${DEST}/dev; sudo sh MAKEDEV all";;
+*) ssh ${REMOTEHOST} "cd ${DEST}/dev; sudo sh MAKEDEV all";;
 esac
 
 if [ "$MERGEMASTER" = "YES" ]; then
