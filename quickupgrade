@@ -91,7 +91,8 @@ case ${ans} in
 esac
 
 # NEVER include etc in this list, or you will die horribly!
-BDIRS="base comp man" # misc is no more.
+# xbase is in both as many packages now depend upon't
+BDIRS="base comp man xbase"
 XDIRS="xbase xfont xserv xshare"
 DIRS=""
 if [ "NO" != ${BASE} ]; then
@@ -99,14 +100,6 @@ if [ "NO" != ${BASE} ]; then
 fi
 if [ "YES" = ${X} ]; then
 	DIRS="${DIRS} ${XDIRS}"
-fi
-
-if [ ${BACKUP} = YES -a ${REMOTEHOST} = localhost ]; then
-		for dir in /bin /usr/bin /sbin /usr/sbin
-		do echo "Backing up $dir..."
-			cp -r $dir $dir.backup
-			PATH=$dir.backup:$PATH
-		done
 fi
 
 # This one backup step we do anyway, just in case
