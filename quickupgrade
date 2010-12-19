@@ -77,6 +77,11 @@ if [ ${REMOTEHOST} = localhost -a ! -w ${DEST} ]; then
 	exit 1
 fi
 
+if [ ${REMOTEHOST} != localhost ]; then
+	echo "Are you sure this is going to work? Is it running the current kernel?"
+	echo "At the very least, open a ROOT window on remote machine ${REMOTEHOST}!!"
+fi
+
 ls -l 
 echo -n "quickupgrade from ${PWD} on `hostname` to ${DEST} on ${REMOTEHOST}? [nyq]"
 read ans
