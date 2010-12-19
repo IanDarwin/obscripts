@@ -123,7 +123,7 @@ do
 	fi
 	case ${REMOTEHOST} in
 		localhost) (cd ${DEST} || exit; tar xzpf${VERBOSE} - ) < ${FILE};;
-		*) ssh ${REMOTEHOST} "(cd ${DEST} || exit; sudo tar xzpvf${VERBOSE} -)" < ${FILE}
+		*) ssh ${REMOTEHOST} "(cd ${DEST} || exit; sudo tar xzpf${VERBOSE} -)" < ${FILE}
 	esac
 done
 
