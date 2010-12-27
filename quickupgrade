@@ -60,7 +60,7 @@ do
 done
 shift `expr $OPTIND - 1`		 # leave just filenames
 
-if [ ${REMOTEHOST} = localhost -a ${ARCH} != $(uname -m) ]; then
+if [ ${REMOTEHOST} = localhost -a ${DEST} = '/' -a ${ARCH} != $(uname -m) ]; then
 	echo "$0: FAIL: localhost is not a ${ARCH}, you nimmie!"
 	exit 42
 fi
