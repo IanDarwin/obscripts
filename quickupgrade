@@ -77,10 +77,17 @@ if [ ${REMOTEHOST} = localhost -a ! -w ${DEST} ]; then
 	exit 1
 fi
 
-if [ ${REMOTEHOST} != localhost ]; then
-	echo "Are you sure this is going to work? Is it running the current kernel?"
-	echo "At the very least, open a ROOT window on remote machine ${REMOTEHOST}!!"
+echo "Are you sure this is going to work? Is it running the current kernel?"
+if [ ${REMOTEHOST} == localhost ]; then
+	echo -n "At the very least, have you opened a ROOT window on $(hostname) (afterwards is too late)? "
+else
+	echo -n "At the very least, have you opened a ROOT window on remote machine ${REMOTEHOST} (afterwards is too late)? "
 fi
+read answer junk
+case ${answer) in
+	y*)	;;
+	*)	exit 1;;
+esac
 
 ls -l 
 echo -n "quickupgrade from ${PWD} on `hostname` to ${DEST} on ${REMOTEHOST}? [nyq]"
