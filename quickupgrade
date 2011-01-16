@@ -84,7 +84,7 @@ else
 	echo -n "At the very least, have you opened a ROOT window on remote machine ${REMOTEHOST} (afterwards is too late)? "
 fi
 read answer junk
-case ${answer) in
+case ${answer} in
 	y*)	;;
 	*)	exit 1;;
 esac
