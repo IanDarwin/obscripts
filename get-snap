@@ -2,7 +2,7 @@
 
 # get the current OpenBSD snapshot
 
-REL=48				# "37" for OpenBSD 3.7, etc.
+REL=49				# "37" for OpenBSD 3.7, etc.
 RELDIR=`echo $REL | sed -e 's/./&./'`	# e.g., "3.7" etc.
 SNAPDIR="snapshots"
 
@@ -65,11 +65,15 @@ do
 			24-7)	SITE=mirrors.24-7-solutions.net
 				;;
 			kent) # http://www.mirrorservice.org/pub/OpenBSD/
-				SITE=www.mirrorservice.org/
+				SITE=www.mirrorservice.org
 				;;
 			uk) # http://mirror.public-internet.co.uk/ftp/OpenBSD/
 				SITE=mirror.public-internet.co.uk
 				FROMDIR=/ftp/OpenBSD
+				;;
+			uwat)	# http://mirror.csclub.uwaterloo.ca/pub/OpenBSD/
+				SITE=mirror.csclub.uwaterloo.ca
+				FROMDIR=/pub/OpenBSD
 				;;
 			*)	SITE=${OPTARG};;
 			esac
