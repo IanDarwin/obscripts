@@ -116,7 +116,10 @@ do
 		;;
 	openvpn|vpn)
 		pkill openvpn
-		grep "/usr/local/sbin/openvpn --" /etc/rc.local | sh -x
+		case $(hostname) in
+		www.darwinsys.com) grep "/usr/local/sbin/openvpn --" /etc/rc.local | sh -x;;
+		*) exec rl tun0;;
+		esac
 		;;
 	postfix)
 		postfix reload
