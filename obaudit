@@ -30,6 +30,68 @@ else
 	echo "No nat.conf"
 fi
 
+# in 4.7 and 4.8 a bunch of stuff moved to ports, including g77 and groff
+
+if [ -f /usr/bin/f77 ]; then
+sudo -s <<!
+rm /usr/include/evdns.h
+rm /usr/libdata/perl5/site_perl/*-openbsd/evdns.ph
+rm -f /usr/bin/f77 /usr/bin/g77 /usr/include/f2c.h /usr/include/g2c.h \
+  /usr/lib/gcc-lib/*-unknown-openbsd*/3.3.5/f771 /usr/lib/libfrtbegin.a \
+  /usr/lib/libfrtbegin_p.a /usr/lib/libfrtbegin_pic.a /usr/lib/libg2c.a \
+  /usr/lib/libg2c_p.a /usr/lib/libg2c_pic.a /usr/share/info/g77.info \
+  /usr/share/man/cat1/f77.0 /usr/share/man/cat1/g77.0
+cd /usr/X11R6/include/X11
+rm Xaw/Print.h Xaw/PrintSP.h
+rm -r XprintAppUtil XprintUtil
+cd extensions
+rm Print.h Printstr.h XEVIstr.h Xagstr.h Xcupstr.h Xdbeproto.h Xevie.h \
+   Xeviestr.h dpmsstr.h lbxdeltastr.h lbxopts.h lbxstr.h lbxzlib.h \
+   mitmiscstr.h multibufst.h securstr.h shapestr.h shmstr.h syncstr.h \
+   xteststr.h xtrapbits.h xtrapddmi.h xtrapdi.h xtrapemacros.h \
+   xtraplib.h xtraplibp.h xtrapproto.h
+cd /usr/X11R6/lib/pkgconfig
+rm evieproto.pc lbxutil.pc printproto.pc trapproto.pc xaw8.pc \
+   xevie.pc xp.pc xprintapputil.pc xprintutil.pc xtrap.pc
+rm /usr/X11R6/share/aclocal/xaw.m4
+!
+fi
+
+# remove groff
+if [ -x /usr/bin/troff ]; then
+sudo -s <<!
+    cd /usr/bin
+    rm addftinfo afmtodit checknr eqn grodvi groff grog grohtml grolj4 grops grotty \
+    hpftodit indxbib lkbib lookbib neqn nroff pfbtops pic psbb refer soelim \
+    tbl tfmtodit troff vgrind
+    cd /usr/share
+    rm -r dict/eign groff_font tmac doc/psd doc/smm doc/usd groff
+    rm misc/vgrindefs  misc/vgrindefs.db
+    cd /usr/share/man/cat1
+    rm addftinfo.0 afmtodit.0 checknr.0 eqn.0 grodvi.0 groff.0 grog.0 grohtml.0 grolj4.0 \
+    grops.0 grotty.0 hpftodit.0 indxbib.0 lkbib.0 lookbib.0 neqn.0 nroff.0 \
+    pfbtops.0 pic.0 psbb.0 refer.0 soelim.0 tbl.0 tfmtodit.0 troff.0 vgrind.0
+    cd ../cat5
+    rm groff_font.0 groff_out.0 vgrindefs.0
+    cd ../cat7
+    rm groff_char.0 groff_me.0 groff_mm.0 groff_mmse.0 groff_ms.0 groff_msafer.0 \
+    me.0 mm.0 ms.0
+!
+fi
+
+# colcrt
+if [ -f /usr/bin/colcrt ]; then
+    sudo rm /usr/bin/colcrt /usr/share/man/cat1/colcrt.0
+fi
+
+# X cleanup
+sudo rm -f /usr/X11R6/bin/xft-config  /usr/X11R6/man/man1/xft-config.1 \
+   /usr/X11R6/include/X11/extensions/lbxbuf.h \
+   /usr/X11R6/include/X11/extensions/lbxbufstr.h \
+   /usr/X11R6/include/X11/extensions/lbximage.h
+
+##### END OF REMOVAL STUFF #####
+
 # create entries in this format in the passwd and group files.
 # _tftpd:*:79:79::0:0:TFTP daemon:/var/empty:/sbin/nologin
 # _portmap:*:28:
