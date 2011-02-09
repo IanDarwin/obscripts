@@ -34,6 +34,7 @@ fi
 
 if [ -f /usr/bin/f77 ]; then
 sudo -s <<!
+echo "Removing old fortran and other 4.7 stuff"
 rm /usr/include/evdns.h
 rm /usr/libdata/perl5/site_perl/*-openbsd/evdns.ph
 rm -f /usr/bin/f77 /usr/bin/g77 /usr/include/f2c.h /usr/include/g2c.h \
@@ -60,6 +61,7 @@ fi
 # remove groff
 if [ -x /usr/bin/troff ]; then
 sudo -s <<!
+	echo "Removing old groff stuff"
     cd /usr/bin
     rm addftinfo afmtodit checknr eqn grodvi groff grog grohtml grolj4 grops grotty \
     hpftodit indxbib lkbib lookbib neqn nroff pfbtops pic psbb refer soelim \
@@ -85,10 +87,13 @@ if [ -f /usr/bin/colcrt ]; then
 fi
 
 # X cleanup
-sudo rm -f /usr/X11R6/bin/xft-config  /usr/X11R6/man/man1/xft-config.1 \
-   /usr/X11R6/include/X11/extensions/lbxbuf.h \
-   /usr/X11R6/include/X11/extensions/lbxbufstr.h \
-   /usr/X11R6/include/X11/extensions/lbximage.h
+if [ -f /usr/X11R6/bin/xft-config ]; then
+echo "Removing some X cruft"
+	sudo rm -f /usr/X11R6/bin/xft-config  /usr/X11R6/man/man1/xft-config.1 \
+	/usr/X11R6/include/X11/extensions/lbxbuf.h \
+	/usr/X11R6/include/X11/extensions/lbxbufstr.h \
+	/usr/X11R6/include/X11/extensions/lbximage.h
+fi
 
 ##### END OF REMOVAL STUFF #####
 
