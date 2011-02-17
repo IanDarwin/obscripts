@@ -32,7 +32,7 @@ function usage {		# give usage message, and exit
 	[-d dest]	Desination dir [${DEST}]
 	[-a arch]	i386, sparc, etc. [${ARCH}]
 	[-e]	exec format has changed, backup executables first
-	[-k]	include kernel [don't]
+	[-k]	do not include kernel [do]
 	[-p]	prefix for finding download files [/usr/download || ~ftp]
 	[-r remoteHost] Ssh upgrade (requires sudo access there)
 	[-s]	use snapshot [use release]
@@ -48,7 +48,7 @@ do
 		b)	BASE=NO;;
 		d)	DEST=${OPTARG};;
 		e)	BACKUP=YES;;
-		k)	KERNEL=YES;;
+		k)	KERNEL=NO;;
 		m)	MERGEMASTER=YES;;
 		p)	DOWNLOAD=${OPTARG};;
 		r)	REMOTEHOST=${OPTARG};;
@@ -76,6 +76,22 @@ if [ ${REMOTEHOST} = localhost -a ! -w ${DEST} ]; then
 	echo "$0: Need write permission on ${DEST}"
 	exit 1
 fi
+if [ "$KERNEL" = "YES" ]; then
+	if [ -f bsd ]; then
+		case ${REMOTEHOST} in
+			localhost) 
+				if [ -f bsd.mp && $(sysctl hw.cpu) != 'hw.ncpu=1' ]; then K=bsd.mp; else K=bsd; fi
+				mv ${DEST}/bsd ${DEST}/obsd && cp bsd ${DEST}/bsd && echo Kernel installed as ${DEST}/nbsd;;
+			*) 
+				ssh ${REMOTEHOST} sudo mv ${DEST}/bsd ${DEST}/obsd cp bsd ${DEST}/bsd && echo Kernel installed as ${DEST}/nbsd;;
+		esac
+	else
+		echo "File ./bsd not found, not installing /bsd" >&2
+	fi
+else
+	echo "-k specified, not installing kernel." >&2
+fi
+
 
 echo "Are you sure this is going to work? Is it running the current kernel?"
 if [ ${REMOTEHOST} == localhost ]; then
@@ -135,19 +151,6 @@ do
 		*) ssh ${REMOTEHOST} "(cd ${DEST} || exit; sudo tar xzpf${VERBOSE} -)" < ${FILE}
 	esac
 done
-
-if [ "$KERNEL" = "YES" ]; then
-	if [ -f bsd ]; then
-		case ${REMOTEHOST} in
-			localhost) cp bsd ${DEST}/nbsd && echo Kernel installed as ${DEST}/nbsd;;
-			*) ssh ${REMOTEHOST} sudo cp bsd ${DEST}/nbsd && echo Kernel installed as ${DEST}/nbsd;;
-		esac
-	else
-		echo "File ./bsd not found, not installing /bsd" >&2
-	fi
-else
-	echo "No -k argument, not installing kernel." >&2
-fi
 
 echo "Rebuilding /dev..."
 case "${REMOTEHOST}" in

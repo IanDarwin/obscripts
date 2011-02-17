@@ -47,7 +47,7 @@ function usage {		# give usage message, and exit
 	exit 1
 }
 
-while getopts "a:b:f:h:np:sw" opt 
+while getopts "a:b:f:h:inp:sw" opt 
 do 
  	 case "$opt" in 
 		a)	ARCH=$OPTARG ;;
@@ -78,6 +78,7 @@ do
 			*)	SITE=${OPTARG};;
 			esac
 			;;
+		i)	PATT="${PATT} install${REL}.iso";;
 		n)	ECHO=echo;;
 		w)	PROTO=http;;
 		p)	PATT=${OPTARG};;
@@ -95,7 +96,7 @@ shift `expr $OPTIND - 1`		 # leave just filenames
 
 # Now that 'ARCH' is set, we can figure out the files to get
 PLAINFILES="INSTALL.${ARCH} bsd bsd.rd bsd.mp cd${REL}.iso cdboot cdbr floppy${REL}.fs"
-BASE_SETS="{base,comp,etc,games,man,misc}$REL.${EXT}"
+BASE_SETS="{base,comp,etc,games,man}$REL.${EXT}"
 X_SETS="{xbase,xetc,xshare,xserv,xfont}$REL.${EXT}"
 FILES="${PLAINFILES} ${BASE_SETS} ${X_SETS}"
 
