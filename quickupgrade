@@ -8,7 +8,7 @@ ARCH=`uname -m`
 DEST=/
 BASE=YES
 X=NO
-KERNEL=NO
+KERNEL=YES
 VERBOSE=""
 MERGEMASTER=NO
 BACKUP=NO
@@ -80,10 +80,13 @@ if [ "$KERNEL" = "YES" ]; then
 	if [ -f bsd ]; then
 		case ${REMOTEHOST} in
 			localhost) 
-				if [ -f bsd.mp && $(sysctl hw.cpu) != 'hw.ncpu=1' ]; then K=bsd.mp; else K=bsd; fi
-				mv ${DEST}/bsd ${DEST}/obsd && cp bsd ${DEST}/bsd && echo Kernel installed as ${DEST}/nbsd;;
+				k="$(if [ -f bsd.mp && $(sysctl hw.cpu) != 'hw.ncpu=1' ]; then echo bsd.mp; else echo bsd; fi)"
+echo $k
+				mv ${DEST}/bsd ${DEST}/obsd && cp bsd ${DEST}/bsd && echo Kernel installed as ${DEST}/bsd;;
 			*) 
-				ssh ${REMOTEHOST} sudo mv ${DEST}/bsd ${DEST}/obsd cp bsd ${DEST}/bsd && echo Kernel installed as ${DEST}/nbsd;;
+				k=$(ssh ${REMOTEHOST} "if [ -f bsd.mp && $(sysctl hw.cpu) != 'hw.ncpu=1' ]; then echo bsd.mp; else echo bsd; fi")
+echo $k
+				ssh ${REMOTEHOST} sudo mv ${DEST}/bsd ${DEST}/obsd cp bsd ${DEST}/bsd && echo Kernel installed as ${DEST}/bsd;;
 		esac
 	else
 		echo "File ./bsd not found, not installing /bsd" >&2
