@@ -8,9 +8,9 @@ PROGNAME=$0; export PROGNAME
 function reload_by_pid {
 	serv=$1
 	if [ -f /var/run/$serv?pid ]; then
-		kill -HUP `sed -e 1q /var/run/$serv?pid`
+		kill -HUP `sed -e 1q /var/run/$serv.pid`
 	else
-		echo >&2 "Sorry, $PROGNAME doesn't know how to reload $serv ."
+		echo >&2 "$PROGNAME: $serv.pid not found in /var/run.d, not running?"
 	fi
 }
 
@@ -62,8 +62,7 @@ do
 		do_arp
 		;;
 	cups*)
-		pkill cupsd
-		cupsd
+		/etc/rc.d/cupsd restart
 		;;
 	dhcpd)
 		pkill dhcpd
@@ -71,18 +70,11 @@ do
 		/usr/sbin/dhcpd ${dhcpd_flags}
 		;;
 	asterisk)
-		asterisk -rx reload
-		sleep 1
-		pkill -9 asterisk 
-		/usr/local/sbin/asterisk >/tmp/asterisk.log &
+		/etc/rc.d/asterisk restart
 		;;
 	ipsec)
 		kill -HUP `cat /var/run/isakmpd.pid`
 		ipsecctl -f /etc/ipsec.conf
-		;;
-	jabber*)
-		pkill "perl -w -x /usr/local/sbin/jabberd"
-		/usr/local/sbin/jabberd </dev/null &
 		;;
 	named|bind)
 		#rndc reload
@@ -95,10 +87,7 @@ do
 		;;
 	nagios)
 		# N.B. Invoke in check mode before pkilling old and starting new.
-		sudo -u _nagios nagios -v /etc/nagios/nagios.cfg && {
-			pkill nagios
-			sudo -u _nagios nagios -d /etc/nagios/nagios.cfg
-		}
+		sudo -u _nagios nagios -v /etc/nagios/nagios.cfg && /etc/rc.d/nagios restart
 		;;
 	http*|apache)
 		if [ -x /usr/sbin/apachectl ]; then
@@ -121,28 +110,11 @@ do
 		*) exec rl tun0;;
 		esac
 		;;
-	postfix)
-		postfix reload
-		;;
 	postgres*)
-		# /usr/local/bin/pg_ctl restart -D /var/postgresql/data
-		cd /var/postgresql
-		if [ -f /var/postgresql/data/postmaster.pid ]; then
-			sudo -u _postgresql /usr/local/bin/pg_ctl  reload -D /var/postgresql/data
-		else
-			sudo -u _postgresql nohup /usr/local/bin/pg_ctl start \
-			    -D /var/postgresql/data -l /var/postgresql/logfile \
-			    -o '-D /var/postgresql/data' # >/dev/null
-		fi
-		;;
+		/etc/rc.d/postgres reload
 	pf)
 		pfctl -e /etc/pf.conf 2>/dev/null
 		pfctl -f /etc/pf.conf
-		;;
-	ppp*)
-		pkill -9 pppd
-		sleep 1
-		sudo pppd call sympatico
 		;;
 	sendmail)
 		reload_by_pid sendmail
