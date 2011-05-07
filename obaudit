@@ -70,7 +70,7 @@ sudo -s <<!
     rm -r dict/eign groff_font tmac doc/psd doc/smm doc/usd groff
     rm misc/vgrindefs  misc/vgrindefs.db
     cd /usr/share/man/cat1
-    rm addftinfo.0 afmtodit.0 checknr.0 eqn.0 grodvi.0 groff.0 grog.0 grohtml.0 grolj4.0 \
+    rm addftinfo.0 afmtodit.0 checknr.0 eqn.0 grodvi.0 groff.0 groff_man.0 grog.0 grohtml.0 grolj4.0 \
     grops.0 grotty.0 hpftodit.0 indxbib.0 lkbib.0 lookbib.0 neqn.0 nroff.0 \
     pfbtops.0 pic.0 psbb.0 refer.0 soelim.0 tbl.0 tfmtodit.0 troff.0 vgrind.0
     cd ../cat5
