@@ -13,8 +13,8 @@ VERBOSE=""
 MERGEMASTER=NO
 BACKUP=NO
 
-REL=49				# "46" for OpenBSD 4.6, etc.
-RELDIR=`echo $REL | sed -e 's/./&./'`	# e.g., "4.6" etc.
+REL=50				# "50" for OpenBSD 5.0, etc.
+RELDIR=`echo $REL | sed -e 's/./&./'`	# e.g., "5.0" etc.
 SNAPDIR=snapshots
 DIR=${SNAPDIR}
 REMOTEHOST=localhost
@@ -76,28 +76,9 @@ if [ ${REMOTEHOST} = localhost -a ! -w ${DEST} ]; then
 	echo "$0: Need write permission on ${DEST}"
 	exit 1
 fi
-if [ "$KERNEL" = "YES" ]; then
-	if [ -f bsd ]; then
-		case ${REMOTEHOST} in
-			localhost) 
-				k="$(if [ -f bsd.mp && $(sysctl hw.cpu) != 'hw.ncpu=1' ]; then echo bsd.mp; else echo bsd; fi)"
-echo $k
-				mv ${DEST}/bsd ${DEST}/obsd && cp bsd ${DEST}/bsd && echo Kernel installed as ${DEST}/bsd;;
-			*) 
-				k=$(ssh ${REMOTEHOST} "if [ -f bsd.mp && $(sysctl hw.cpu) != 'hw.ncpu=1' ]; then echo bsd.mp; else echo bsd; fi")
-echo $k
-				ssh ${REMOTEHOST} sudo mv ${DEST}/bsd ${DEST}/obsd cp bsd ${DEST}/bsd && echo Kernel installed as ${DEST}/bsd;;
-		esac
-	else
-		echo "File ./bsd not found, not installing /bsd" >&2
-	fi
-else
-	echo "-k specified, not installing kernel." >&2
-fi
-
 
 echo "Are you sure this is going to work? Is it running the current kernel?"
-if [ ${REMOTEHOST} == localhost ]; then
+if [ "${REMOTEHOST}" = localhost ]; then
 	echo -n "At the very least, have you opened a ROOT window on $(hostname) (afterwards is too late)? "
 else
 	echo -n "At the very least, have you opened a ROOT window on remote machine ${REMOTEHOST} (afterwards is too late)? "
@@ -115,6 +96,25 @@ case ${ans} in
 	y*)	;;
 	*)	exit 1;;
 esac
+
+if [ "$KERNEL" = "YES" ]; then
+	if [ -f bsd ]; then
+		case "${REMOTEHOST}" in
+			localhost) 
+				k="$(if [ -f bsd.mp -a "$(sysctl hw.ncpu)" != 'hw.ncpu=1' ]; then echo bsd.mp; else echo bsd; fi)"
+echo $k
+				mv ${DEST}/bsd ${DEST}/obsd && cp ${k} ${DEST}/bsd && echo Kernel $k installed as ${DEST}/bsd;;
+			*) 
+				k=$(ssh ${REMOTEHOST} "if [ -f bsd.mp -a "$(sysctl hw.ncpu)" != 'hw.ncpu=1' ]; then echo bsd.mp; else echo bsd; fi")
+echo $k
+				ssh ${REMOTEHOST} sudo mv ${DEST}/bsd ${DEST}/obsd cp ${k} ${DEST}/bsd && echo Kernel $k installed as ${DEST}/bsd;;
+		esac
+	else
+		echo "File ./bsd not found, not installing /bsd" >&2
+	fi
+else
+	echo "-k specified, not installing kernel." >&2
+fi
 
 # NEVER include etc in this list, or you will die horribly!
 # xbase is in both as many packages now depend upon't
@@ -139,6 +139,7 @@ case ${REMOTEHOST} in
 		ssh ${REMOTEHOST} sudo cp /sbin/reboot /sbin/oreboot
 		;;
 esac
+echo Old reboot backed up as /sbin/oreboot.
 
 for f in ${DIRS}
 do
