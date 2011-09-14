@@ -112,6 +112,7 @@ do
 		;;
 	postgres*)
 		/etc/rc.d/postgres reload
+		;;
 	pf)
 		pfctl -e /etc/pf.conf 2>/dev/null
 		pfctl -f /etc/pf.conf
@@ -128,28 +129,13 @@ do
 		/usr/libexec/spamd-setup -d -D
 		;;
 	squid)
-		pkill -TERM squid
-		sleep 1
-		pkill -9 squid
-		/usr/local/sbin/squid
+		/etc/rc.d/squid restart
 		;;
 	tomcat)
 		unset CLASSPATH
-		case `uname` in
-		Darwin)	export CATALINA_HOME=~/tomcat;;
-		*)		export CATALINA_HOME=/usr/local/tomcat/
-				export JAVA_HOME=/usr/local/java
-				;;
-		esac
-		cd ${CATALINA_HOME}
-		bin/catalina.sh stop
-		sleep 5				# takes a while
+		/etc/rc.d/tomcat stop
 		mv ${CATALINA_HOME}/logs/catalina.{out,bak} 2>/dev/null
-		case ${INTERACT} in
-			YES) cmd=run;;
-			""|*) cmd=start;;
-		esac
-		bin/catalina.sh ${cmd}
+		/etc/rc.d/tomcat start
 		;;
 	*)
 		# must be a regular daemon
