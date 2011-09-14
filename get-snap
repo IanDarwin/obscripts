@@ -2,8 +2,8 @@
 
 # get the current OpenBSD snapshot
 
-REL=49				# "37" for OpenBSD 3.7, etc.
-RELDIR=`echo $REL | sed -e 's/./&./'`	# e.g., "3.7" etc.
+REL=50				# "50" for OpenBSD 5.0, etc.
+RELDIR=`echo $REL | sed -e 's/./&./'`	# e.g., "5.0" etc.
 SNAPDIR="snapshots"
 
 EXT=tgz
@@ -95,7 +95,8 @@ done
 shift `expr $OPTIND - 1`		 # leave just filenames
 
 # Now that 'ARCH' is set, we can figure out the files to get
-PLAINFILES="INSTALL.${ARCH} bsd bsd.rd bsd.mp cd${REL}.iso cdboot cdbr floppy${REL}.fs"
+# Not all of these exist on all arches
+PLAINFILES="INSTALL.${ARCH} bsd bsd.rd bsd.mp cd${REL}.iso cdboot cdbr floppy${REL}{a,b,c}.fs miniroot${REL}.fs"
 BASE_SETS="{base,comp,etc,games,man}$REL.${EXT}"
 X_SETS="{xbase,xetc,xshare,xserv,xfont}$REL.${EXT}"
 FILES="${PLAINFILES} ${BASE_SETS} ${X_SETS}"
