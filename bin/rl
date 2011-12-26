@@ -46,7 +46,7 @@ do
 		*)	usage;;
 	esac
 done
-shift `expr $OPTIND - 1`		 # leave just filenames
+shift $(expr $OPTIND - 1)		 # leave just filenames
 
 for serv
 do
@@ -55,11 +55,11 @@ do
 		do_help
 		exit
 		;;
-	*[012])					# rl0, sis0, ath0, etc.
-		sh /etc/netstart ${serv}
-		;;
 	arp)
 		do_arp
+		;;
+	asterisk)
+		/etc/rc.d/asterisk restart
 		;;
 	cups*)
 		/etc/rc.d/cupsd restart
@@ -69,8 +69,8 @@ do
 		. /etc/rc.conf.local
 		/usr/sbin/dhcpd ${dhcpd_flags}
 		;;
-	asterisk)
-		/etc/rc.d/asterisk restart
+	eth0)			# only exists on Linux
+		dhclient eth0
 		;;
 	ipsec)
 		kill -HUP `cat /var/run/isakmpd.pid`
@@ -136,6 +136,9 @@ do
 		/etc/rc.d/tomcat stop
 		mv ${CATALINA_HOME}/logs/catalina.{out,bak} 2>/dev/null
 		/etc/rc.d/tomcat start
+		;;
+	*[012])			# must be near last: rl0, sis0, ath0, etc.
+		sh /etc/netstart ${serv}
 		;;
 	*)
 		# must be a regular daemon
