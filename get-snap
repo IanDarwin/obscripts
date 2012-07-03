@@ -2,7 +2,7 @@
 
 # get the current OpenBSD snapshot
 
-REL=51				# "50" for OpenBSD 5.0, etc.
+REL=52				# "50" for OpenBSD 5.0, etc.
 RELDIR=`echo $REL | sed -e 's/./&./'`	# e.g., "5.0" etc.
 SNAPDIR="snapshots"
 
