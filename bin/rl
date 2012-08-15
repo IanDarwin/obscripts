@@ -65,9 +65,7 @@ do
 		/etc/rc.d/cupsd restart
 		;;
 	dhcpd)
-		pkill dhcpd
-		. /etc/rc.conf.local
-		/usr/sbin/dhcpd ${dhcpd_flags}
+		/etc/rc.d/dhcpd restart
 		;;
 	eth0)			# only exists on Linux
 		dhclient eth0
