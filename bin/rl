@@ -19,13 +19,6 @@ function do_help {
 	echo "pf `cd /var/run; ls *.pid|sed 's/\.pid//g' `"
 }
 
-	ETHERS=/etc/ethers
-	# format is: 08:00:20:04:e3:f0       dartboard
-	cat ${ETHERS} | while read ether_addr hostname
-	do
-		arp -s ${hostname} ${ether_addr} temp
-	done
-
 USAGE="$0 [-i][-v] service"
 
 function usage {		# give usage message, and exit
