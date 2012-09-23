@@ -19,14 +19,12 @@ function do_help {
 	echo "pf `cd /var/run; ls *.pid|sed 's/\.pid//g' `"
 }
 
-function do_arp {
 	ETHERS=/etc/ethers
 	# format is: 08:00:20:04:e3:f0       dartboard
 	cat ${ETHERS} | while read ether_addr hostname
 	do
 		arp -s ${hostname} ${ether_addr} temp
 	done
-}
 
 USAGE="$0 [-i][-v] service"
 
@@ -50,22 +48,21 @@ shift $(expr $OPTIND - 1)		 # leave just filenames
 
 for serv
 do
+	if [ -f /etc/rc.d/${serv} ]; then
+		/etc/rc.d/${serv} restart
+	else
 	case $serv in
 	help)
 		do_help
 		exit
 		;;
 	arp)
-		do_arp
-		;;
-	asterisk)
-		/etc/rc.d/asterisk restart
-		;;
-	cups*)
-		/etc/rc.d/cupsd restart
-		;;
-	dhcpd)
-		/etc/rc.d/dhcpd restart
+		ETHERS=/etc/ethers
+		# format is: 08:00:20:04:e3:f0       dartboard
+		cat ${ETHERS} | while read ether_addr hostname
+		do
+			arp -s ${hostname} ${ether_addr} temp
+		done
 		;;
 	eth0)			# only exists on Linux
 		dhclient eth0
@@ -108,9 +105,6 @@ do
 		*) exec rl tun0;;
 		esac
 		;;
-	postgres*)
-		/etc/rc.d/postgres reload
-		;;
 	pf)
 		pfctl -e /etc/pf.conf 2>/dev/null
 		pfctl -f /etc/pf.conf
@@ -118,16 +112,9 @@ do
 	sendmail)
 		reload_by_pid sendmail
 		;;
-	smtpd)
-		pkill smtpd
-		/usr/sbin/smtpd
-		;;
 	spam*)
 		# reload spamd
 		/usr/libexec/spamd-setup -d -D
-		;;
-	squid)
-		/etc/rc.d/squid restart
 		;;
 	tomcat)
 		unset CLASSPATH
@@ -143,4 +130,5 @@ do
 		reload_by_pid $serv
 		;;
 	esac
+	fi	# end of main loop "if" statment
 done
