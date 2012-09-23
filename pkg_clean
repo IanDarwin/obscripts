@@ -1,10 +1,15 @@
 #!/bin/sh
 
+[ -w / ] || {
+	echo Be root!
+	exit 1
+}
+
 set -u
 
 cd $pdb || exit
 
 for pkg in .??* partial*
 do
-	pkg_delete $pkg
+	pkg_delete -I $pkg
 done
