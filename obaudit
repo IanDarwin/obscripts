@@ -61,7 +61,7 @@ fi
 # remove groff
 if [ -x /usr/bin/troff ]; then
 sudo -s <<!
-	echo "Removing old groff stuff"
+	echo "Removing old groff base stuff"
     cd /usr/bin
     rm addftinfo afmtodit checknr eqn grodvi groff grog grohtml grolj4 grops grotty \
     hpftodit indxbib lkbib lookbib neqn nroff pfbtops pic psbb refer soelim \
@@ -94,6 +94,12 @@ echo "Removing some X cruft"
 	/usr/X11R6/include/X11/extensions/lbxbufstr.h \
 	/usr/X11R6/include/X11/extensions/lbximage.h
 fi
+
+# 5.1 cleanups
+sudo rm /usr/bin/pmdb /usr/share/man/man1/pmdb.1
+sudo rm -rf /usr/X11R6/lib/X11/config
+sudo rm -f /usr/X11R6/bin/{ccmakedep,cleanlinks,imake,makeg,mergelib,mkdirhier,mkhtmlindex,revpath,xmkmf}
+sudo rm -f /usr/X11R6/man/man1/{ccmakedep,cleanlinks,imake,makeg,mergelib,mkdirhier,mkhtmlindex,revpath,xmkmf}.1
 
 ##### END OF REMOVAL STUFF #####
 
