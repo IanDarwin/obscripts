@@ -43,8 +43,7 @@ rm -f /usr/bin/f77 /usr/bin/g77 /usr/include/f2c.h /usr/include/g2c.h \
   /usr/lib/libg2c_p.a /usr/lib/libg2c_pic.a /usr/share/info/g77.info \
   /usr/share/man/cat1/f77.0 /usr/share/man/cat1/g77.0
 cd /usr/X11R6/include/X11
-rm Xaw/Print.h Xaw/PrintSP.h
-rm -r XprintAppUtil XprintUtil
+rm -r Xaw/Print.h Xaw/PrintSP.h r XprintAppUtil XprintUtil
 cd extensions
 rm Print.h Printstr.h XEVIstr.h Xagstr.h Xcupstr.h Xdbeproto.h Xevie.h \
    Xeviestr.h dpmsstr.h lbxdeltastr.h lbxopts.h lbxstr.h lbxzlib.h \
@@ -55,6 +54,8 @@ cd /usr/X11R6/lib/pkgconfig
 rm evieproto.pc lbxutil.pc printproto.pc trapproto.pc xaw8.pc \
    xevie.pc xp.pc xprintapputil.pc xprintutil.pc xtrap.pc
 rm /usr/X11R6/share/aclocal/xaw.m4
+cd /usr/X11R6/bin
+rm -f bdftruncate ccmakedep cleanlinks cxpm fontname.sh fontprop.sh gccmakedep makeg mergelib mkdirhier mkfontdir mkhtmlindex startx sxpm ucs2any x11perfcomp xauth_switch_to_sun-des-1 xdmshell xdpr xkeystone xmkmf xon
 !
 fi
 
@@ -96,10 +97,16 @@ echo "Removing some X cruft"
 fi
 
 # 5.1 cleanups
-sudo rm /usr/bin/pmdb /usr/share/man/man1/pmdb.1
-sudo rm -rf /usr/X11R6/lib/X11/config
-sudo rm -f /usr/X11R6/bin/{ccmakedep,cleanlinks,imake,makeg,mergelib,mkdirhier,mkhtmlindex,revpath,xmkmf}
-sudo rm -f /usr/X11R6/man/man1/{ccmakedep,cleanlinks,imake,makeg,mergelib,mkdirhier,mkhtmlindex,revpath,xmkmf}.1
+if [ -f /usr/bin/pmdb ]; then
+	echo "Reaping pmdb"
+	sudo rm /usr/bin/pmdb /usr/share/man/man1/pmdb.1
+fi
+if [ -f /usr/bin/imake ]; then
+	echo "Reaping imake and friends from base"
+	sudo rm -rf /usr/X11R6/lib/X11/config \
+	/usr/X11R6/bin/{ccmakedep,cleanlinks,imake,makeg,mergelib,mkdirhier,mkhtmlindex,revpath,xmkmf} \
+	/usr/X11R6/man/man1/{ccmakedep,cleanlinks,imake,makeg,mergelib,mkdirhier,mkhtmlindex,revpath,xmkmf}.1
+fi
 
 ##### END OF REMOVAL STUFF #####
 
