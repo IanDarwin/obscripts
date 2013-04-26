@@ -22,7 +22,7 @@ ECHO=""
 
 # how to get it - Linux lacks a working FTP command
 case $(uname) in
-	OpenBSD)	FTP="ftp -a";;
+	OpenBSD|Darwin)	FTP="ftp -a";;
 	Linux)		FTP=wget;;
 	*)	echo No FTP set for $(uname)
 		exit 1;;
