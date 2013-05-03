@@ -110,6 +110,15 @@ if [ -f /usr/bin/imake ]; then
 	/usr/X11R6/man/man1/{ccmakedep,cleanlinks,imake,makeg,mergelib,mkdirhier,mkhtmlindex,revpath,xmkmf}.1
 fi
 
+# 5.2
+sudo rm -f /etc/rc.d/aucat /sbin/ccdconfig /usr/share/man/man8/ccdconfig.8
+sudo rm -f /usr/sbin/pkg_merge /usr/libexec/getNAME /usr/share/man/man8/getNAME.8
+sudo rm -fr /usr/lib/gcc-lib/i386-unknown-openbsd5.0
+sudo rm -f /usr/bin/midicat /usr/share/man/man1/midicat.1
+sudo rm -f /usr/bin/makewhatis /usr/bin/mandocdb /usr/share/man/man8/mandocdb.8
+
+
+
 ##### END OF REMOVAL STUFF #####
 
 # create entries in this format in the passwd and group files.
