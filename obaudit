@@ -117,7 +117,20 @@ sudo rm -fr /usr/lib/gcc-lib/i386-unknown-openbsd5.0
 sudo rm -f /usr/bin/midicat /usr/share/man/man1/midicat.1
 sudo rm -f /usr/bin/makewhatis /usr/bin/mandocdb /usr/share/man/man8/mandocdb.8
 
+# 5.3
+rm -rf /usr/share/locale/*.*
+rm -rf /usr/share/locale/de_AT
 
+rm /usr/include/spinlock.h
+rm /usr/libdata/perl5/site_perl/*/spinlock.ph
+
+rm -f /usr/share/man/man{9/{re,}lookup.9,/_Exit.3}
+
+#cd /usr/X11R6/include/xorg
+#rm -f mibstore.h synaptics.h xaa.h xaalocal.h
+#cd /usr/X11R6/lib/modules
+#rm -f extensions/lib{dbe,dri,dri2,extmod,record}.{la,so}
+#rm -f libxaa.{la,so}
 
 ##### END OF REMOVAL STUFF #####
 
@@ -192,3 +205,8 @@ case $(arch -k) in
 		;;
 esac
 
+# 5.3 renaming stuff
+replace 'amd=YES' 'amd_flags='		/etc/rc.conf.local
+replace 'inetd=YES' 'inetd_flags='	/etc/rc.conf.local
+replace 'portmap=YES' 'portmap_flags='	/etc/rc.conf.local
+replace 'rwhod=YES' 'rwhod_flags='	/etc/rc.conf.local
