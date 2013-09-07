@@ -13,8 +13,8 @@ VERBOSE=""
 MERGEMASTER=NO
 BACKUP=NO
 
-REL=53				# "50" for OpenBSD 5.0, etc.
-RELDIR=`echo $REL | sed -e 's/./&./'`	# e.g., "5.0" etc.
+. ~/dotfiles/obrel
+
 SNAPDIR=snapshots
 DIR=${SNAPDIR}
 REMOTEHOST=localhost
