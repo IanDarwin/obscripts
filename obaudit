@@ -210,3 +210,33 @@ replace 'amd=YES' 'amd_flags='		/etc/rc.conf.local
 replace 'inetd=YES' 'inetd_flags='	/etc/rc.conf.local
 replace 'portmap=YES' 'portmap_flags='	/etc/rc.conf.local
 replace 'rwhod=YES' 'rwhod_flags='	/etc/rc.conf.local
+
+# 5.4
+rm -f /usr/libexec/identd
+
+# 20130621
+rm -f /etc/kerberosV/README
+rm -f /usr/bin/{afslog,hxtool,kauth,kadmin,ksu,pagsh,kswitch}
+rm -f /usr/lib/lib{heimntlm.*,heimntlm_p.*,hx509.*,hx509_p.*}
+rm -f /usr/libdata/perl5/site_perl/*-openbsd/com_err.ph
+rm -f /usr/libdata/perl5/site_perl/*-openbsd/kerberosV/{crmf_asn1,heimntlm-protos,heimntlm,hx509-private,hdb-private}.ph
+rm -f /usr/libdata/perl5/site_perl/*-openbsd/kerberosV/{hx509-protos,hx509,hx509_err,kx509_asn1,ntlm_err,ocsp_asn1,pkcs10_asn1}.ph
+rm -f /usr/libdata/perl5/site_perl/*-openbsd/kerberosV/{pkcs12_asn1,pkcs8_asn1,pkcs9_asn1,pkinit_asn1,gssapi/gssapi_spnego,spnego_asn1}.ph
+rm -f /usr/libexec/{digest-service,kimpersonate,kdigest,kcm}
+rm -f /usr/include/com_err.h
+rm -f /usr/include/kerberosV/{crmf_asn1,hdb-private,heimntlm-protos,heimntlm,hx509-private}.h
+rm -f /usr/include/kerberosV/{hx509-protos,hx509,hx509_err,kx509_asn1,ntlm_err,ocsp_asn1,pkcs10_asn1,pkcs12_asn1}.h
+rm -f /usr/include/kerberosV/{pkcs8_asn1,pkcs9_asn1,pkinit_asn1,spnego_asn1,gssapi/gssapi_spnego}.h
+rm -f /usr/sbin/kdigest
+
+[ -d $pdb/php-5.3* ] && echo "PHP update needed, see http://www.openbsd.org/faq/current.html#20130823"
+
+cd /tmp
+cat>t.c <<!
+#include <stdlib.h>
+#include <stdio.h>
+int main(int argc, char ** argv) {
+        printf("time_t is %d bits here\n", 8 * sizeof(time_t));
+}
+!
+make t; ./t; rm t
