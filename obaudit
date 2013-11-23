@@ -121,8 +121,8 @@ sudo rm -f /usr/bin/makewhatis /usr/bin/mandocdb /usr/share/man/man8/mandocdb.8
 sudo rm -rf /usr/share/locale/*.*
 sudo rm -rf /usr/share/locale/de_AT
 
-sudo rm /usr/include/spinlock.h
-sudo rm /usr/libdata/perl5/site_perl/*/spinlock.ph
+sudo rm -f /usr/include/spinlock.h
+sudo rm -f /usr/libdata/perl5/site_perl/*/spinlock.ph
 
 sudo rm -f /usr/share/man/man{9/{re,}lookup.9,/_Exit.3}
 
@@ -206,10 +206,10 @@ case $(arch -k) in
 esac
 
 # 5.3 renaming stuff
-replace 'amd=YES' 'amd_flags='		/etc/rc.conf.local
-replace 'inetd=YES' 'inetd_flags='	/etc/rc.conf.local
-replace 'portmap=YES' 'portmap_flags='	/etc/rc.conf.local
-replace 'rwhod=YES' 'rwhod_flags='	/etc/rc.conf.local
+sudo replace 'amd=YES' 'amd_flags='		/etc/rc.conf.local
+sudo replace 'inetd=YES' 'inetd_flags='	/etc/rc.conf.local
+sudo replace 'portmap=YES' 'portmap_flags='	/etc/rc.conf.local
+sudo replace 'rwhod=YES' 'rwhod_flags='	/etc/rc.conf.local
 
 # 5.4
 sudo rm -f /usr/libexec/identd
