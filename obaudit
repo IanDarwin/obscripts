@@ -2,7 +2,11 @@
 
 # obaudit - check the state of an OpenBSD system
 
-uname -a
+sys=$(uname)
+case "${sys}" in
+	OpenBSD) uname -a;;
+	*) echo "Umm, $sys does not look like OpenBSD to me"; exit 1;;
+esac
 
 if [ -f /usr/src/Makefile ]; then
 	echo 'Some /usr/src present: \'
