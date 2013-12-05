@@ -30,69 +30,74 @@ else
 	echo "No nat.conf"
 fi
 
+[ -w / ] || {
+	echo "IKJ567007E You are no talking lion; no changes made."
+	exit 1
+}
+
 # in 4.7 and 4.8 a bunch of stuff moved to ports, including g77 and groff
 
 (cd /usr/bin; rm -f perl5.8.8 sup tn3270 mset window protoize unprotoize gccbug)
 
 if [ -f /usr/bin/f77 ]; then
-sudo -s <<!
+-s <<!
 echo "Removing old fortran and other 4.7 stuff"
-sudo rm /usr/include/evdns.h
-sudo rm /usr/libdata/perl5/site_perl/*-openbsd/evdns.ph
-sudo rm -f /usr/bin/f77 /usr/bin/g77 /usr/include/f2c.h /usr/include/g2c.h \
+rm /usr/include/evdns.h
+rm /usr/libdata/perl5/site_perl/*-openbsd/evdns.ph
+rm -f /usr/bin/f77 /usr/bin/g77 /usr/include/f2c.h /usr/include/g2c.h \
   /usr/lib/gcc-lib/*-unknown-openbsd*/3.3.5/f771 /usr/lib/libfrtbegin.a \
   /usr/lib/libfrtbegin_p.a /usr/lib/libfrtbegin_pic.a /usr/lib/libg2c.a \
   /usr/lib/libg2c_p.a /usr/lib/libg2c_pic.a /usr/share/info/g77.info \
   /usr/share/man/cat1/f77.0 /usr/share/man/cat1/g77.0
 cd /usr/X11R6/include/X11
-sudo rm -r Xaw/Print.h Xaw/PrintSP.h r XprintAppUtil XprintUtil
+rm -r Xaw/Print.h Xaw/PrintSP.h r XprintAppUtil XprintUtil
 cd extensions
-sudo rm Print.h Printstr.h XEVIstr.h Xagstr.h Xcupstr.h Xdbeproto.h Xevie.h \
+rm Print.h Printstr.h XEVIstr.h Xagstr.h Xcupstr.h Xdbeproto.h Xevie.h \
    Xeviestr.h dpmsstr.h lbxdeltastr.h lbxopts.h lbxstr.h lbxzlib.h \
    mitmiscstr.h multibufst.h securstr.h shapestr.h shmstr.h syncstr.h \
    xteststr.h xtrapbits.h xtrapddmi.h xtrapdi.h xtrapemacros.h \
    xtraplib.h xtraplibp.h xtrapproto.h
 cd /usr/X11R6/lib/pkgconfig
-sudo rm evieproto.pc lbxutil.pc printproto.pc trapproto.pc xaw8.pc \
+rm evieproto.pc lbxutil.pc printproto.pc trapproto.pc xaw8.pc \
    xevie.pc xp.pc xprintapputil.pc xprintutil.pc xtrap.pc
-sudo rm /usr/X11R6/share/aclocal/xaw.m4
+rm /usr/X11R6/share/aclocal/xaw.m4
 cd /usr/X11R6/bin
-sudo rm -f bdftruncate ccmakedep cleanlinks cxpm fontname.sh fontprop.sh gccmakedep makeg mergelib mkdirhier mkfontdir mkhtmlindex startx sxpm ucs2any x11perfcomp xauth_switch_to_sun-des-1 xdmshell xdpr xkeystone xmkmf xon
+rm -f bdftruncate ccmakedep cleanlinks cxpm fontname.sh fontprop.sh gccmakedep makeg mergelib mkdirhier mkfontdir mkhtmlindex startx sxpm ucs2any x11perfcomp xauth_switch_to_sun-des-1 xdmshell xdpr xkeystone xmkmf xon
 !
 fi
 
 # remove groff
 if [ -x /usr/bin/troff ]; then
-sudo -s <<!
+-s <<!
 	echo "Removing old groff base stuff"
     cd /usr/bin
-    sudo rm addftinfo afmtodit checknr eqn grodvi groff grog grohtml grolj4 grops grotty \
+    rm addftinfo afmtodit checknr eqn grodvi groff grog grohtml grolj4 grops grotty \
     hpftodit indxbib lkbib lookbib neqn nroff pfbtops pic psbb refer soelim \
     tbl tfmtodit troff vgrind
     cd /usr/share
-    sudo rm -r dict/eign groff_font tmac doc/psd doc/smm doc/usd groff
-    sudo rm misc/vgrindefs  misc/vgrindefs.db
+    rm -r dict/eign groff_font tmac doc/psd doc/smm doc/usd groff
+    rm misc/vgrindefs  misc/vgrindefs.db
     cd /usr/share/man/cat1
-    sudo rm addftinfo.0 afmtodit.0 checknr.0 eqn.0 grodvi.0 groff.0 groff_man.0 grog.0 grohtml.0 grolj4.0 \
+    rm addftinfo.0 afmtodit.0 checknr.0 eqn.0 grodvi.0 groff.0 groff_man.0 grog.0 grohtml.0 grolj4.0 \
     grops.0 grotty.0 hpftodit.0 indxbib.0 lkbib.0 lookbib.0 neqn.0 nroff.0 \
     pfbtops.0 pic.0 psbb.0 refer.0 soelim.0 tbl.0 tfmtodit.0 troff.0 vgrind.0
     cd ../cat5
-    sudo rm groff_font.0 groff_out.0 vgrindefs.0
+    rm groff_font.0 groff_out.0 vgrindefs.0
     cd ../cat7
-    sudo rm groff_char.0 groff_me.0 groff_mm.0 groff_mmse.0 groff_ms.0 groff_msafer.0 \
+    rm groff_char.0 groff_me.0 groff_mm.0 groff_mmse.0 groff_ms.0 groff_msafer.0 \
     me.0 mm.0 ms.0
 !
 fi
 
 # colcrt
 if [ -f /usr/bin/colcrt ]; then
-    sudo rm /usr/bin/colcrt /usr/share/man/cat1/colcrt.0
+    rm /usr/bin/colcrt /usr/share/man/cat1/colcrt.0
 fi
 
 # X cleanup
 if [ -f /usr/X11R6/bin/xft-config ]; then
 echo "Removing some X cruft"
-	sudo rm -f /usr/X11R6/bin/xft-config  /usr/X11R6/man/man1/xft-config.1 \
+	rm -f /usr/X11R6/bin/xft-config  /usr/X11R6/man/man1/xft-config.1 \
 	/usr/X11R6/include/X11/extensions/lbxbuf.h \
 	/usr/X11R6/include/X11/extensions/lbxbufstr.h \
 	/usr/X11R6/include/X11/extensions/lbximage.h
@@ -101,30 +106,30 @@ fi
 # 5.1 cleanups
 if [ -f /usr/bin/pmdb ]; then
 	echo "Reaping pmdb"
-	sudo rm /usr/bin/pmdb /usr/share/man/man1/pmdb.1
+	rm /usr/bin/pmdb /usr/share/man/man1/pmdb.1
 fi
 if [ -f /usr/bin/imake ]; then
 	echo "Reaping imake and friends from base"
-	sudo rm -rf /usr/X11R6/lib/X11/config \
+	rm -rf /usr/X11R6/lib/X11/config \
 	/usr/X11R6/bin/{ccmakedep,cleanlinks,imake,makeg,mergelib,mkdirhier,mkhtmlindex,revpath,xmkmf} \
 	/usr/X11R6/man/man1/{ccmakedep,cleanlinks,imake,makeg,mergelib,mkdirhier,mkhtmlindex,revpath,xmkmf}.1
 fi
 
 # 5.2
-sudo rm -f /etc/rc.d/aucat /sbin/ccdconfig /usr/share/man/man8/ccdconfig.8
-sudo rm -f /usr/sbin/pkg_merge /usr/libexec/getNAME /usr/share/man/man8/getNAME.8
-sudo rm -fr /usr/lib/gcc-lib/i386-unknown-openbsd5.0
-sudo rm -f /usr/bin/midicat /usr/share/man/man1/midicat.1
-sudo rm -f /usr/bin/makewhatis /usr/bin/mandocdb /usr/share/man/man8/mandocdb.8
+rm -f /etc/rc.d/aucat /sbin/ccdconfig /usr/share/man/man8/ccdconfig.8
+rm -f /usr/sbin/pkg_merge /usr/libexec/getNAME /usr/share/man/man8/getNAME.8
+rm -fr /usr/lib/gcc-lib/i386-unknown-openbsd5.0
+rm -f /usr/bin/midicat /usr/share/man/man1/midicat.1
+rm -f /usr/bin/makewhatis /usr/bin/mandocdb /usr/share/man/man8/mandocdb.8
 
 # 5.3
-sudo rm -rf /usr/share/locale/*.*
-sudo rm -rf /usr/share/locale/de_AT
+rm -rf /usr/share/locale/*.*
+rm -rf /usr/share/locale/de_AT
 
-sudo rm -f /usr/include/spinlock.h
-sudo rm -f /usr/libdata/perl5/site_perl/*/spinlock.ph
+rm -f /usr/include/spinlock.h
+rm -f /usr/libdata/perl5/site_perl/*/spinlock.ph
 
-sudo rm -f /usr/share/man/man{9/{re,}lookup.9,/_Exit.3}
+rm -f /usr/share/man/man{9/{re,}lookup.9,/_Exit.3}
 
 #cd /usr/X11R6/include/xorg
 #rm -f mibstore.h synaptics.h xaa.h xaalocal.h
@@ -142,8 +147,8 @@ do
 	grep "^$pw_nam" /etc/passwd >/dev/null && continue
 	echo "Missing $pw_nam, adding it..."
 	# cannot use -g =uid as it was only added in 3.4 or 3.5
-	sudo ksh -c "echo ${pw_nam}:*:${pw_uid}: >> /etc/group"
-	sudo useradd -c "${pw_gecos}" -d /var/empty	\
+	ksh -c "echo ${pw_nam}:*:${pw_uid}: >> /etc/group"
+	useradd -c "${pw_gecos}" -d /var/empty	\
             -u ${pw_uid} -g ${pw_uid} \
             -s /sbin/nologin ${pw_nam}
 	# OpenBSD's useradd will create the group automatically.
@@ -206,28 +211,28 @@ case $(arch -k) in
 esac
 
 # 5.3 renaming stuff
-sudo replace 'amd=YES' 'amd_flags='		/etc/rc.conf.local
-sudo replace 'inetd=YES' 'inetd_flags='	/etc/rc.conf.local
-sudo replace 'portmap=YES' 'portmap_flags='	/etc/rc.conf.local
-sudo replace 'rwhod=YES' 'rwhod_flags='	/etc/rc.conf.local
+replace 'amd=YES' 'amd_flags='		/etc/rc.conf.local
+replace 'inetd=YES' 'inetd_flags='	/etc/rc.conf.local
+replace 'portmap=YES' 'portmap_flags='	/etc/rc.conf.local
+replace 'rwhod=YES' 'rwhod_flags='	/etc/rc.conf.local
 
 # 5.4
-sudo rm -f /usr/libexec/identd
+rm -f /usr/libexec/identd
 
 # 20130621
-sudo rm -f /etc/kerberosV/README
-sudo rm -f /usr/bin/{afslog,hxtool,kauth,kadmin,ksu,pagsh,kswitch}
-sudo rm -f /usr/lib/lib{heimntlm.*,heimntlm_p.*,hx509.*,hx509_p.*}
-sudo rm -f /usr/libdata/perl5/site_perl/*-openbsd/com_err.ph
-sudo rm -f /usr/libdata/perl5/site_perl/*-openbsd/kerberosV/{crmf_asn1,heimntlm-protos,heimntlm,hx509-private,hdb-private}.ph
-sudo rm -f /usr/libdata/perl5/site_perl/*-openbsd/kerberosV/{hx509-protos,hx509,hx509_err,kx509_asn1,ntlm_err,ocsp_asn1,pkcs10_asn1}.ph
-sudo rm -f /usr/libdata/perl5/site_perl/*-openbsd/kerberosV/{pkcs12_asn1,pkcs8_asn1,pkcs9_asn1,pkinit_asn1,gssapi/gssapi_spnego,spnego_asn1}.ph
-sudo rm -f /usr/libexec/{digest-service,kimpersonate,kdigest,kcm}
-sudo rm -f /usr/include/com_err.h
-sudo rm -f /usr/include/kerberosV/{crmf_asn1,hdb-private,heimntlm-protos,heimntlm,hx509-private}.h
-sudo rm -f /usr/include/kerberosV/{hx509-protos,hx509,hx509_err,kx509_asn1,ntlm_err,ocsp_asn1,pkcs10_asn1,pkcs12_asn1}.h
-sudo rm -f /usr/include/kerberosV/{pkcs8_asn1,pkcs9_asn1,pkinit_asn1,spnego_asn1,gssapi/gssapi_spnego}.h
-sudo rm -f /usr/sbin/kdigest
+rm -f /etc/kerberosV/README
+rm -f /usr/bin/{afslog,hxtool,kauth,kadmin,ksu,pagsh,kswitch}
+rm -f /usr/lib/lib{heimntlm.*,heimntlm_p.*,hx509.*,hx509_p.*}
+rm -f /usr/libdata/perl5/site_perl/*-openbsd/com_err.ph
+rm -f /usr/libdata/perl5/site_perl/*-openbsd/kerberosV/{crmf_asn1,heimntlm-protos,heimntlm,hx509-private,hdb-private}.ph
+rm -f /usr/libdata/perl5/site_perl/*-openbsd/kerberosV/{hx509-protos,hx509,hx509_err,kx509_asn1,ntlm_err,ocsp_asn1,pkcs10_asn1}.ph
+rm -f /usr/libdata/perl5/site_perl/*-openbsd/kerberosV/{pkcs12_asn1,pkcs8_asn1,pkcs9_asn1,pkinit_asn1,gssapi/gssapi_spnego,spnego_asn1}.ph
+rm -f /usr/libexec/{digest-service,kimpersonate,kdigest,kcm}
+rm -f /usr/include/com_err.h
+rm -f /usr/include/kerberosV/{crmf_asn1,hdb-private,heimntlm-protos,heimntlm,hx509-private}.h
+rm -f /usr/include/kerberosV/{hx509-protos,hx509,hx509_err,kx509_asn1,ntlm_err,ocsp_asn1,pkcs10_asn1,pkcs12_asn1}.h
+rm -f /usr/include/kerberosV/{pkcs8_asn1,pkcs9_asn1,pkinit_asn1,spnego_asn1,gssapi/gssapi_spnego}.h
+rm -f /usr/sbin/kdigest
 
 [ -d $pdb/php-5.3* ] && echo "PHP update needed, see http://www.openbsd.org/faq/current.html#20130823"
 
@@ -240,3 +245,7 @@ int main(int argc, char ** argv) {
 }
 !
 make t; ./t; rm t
+
+# Post-5.4
+rm /usr/lib/libcompat* /usr/include/{re_comp,regexp}.h
+rm /usr/share/man/man3/{re_comp,re_exec,regexp}.3
