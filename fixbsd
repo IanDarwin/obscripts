@@ -4,8 +4,9 @@
 
 config -e -f ${*-/bsd} <<!
 
-disable uhci*
-disable ehci*
-disable umodem*
+#disable uhci*
+#disable ehci*
+#disable umodem*
+disable ulpt*
 quit
 !
