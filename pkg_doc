@@ -1,0 +1,12 @@
+#!/bin/sh
+
+D=/usr/local/share/doc/pkg-readmes
+
+for f
+do
+	if [ -f ${D}/${f}* ];
+		then more ${D}/${f}*
+	else
+		echo ${D}/${f}* not matched.
+	fi
+done
