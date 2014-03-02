@@ -2,8 +2,7 @@
 
 # get the current OpenBSD snapshot
 
-REL=54				# "50" for OpenBSD 5.0, etc.
-RELDIR=`echo $REL | sed -e 's/./&./'`	# e.g., "5.0" etc.
+. ~/dotfiles/obrel
 SNAPDIR="snapshots"
 
 EXT=tgz
