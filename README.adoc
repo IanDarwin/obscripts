@@ -1,0 +1,5 @@
+= obscripts - Scripts useful on OpenBSD
+
+These scripts may or may not be useful on OpenBSD. Do not run them
+without knowing what they do, how they work, and how they may fail!
+They are provided without warranty. USE AT OWN RISK.
