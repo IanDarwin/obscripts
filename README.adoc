@@ -1,5 +1,11 @@
-= obscripts - Scripts useful on OpenBSD
+= obscripts - Scripts for OpenBSD
 
 These scripts may or may not be useful on OpenBSD. Do not run them
 without knowing what they do, how they work, and how they may fail!
 They are provided without warranty. USE AT OWN RISK.
+
+The scripts mostly use OpenBSD-specific tools like package management,
+or filesystem-layout-specific paths, and so on.
+
+The easiest way to use most of them is to git clone this repo in 
+your home directory, and add its directory to your PATH.
