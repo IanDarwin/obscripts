@@ -9,3 +9,10 @@ or filesystem-layout-specific paths, and so on.
 
 The easiest way to use most of them is to git clone this repo in 
 your home directory, and add its directory to your PATH.
+
+There is at least one - prepsusp - that will work better if you
+put it in / so you don't have to have /home mounted when
+running it.
+
+As with all root scripts, read them over to be sure I'm not
+trying to pwn you (or that my github account hasn't been hacked).
