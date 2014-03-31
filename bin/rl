@@ -5,12 +5,19 @@
 
 PROGNAME=$0; export PROGNAME
 
-function reload_by_pid {
+function reload_standard {
 	serv=$1
-	if [ -f /var/run/$serv?pid ]; then
+	# Try as a rc.d service, without and with added 'd'
+	# (e.g., "inetd" is a known name, "cups" is a known name
+	if [ -f /etc/rc.d/${serv} ]; then
+		/etc/rc.d/${serv}
+	elif [ -f /etc/rc.d/${serv}d ]; then
+		/etc/rc.d/${serv}d
+	# Feh, last chance: try /var/run/servername.pid
+	elif [ -f /var/run/$serv?pid ]; then
 		kill -HUP `sed -e 1q /var/run/$serv.pid`
 	else
-		echo >&2 "$PROGNAME: $serv.pid not found in /var/run.d, not running?"
+		echo >&2 "$PROGNAME: Don't know how to restart $serv"
 	fi
 }
 
@@ -89,13 +96,12 @@ do
 		fi
 		;;
 	nfs)
-		reload_by_pid mountd
+		reload_standard mountd
 		;;
 	openvpn|vpn)
+		# The assumption is that you're starting it via hostname.tun0
 		pkill openvpn
-		case $(hostname) in
-		www.darwinsys.com) grep "/usr/local/sbin/openvpn --" /etc/rc.local | sh -x;;
-		*) exec rl tun0;;
+		exec rl tun0;;
 		esac
 		;;
 	pf)
@@ -103,7 +109,7 @@ do
 		pfctl -f /etc/pf.conf
 		;;
 	sendmail)
-		reload_by_pid sendmail
+		reload_standard sendmail
 		;;
 	spam*)
 		# reload spamd
@@ -119,8 +125,8 @@ do
 		sh /etc/netstart ${serv}
 		;;
 	*)
-		# must be a regular daemon
-		reload_by_pid $serv
+		# try it as a regular daemon
+		reload_standard $serv
 		;;
 	esac
 	fi	# end of main loop "if" statment
