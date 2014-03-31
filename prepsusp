@@ -20,3 +20,5 @@ chmod 01777 /tmp
 apmd -C
 export TERM=vt220
 set +x
+
+echo "Now you can try suspending or hibernating..."
