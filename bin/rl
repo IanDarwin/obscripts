@@ -101,8 +101,7 @@ do
 	openvpn|vpn)
 		# The assumption is that you're starting it via hostname.tun0
 		pkill openvpn
-		exec rl tun0;;
-		esac
+		exec rl tun0
 		;;
 	pf)
 		pfctl -e /etc/pf.conf 2>/dev/null
@@ -114,9 +113,15 @@ do
 	spam*)
 		# reload spamd
 		/usr/libexec/spamd-setup -d -D
+		# AND spamdb
+			# good guys
+			sudo spamdb -a `awk '!/^#/{printf "%s ", $1}' /etc/mail/mywhite.txt`
+			# spam traps
+			while read address 
+			do sudo spamdb -T -a "$address"
+			done < /etc/mail/myspamtraps.txt
 		;;
 	tomcat)
-		unset CLASSPATH
 		/etc/rc.d/tomcat stop
 		mv ${CATALINA_HOME}/logs/catalina.{out,bak} 2>/dev/null
 		/etc/rc.d/tomcat start
