@@ -8,12 +8,18 @@ They are provided without warranty. USE AT OWN RISK.
 The scripts mostly use OpenBSD-specific tools like package management,
 or filesystem-layout-specific paths, and so on.
 
-The easiest way to use most of them is to git clone this repo in 
-your home directory, and add its directory to your PATH.
+== HowTo
 
-There is at least one - prepsusp - that will work better if you
+The easiest way to use most of them is to git clone this repo in 
+your home directory, and add its _bin_ directory to your PATH.
+
+You should also add its _man_ directory to your MANPATH variable (or in man.conf).
+
+The _rootscripts_ directory contains one - prepsusp - that will work better if you
 copy it to / so you don't have to have /home mounted when
 running it.
+
+== Caveats and Contributions
 
 As with all root scripts, read them over to be sure I'm not
 trying to pwn you (or that my github account hasn't been hacked).
