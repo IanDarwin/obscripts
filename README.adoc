@@ -1,6 +1,6 @@
 = obscripts - Scripts for OpenBSD
 
-These scripts may or may not be useful on OpenBSD. They're primarily
+These scripts may or may not be useful on http://openbsd.org[OpenBSD]. They're primarily
 system administration scripts, many requiring root; do not run them
 without knowing what they do, how they work, and how they may fail!
 They are provided without warranty. USE AT OWN RISK.
