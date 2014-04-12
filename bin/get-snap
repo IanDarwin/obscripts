@@ -1,0 +1,126 @@
+#!/bin/ksh -u
+
+# get the current OpenBSD snapshot
+
+. ~/dotfiles/obrel
+SNAPDIR="snapshots"
+
+EXT=tgz
+PATT='[Ia-hj-z]*'		# what to go get, exclude HUGE install*.iso
+
+SITE=${PKG_SITE-ftp.openbsd.org}	# where to get it from
+FROMDIR=pub/OpenBSD
+
+TODIR=OpenBSD				# where to put it
+
+ARCH=`uname -m`
+
+PROTO=http			# how to get it, other options http scp 
+VERBOSE=""			# how chattily to get it
+ECHO=""
+
+# how to get it - Linux lacks a working FTP command
+case $(uname) in
+	OpenBSD|Darwin)	FTP="ftp -a";;
+	Linux)		FTP=wget;;
+	*)	echo No FTP set for $(uname)
+		exit 1;;
+esac
+
+# Where to put it
+if [ -d ~/pub ]; then
+	BASEDIR=~/pub/${TODIR}
+elif [ -d ~ftp/pub ]; then
+	BASEDIR=~ftp/pub/${TODIR}		# where to put it locally
+else
+	echo "No pub directory found" >&2
+	exit 1
+fi
+
+USAGE="$0 [-s][-a arch ][-b local-Basedir][-f|-h host] [-p patt]
+-a arch := i386|amd64|sparc|hppa|...
+"
+
+function usage {		# give usage message, and exit
+	echo "Usage: $USAGE" 2>&1
+	exit 1
+}
+
+while getopts "a:b:f:h:inp:sw" opt 
+do 
+ 	 case "$opt" in 
+		a)	ARCH=$OPTARG ;;
+		b)	BASEDIR=$OPTARG ;;
+		f|h)
+			case "$OPTARG" in
+			cerias) SITE=osmirrors.cerias.purdue.edu ;;
+			dos)	SITE=ftp.darwinsys.com;;
+			#gulus)	SITE=gulus.usherbrooke.ca
+			#	FROMDIR=pub/distro/OpenBSD
+			#	;;
+			ob|sunsite) SITE=ftp.openbsd.org;;
+			ftp*)	SITE=${OPTARG}
+				;;
+			24-7)	SITE=mirrors.24-7-solutions.net
+				;;
+			kent) # http://www.mirrorservice.org/pub/OpenBSD/
+				SITE=www.mirrorservice.org
+				;;
+			uk) # http://mirror.public-internet.co.uk/ftp/OpenBSD/
+				SITE=mirror.public-internet.co.uk
+				FROMDIR=/ftp/OpenBSD
+				;;
+			uwat)	# http://mirror.csclub.uwaterloo.ca/pub/OpenBSD/
+				SITE=mirror.csclub.uwaterloo.ca
+				FROMDIR=/pub/OpenBSD
+				;;
+			*)	SITE=${OPTARG};;
+			esac
+			;;
+		i)	PATT="${PATT} install${REL}.iso";;
+		n)	ECHO=echo;;
+		w)	PROTO=http;;
+		p)	PATT=${OPTARG};;
+		s)	SNAPDIR="${RELDIR}"
+			echo "****************************************************"
+			echo "$0: -s means to NOT use snapshot, using ${RELDIR}"
+			echo "****************************************************"
+			echo -n "OK? "; read answer
+			;;
+		v)	VERBOSE=v;;
+		*)	usage;;
+	esac
+done
+shift `expr $OPTIND - 1`		 # leave just filenames
+
+# Now that 'ARCH' is set, we can figure out the files to get
+# Not all of these exist on all arches
+PLAINFILES="INSTALL.${ARCH} bsd bsd.rd bsd.mp cd${REL}.iso cdboot cdbr floppy${REL}{a,b,c}.fs miniroot${REL}.fs"
+BASE_SETS="{base,comp,etc,games,man}$REL.${EXT}"
+X_SETS="{xbase,xetc,xshare,xserv,xfont}$REL.${EXT}"
+FILES="${PLAINFILES} ${BASE_SETS} ${X_SETS}"
+
+# Where to pub it to
+DIR=${BASEDIR}/${SNAPDIR}/${ARCH}
+if [ ! -d ${DIR} ]; then
+	mkdir -p ${DIR}
+fi
+cd ${DIR} || exit
+
+
+if [ $# -ne 0 ]; then
+	usage
+fi
+
+case ${PROTO} in
+ftp|http)
+	set -x
+	for f in ${FILES}
+	do ${ECHO} $FTP ${PROTO}://${SITE}/${FROMDIR}/${SNAPDIR}/${ARCH}/${f}
+	done
+	;;
+ssh)
+	set -x
+	${ECHO} scp -r ian@${SITE}:~ftp/${PREFIX}/${TOP}/${ARCH}/${PATT} .
+	;;
+esac

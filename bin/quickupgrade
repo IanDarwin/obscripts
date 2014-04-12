@@ -1,0 +1,175 @@
+#!/bin/sh -u
+
+# quickupdate -- quickly update base files from snapshot
+
+# Set defaults before getopt...
+
+ARCH=`uname -m`
+DEST=/
+BASE=YES
+X=NO
+KERNEL=YES
+VERBOSE=""
+MERGEMASTER=NO
+BACKUP=NO
+
+. ~/dotfiles/obrel
+
+SNAPDIR=snapshots
+DIR=${SNAPDIR}
+REMOTEHOST=localhost
+
+EXT=tgz
+
+DOWNLOAD=$HOME/pub/OpenBSD		# base dir for finding dist sets
+
+USAGE="$0 [-a arch][-b][-d dest][-x][-k][-m][-v]"
+
+function usage {		# give usage message, and exit
+	echo "Usage: $USAGE
+	[-v]	add -v to 'tar x' command.
+	[-b]	do NOT install BASE
+	[-d dest]	Desination dir [${DEST}]
+	[-a arch]	i386, sparc, etc. [${ARCH}]
+	[-e]	exec format has changed, backup executables first
+	[-k]	do not include kernel [do]
+	[-p]	prefix for finding download files [/usr/download || ~ftp]
+	[-r remoteHost] Ssh upgrade (requires sudo access there)
+	[-s]	use snapshot [use release]
+	[-x]	include X11 [don't]
+	[-m]	Run sysmerge when done [don't]" 2>&1
+	exit 1
+}
+
+while getopts "a:bd:ekmp:r:sxv" opt 
+do 
+ 	 case "$opt" in 
+		a)	ARCH=${OPTARG};;
+		b)	BASE=NO;;
+		d)	DEST=${OPTARG};;
+		e)	BACKUP=YES;;
+		k)	KERNEL=NO;;
+		m)	MERGEMASTER=YES;;
+		p)	DOWNLOAD=${OPTARG};;
+		r)	REMOTEHOST=${OPTARG};;
+		s)	DIR=${RELDIR};;	# stable, not snapshots
+		x)	X=YES;;
+		v)	VERBOSE='v';;
+		*)	usage;;
+	esac
+done
+shift `expr $OPTIND - 1`		 # leave just filenames
+
+if [ ${REMOTEHOST} = localhost -a ${DEST} = '/' -a ${ARCH} != $(uname -m) ]; then
+	echo "$0: FAIL: localhost is not a ${ARCH}, you nimmie!"
+	exit 42
+fi
+
+if [ -d ${DOWNLOAD}/${DIR}/${ARCH} ]; then
+	cd ${DOWNLOAD}/${DIR}/${ARCH} || exit
+elif [ -d ~ftp/pub/OpenBSD/${DIR}/${ARCH} ]; then
+	 cd ~ftp/pub/OpenBSD/${DIR}/${ARCH} || exit
+fi
+
+# Check this AFTER getopts so -h works without sudo
+if [ ${REMOTEHOST} = localhost -a ! -w ${DEST} ]; then
+	echo "$0: Need write permission on ${DEST}"
+	exit 1
+fi
+
+echo "Are you sure this is going to work? Is it running the current kernel?"
+if [ "${REMOTEHOST}" = localhost ]; then
+	echo -n "At the very least, have you opened a ROOT window on $(hostname) (afterwards is too late)? "
+else
+	echo -n "At the very least, have you opened a ROOT window on remote machine ${REMOTEHOST} (afterwards is too late)? "
+fi
+read answer junk
+case ${answer} in
+	y*)	;;
+	*)	exit 1;;
+esac
+
+ls -l 
+echo -n "quickupgrade from ${PWD} on `hostname` to ${DEST} on ${REMOTEHOST}? [nyq]"
+read ans
+case ${ans} in
+	y*)	;;
+	*)	exit 1;;
+esac
+
+if [ "$KERNEL" = "YES" ]; then
+	if [ -f bsd ]; then
+		case "${REMOTEHOST}" in
+			localhost) 
+				k="$(if [ -f bsd.mp -a "$(sysctl hw.ncpu)" != 'hw.ncpu=1' ]; then echo bsd.mp; else echo bsd; fi)"
+echo $k
+				mv ${DEST}/bsd ${DEST}/obsd && cp ${k} ${DEST}/bsd && echo Kernel $k installed as ${DEST}/bsd;;
+			*) 
+				k=$(ssh ${REMOTEHOST} "if [ -f bsd.mp -a "$(sysctl hw.ncpu)" != 'hw.ncpu=1' ]; then echo bsd.mp; else echo bsd; fi")
+echo $k
+				ssh ${REMOTEHOST} sudo mv ${DEST}/bsd ${DEST}/obsd cp ${k} ${DEST}/bsd && echo Kernel $k installed as ${DEST}/bsd;;
+		esac
+	else
+		echo "File ./bsd not found, not installing /bsd" >&2
+	fi
+else
+	echo "-k specified, not installing kernel." >&2
+fi
+
+# NEVER include etc in this list, or you will die horribly!
+# xbase is in both as many packages now depend upon't
+BDIRS="comp man xbase"
+XDIRS="xbase xfont xserv xshare"
+DIRS=""
+if [ "NO" != ${BASE} ]; then
+	DIRS="${BDIRS}"
+fi
+if [ "YES" = ${X} ]; then
+	DIRS="${DIRS} ${XDIRS}"
+fi
+# do baseXX last because of tar failures (esp in 4.8-4.9 traversal)
+if [ "NO" != ${BASE} ]; then
+	DIRS="${DIRS} base"
+fi
+
+# This one backup step we do anyway, just in case
+case ${REMOTEHOST} in
+	localhost) cp /sbin/reboot /sbin/oreboot;;
+	*) 	echo "==> bkup reboot"
+		ssh ${REMOTEHOST} sudo cp /sbin/reboot /sbin/oreboot
+		;;
+esac
+echo Old reboot backed up as /sbin/oreboot.
+
+for f in ${DIRS}
+do
+	FILE="${f}${REL}.${EXT}"
+	if [ -f ${FILE} ]; then
+		echo "===> `pwd`/$f (${FILE})" >&2
+	else
+		echo "Cannot locate file ${FILE}"
+		exit
+	fi
+	case ${REMOTEHOST} in
+		localhost) (cd ${DEST} || exit; tar xzpf${VERBOSE} - ) < ${FILE};;
+		*) ssh ${REMOTEHOST} "(cd ${DEST} || exit; sudo tar xzpf${VERBOSE} -)" < ${FILE}
+	esac
+done
+
+echo "Rebuilding /dev..."
+case "${REMOTEHOST}" in
+localhost) cd ${DEST}/dev; sh MAKEDEV all;;
+*) ssh ${REMOTEHOST} "cd ${DEST}/dev; sudo sh MAKEDEV all";;
+esac
+
+if [ "$MERGEMASTER" = "YES" ]; then
+	sysmerge -f etc${REL}.tgz -x xetc${REL}.tgz
+else
+	echo "No -m, not running sysmerge" >&2
+fi
+
+if [ -r ${DEST}/upgrade.site ]; then
+	echo "Running ${DEST}/upgrade.site" >&2
+	cd ${DEST}
+	sh ./upgrade.site
+fi

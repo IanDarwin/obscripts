@@ -1,0 +1,21 @@
+#!/bin/sh -u
+
+# pgk_recreate, for when you don't want to recompile but want to move.
+
+cd ${pkgs} || {
+	echo "Can't get packages dir ${pkgs}, creating package in home dir" >&2
+	cd
+}
+
+for PKG in $*
+do
+	PKG_DIR=/var/db/pkg/${PKG}
+	if [ -d ${PKG_DIR} ]; then
+		echo "--> Packaging ${PKG}..." >&2
+
+		pkg_create -f ${PKG_DIR}/+CONTENTS &&
+			echo "--> Created package in $PWD/${PKG}.tgz" >&2
+	else
+		echo "Can't locate package dir ${PKG_DIR}" >&2
+	fi
+done

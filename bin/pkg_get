@@ -1,0 +1,40 @@
+#!/bin/sh
+
+DEST=/
+ARCH=`uname -m`
+
+# getopts here
+
+USAGE="$0 [-v] old new"
+
+function usage {		# give usage message, and exit
+	echo "Usage: $USAGE" 2>&1
+	exit 1
+}
+
+while getopts "a:" opt 
+do 
+ 	 case "$opt" in 
+		a)	ARCH=${OPTARG};;
+		*)	usage;;
+	esac
+done
+shift `expr $OPTIND - 1`		 # leave just filenames
+
+DIR=/usr/ports/packages/$ARCH/all
+
+FETCHURL="ftp://rt.fm/pub/OpenBSD/snapshots/packages/$ARCH"
+
+cd ${DEST}/${DIR}/ || exit
+
+echo "Getting packages from ${FETCHURL} to `pwd`."
+
+for pkg in $*
+do
+	echo "==>" $pkg
+	if [ -f $pkg.tgz ]; then
+		echo Already here
+	else
+		ftp $FETCHURL/$pkg.tgz
+	fi
+done

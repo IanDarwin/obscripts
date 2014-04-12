@@ -1,0 +1,23 @@
+#!/bin/sh
+
+# whichpkg -- which package does that file belong to?
+
+for file in $*
+do
+	SYSTEM=`uname -s`
+
+	case "${SYSTEM}" in
+
+	SunOS)
+		cd /var/sadm/pkg
+		egrep $file contents
+		;;
+	OpenBSD)
+		cd /var/db/pkg || exit
+		egrep $file */+CONTENTS | sed -e 's=/+CONTENTS=='
+		;;
+	*)
+		echo "Don't know how to find packages on $SYSTEM" >&2
+		;;
+	esac
+done
