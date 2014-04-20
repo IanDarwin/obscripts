@@ -1,0 +1,138 @@
+#!/bin/ksh
+
+# rl - reload various system servers' data
+# $Id$
+
+PROGNAME=$0; export PROGNAME
+
+function reload_standard {
+	serv=$1
+	# Try as a rc.d service, without and with added 'd'
+	# (e.g., "inetd" is a known name, "cups" is a known name
+	if [ -f /etc/rc.d/${serv} ]; then
+		/etc/rc.d/${serv}
+	elif [ -f /etc/rc.d/${serv}d ]; then
+		/etc/rc.d/${serv}d
+	# Feh, last chance: try /var/run/servername.pid
+	elif [ -f /var/run/$serv?pid ]; then
+		kill -HUP `sed -e 1q /var/run/$serv.pid`
+	else
+		echo >&2 "$PROGNAME: Don't know how to restart $serv"
+	fi
+}
+
+function do_help {
+	echo "$0 reloads servers. Services available include:"
+	echo "pf `cd /var/run; ls *.pid|sed 's/\.pid//g' `"
+}
+
+USAGE="$0 [-i][-v] service"
+
+function usage {		# give usage message, and exit
+	echo "Usage: $USAGE" 2>&1
+	exit 1
+}
+
+while getopts "hiv" opt 
+do 
+ 	 case "$opt" in 
+		h)	do_help
+			exit
+			;;
+		i)	INTERACT=YES;;
+		v)	VERBOSE=-v;;
+		*)	usage;;
+	esac
+done
+shift $(expr $OPTIND - 1)		 # leave just filenames
+
+for serv
+do
+	if [ -f /etc/rc.d/${serv} ]; then
+		/etc/rc.d/${serv} restart
+	else
+	case $serv in
+	help)
+		do_help
+		exit
+		;;
+	arp)
+		ETHERS=/etc/ethers
+		# format is: 08:00:20:04:e3:f0       dartboard
+		cat ${ETHERS} | while read ether_addr hostname
+		do
+			arp -s ${hostname} ${ether_addr} temp
+		done
+		;;
+	eth0)			# only exists on Linux
+		dhclient eth0
+		;;
+	ipsec)
+		kill -HUP `cat /var/run/isakmpd.pid`
+		ipsecctl -f /etc/ipsec.conf
+		;;
+	named|bind)
+		#rndc reload
+		rndc stop
+		named -t /var/named
+
+		sleep 1
+		echo "Now please check this logfile..."
+		watchlog -n25 daemon
+		;;
+	nagios)
+		# N.B. Invoke in check mode before pkilling old and starting new.
+		sudo -u _nagios nagios -v /etc/nagios/nagios.cfg && /etc/rc.d/nagios restart
+		;;
+	http*|apache)
+		if [ -x /usr/sbin/apachectl ]; then
+			apachectl restart
+		else
+			if [ -f /var/www/logs/httpd.pid ]; then
+				kill -HUP `cat /var/www/logs/httpd.pid`
+			else
+				echo "Can't find either apachectl or httpd.pid, sorry"
+			fi;
+		fi
+		;;
+	nfs)
+		reload_standard mountd
+		;;
+	openvpn|vpn)
+		# The assumption is that you're starting it via hostname.tun0
+		pkill openvpn
+		exec rl tun0
+		;;
+	pf)
+		pfctl -e /etc/pf.conf 2>/dev/null
+		pfctl -f /etc/pf.conf
+		;;
+	sendmail)
+		reload_standard sendmail
+		;;
+	spam*)
+		# reload spamd
+		/usr/libexec/spamd-setup -d -D
+		# AND spamdb
+			# good guys
+			sudo spamdb -a `awk '!/^#/{printf "%s ", $1}' /etc/mail/mywhite.txt`
+			# spam traps
+			while read address 
+			do sudo spamdb -T -a "$address"
+			done < /etc/mail/myspamtraps.txt
+		;;
+	tomcat)
+		/etc/rc.d/tomcat stop
+		mv ${CATALINA_HOME}/logs/catalina.{out,bak} 2>/dev/null
+		/etc/rc.d/tomcat start
+		;;
+	*[012])			# must be near last: rl0, sis0, ath0, etc.
+		sh /etc/netstart ${serv}
+		;;
+	*)
+		# try it as a regular daemon
+		reload_standard $serv
+		;;
+	esac
+	fi	# end of main loop "if" statment
+done

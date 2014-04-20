@@ -1,5 +1,28 @@
-= obscripts - Scripts useful on OpenBSD
+= obscripts - Scripts for OpenBSD
 
-These scripts may or may not be useful on OpenBSD. Do not run them
+These scripts may or may not be useful on http://openbsd.org[OpenBSD]. They're primarily
+system administration scripts, many requiring root; do not run them
 without knowing what they do, how they work, and how they may fail!
 They are provided without warranty. USE AT OWN RISK.
+
+The scripts mostly use OpenBSD-specific tools like package management,
+or filesystem-layout-specific paths, and so on.
+
+== HowTo
+
+The easiest way to use most of them is to git clone this repo in 
+your home directory, and add its _bin_ directory to your PATH.
+
+You should also add its _man_ directory to your MANPATH variable (or in man.conf).
+
+The _rootscripts_ directory contains one - prepsusp - that will work better if you
+copy it to / so you don't have to have /home mounted when
+running it.
+
+== Caveats and Contributions
+
+As with all root scripts, read them over to be sure I'm not
+trying to pwn you (or that my github account hasn't been hacked).
+
+If you find this useful, consider contributing back, either changes,
+man pages?, or your own scripts. Git pull, or patches.
