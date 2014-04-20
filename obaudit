@@ -9,7 +9,7 @@ case "${sys}" in
 esac
 
 if [ -f /usr/src/Makefile ]; then
-	echo 'Some /usr/src present: \'
+	echo 'Some /usr/src present:'
 	ls -C /usr/src
 else
 	echo "No /usr/src"
@@ -25,13 +25,9 @@ if [ -f /etc/ipf.conf ]; then
 	else
 		echo '(but NO pf.conf; need to rename and update it) **'
 	fi
-else
-	echo "No ipf.conf"
 fi
 if [ -f /etc/nat.conf ]; then
 	echo '** Warning: nat.conf found, need to merge into pf.conf **'
-else
-	echo "No nat.conf"
 fi
 
 [ -w / ] || {
@@ -46,23 +42,23 @@ fi
 if [ -f /usr/bin/f77 ]; then
 -s <<!
 echo "Removing old fortran and other 4.7 stuff"
-rm /usr/include/evdns.h
-rm /usr/libdata/perl5/site_perl/*-openbsd/evdns.ph
+rm -f /usr/include/evdns.h
+rm -f /usr/libdata/perl5/site_perl/*-openbsd/evdns.ph
 rm -f /usr/bin/f77 /usr/bin/g77 /usr/include/f2c.h /usr/include/g2c.h \
   /usr/lib/gcc-lib/*-unknown-openbsd*/3.3.5/f771 /usr/lib/libfrtbegin.a \
   /usr/lib/libfrtbegin_p.a /usr/lib/libfrtbegin_pic.a /usr/lib/libg2c.a \
   /usr/lib/libg2c_p.a /usr/lib/libg2c_pic.a /usr/share/info/g77.info \
   /usr/share/man/cat1/f77.0 /usr/share/man/cat1/g77.0
 cd /usr/X11R6/include/X11
-rm -r Xaw/Print.h Xaw/PrintSP.h r XprintAppUtil XprintUtil
+rm -fr Xaw/Print.h Xaw/PrintSP.h r XprintAppUtil XprintUtil
 cd extensions
-rm Print.h Printstr.h XEVIstr.h Xagstr.h Xcupstr.h Xdbeproto.h Xevie.h \
+rm -fr Print.h Printstr.h XEVIstr.h Xagstr.h Xcupstr.h Xdbeproto.h Xevie.h \
    Xeviestr.h dpmsstr.h lbxdeltastr.h lbxopts.h lbxstr.h lbxzlib.h \
    mitmiscstr.h multibufst.h securstr.h shapestr.h shmstr.h syncstr.h \
    xteststr.h xtrapbits.h xtrapddmi.h xtrapdi.h xtrapemacros.h \
    xtraplib.h xtraplibp.h xtrapproto.h
 cd /usr/X11R6/lib/pkgconfig
-rm evieproto.pc lbxutil.pc printproto.pc trapproto.pc xaw8.pc \
+rm -f evieproto.pc lbxutil.pc printproto.pc trapproto.pc xaw8.pc \
    xevie.pc xp.pc xprintapputil.pc xprintutil.pc xtrap.pc
 rm /usr/X11R6/share/aclocal/xaw.m4
 cd /usr/X11R6/bin
@@ -70,7 +66,7 @@ rm -f bdftruncate ccmakedep cleanlinks cxpm fontname.sh fontprop.sh gccmakedep m
 !
 fi
 
-# remove groff
+# remove groff from base, it moved to ports
 if [ -x /usr/bin/troff ]; then
 -s <<!
 	echo "Removing old groff base stuff"
@@ -193,6 +189,8 @@ _ldpd 98 98 LDPD Daemon
 _sndio 99 99 sndio privsep
 _ldapd 100 100 LDAP Daemon
 _iked 101 101 IKEv2 Daemon
+_iscsid 102 102 iSCSI Daemon
+_smtpq 103 103 SMTPD Daemon Qrunner privsep
 !
 
 grep '^_hoststated:' /etc/passwd && echo "Warning: must remove hoststated user"
@@ -251,5 +249,5 @@ int main(int argc, char ** argv) {
 make t; ./t; rm t
 
 # Post-5.4
-rm /usr/lib/libcompat* /usr/include/{re_comp,regexp}.h
-rm /usr/share/man/man3/{re_comp,re_exec,regexp}.3
+rm -f /usr/lib/libcompat* /usr/include/{re_comp,regexp}.h
+rm -f /usr/share/man/man3/{re_comp,re_exec,regexp}.3
