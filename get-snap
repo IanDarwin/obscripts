@@ -70,6 +70,9 @@ do
 				SITE=mirror.public-internet.co.uk
 				FROMDIR=/ftp/OpenBSD
 				;;
+			ut1)
+				SITE=openbsd1.cs.utoronto.ca;
+				;;
 			uwat)	# http://mirror.csclub.uwaterloo.ca/pub/OpenBSD/
 				SITE=mirror.csclub.uwaterloo.ca
 				FROMDIR=/pub/OpenBSD
