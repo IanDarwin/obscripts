@@ -30,7 +30,7 @@ if [ -f /etc/nat.conf ]; then
 	echo '** Warning: nat.conf found, need to merge into pf.conf **'
 fi
 
-[ -w / ] || {
+[ -w / ] || { # must be root for the rest of this
 	echo "IKJ567007E You are no talking lion; no changes made."
 	exit 1
 }
@@ -246,8 +246,19 @@ int main(int argc, char ** argv) {
         printf("time_t is %d bits here\n", 8 * sizeof(time_t));
 }
 !
-make t; ./t; rm t
+make t && ./t; rm -f t
 
 # Post-5.4
 rm -f /usr/lib/libcompat* /usr/include/{re_comp,regexp}.h
 rm -f /usr/share/man/man3/{re_comp,re_exec,regexp}.3
+
+# Bye-bye heimdal
+if [ -d /etc/kerberosV ]; then
+	rm -fr /etc/kerberosV /usr/include/kerberosV
+	rm -fr /usr/libdata/perl5/site_perl/*-openbsd/kerberosV
+	rm -fr /usr/src/kerberosV /usr/obj/kerberosV
+	rm -ff /usr/share/man/cat8/kerberos.0 \
+		/usr/share/man/man3/krb5_kerberos_enctypes.3 \
+		/usr/share/man/man8/kerberos.8
+	rm -fr /var/kerberosV
+fi
