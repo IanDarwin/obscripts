@@ -1,0 +1,26 @@
+.Dd $Mdocdate$
+.Dt RL 8
+.Os
+.Sh NAME
+.Nm rl 
+.Nd re-load server(s) on your
+.Ox
+system.
+.Sh SYNOPSIS
+.Nm rl server [...]
+.Sh DESCRIPTION
+The
+.Nm
+program reloads the 
+.Ox
+daemons specified on the command line.
+Some have special handling or short names (using shell globbing).
+If the name is not found, it will be looked for in /var/run/pid
+and also in /etc/rc.d and the obvious reload method invoked.
+.Pp
+It is believed that typing
+.Nm
+is faster than typing
+/etc/rc.d/someName reload
+.Sh AUTHORS
+Ian Darwin
