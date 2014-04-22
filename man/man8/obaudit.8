@@ -10,6 +10,9 @@
 The
 .Nm
 program updates some files on your OpenBSD system and checks for a few update anomalies
+.Pp
+Note that in the process, it will blindly remove files that are no
+longer in base, whether you have edited them or not!
 .Sh AUTHORS
 Ian Darwin
 .Sh CAVEATS
