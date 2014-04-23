@@ -98,4 +98,9 @@ Ian Darwin
 If the given number is out of range, invocation is silently ignored.
 If the command is invoked as a shell script instead of an invocation,
 it will appear to work but have no effect.
-.\" .Sh BUGS
+.Sh BUGS
+As with anything that runs arbitrary shell commands, the onus is on the user
+to ensure that something sensible is done; in particular, you must
+ensure that none of the files or directories involved
+is writable by any other user.
+$HOME $HOME/.cvsroots $HOME/obscripts $HOME/obscripts/do
