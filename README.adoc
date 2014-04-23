@@ -15,6 +15,8 @@ your home directory, and add its _bin_ directory to your PATH.
 
 You should also add its _man_ directory to your MANPATH variable (or in man.conf).
 
+The _dotscripts_ directory contains command(s) that must be invoked by the "." or "source" command.
+
 The _rootscripts_ directory contains one - prepsusp - that will work better if you
 copy it to / so you don't have to have /home mounted when
 running it.

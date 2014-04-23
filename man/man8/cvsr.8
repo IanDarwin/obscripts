@@ -1,0 +1,101 @@
+.\"
+.\" Copyright (c) 2006-2014 Ian Darwin http://darwinsys.com/
+.\"
+.\" Permission to use, copy, modify, and distribute this software for any
+.\" purpose with or without fee is hereby granted, provided that the above
+.\" copyright notice and this permission notice appear in all copies.
+.\"
+.\" THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+.\" WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+.\" MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+.\" ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+.\" WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+.\" ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+.\" OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+.\"
+.\" The following requests are required for all man pages.
+.\"
+.\" Remove `\&' from the line below.
+.Dd $Mdocdate$
+.Dt CVSR 8
+.Os
+.Sh NAME
+.Nm cvsr
+.Nd automate setting of CVSROOT variable
+.Sh SYNOPSIS
+.Nm cvsr
+.Ar
+.Sh DESCRIPTION
+The
+.Nm
+utility prompts you for one of multiple CVS servers,
+and sets the CVSROOT environment variable accordingly.
+.Pp
+.Nm
+is controlled by the file 
+${HOME}/.cvsroots ,
+which must exist.
+This file consists of three fields:
+.Pp
+Name - the display name, such as "anon1" or "myserver"
+.Pp
+Comment - a comment to be displayed when the given server is selected,
+e.g., for confirmation.
+.Pp
+Command - an arbitrary shell command, which should include
+the sequence "export CVSROOT=" and a hostname.
+Multiple commands may be stacked with ";" as in any one-line shell script.
+.Pp
+Commant lines beginning with the '#' character are ignored.
+.Sh ENVIRONMENT
+Uses $HOME to find the configuration file.
+Sets $CVSROOT to the given server.
+.Sh FILES
+$HOME/.cvsroots
+.Sh EXAMPLES
+.Bd -literal
+$ cat ~/.cvsroots
+# Name | Snarky Comment | Shell Command
+None|None of the above, eh? |unset CVSROOT
+Local|Make yourself at home.  |export CVSROOT=/cvs
+By IP-Ian|IP for ian? | read IP;export CVSROOT=ian@${IP}:/cvs
+By IP-Anon|IP for anoncvs? | read IP; export CVSROOT=anoncvs@${IP}:/cvs
+ut|UofT At Your Service|export CVSROOT=anoncvs@openbsd.cs.utoronto.ca:/cvs
+anon1|Incognito, eh?|export CVSROOT=anoncvs@anoncvs1.usa.openbsd.org:/cvs
+$ . ~/obscripts/dotscripts/cvsr # Try it interactively
+CVSROOT=:pserver:ian@localhost:/data/java/JDK2
+     1	None
+     2	Local
+     3	By IP-Ian
+     4	By IP-Anon
+     5	ut 
+     6	anon1 
+Which CVS? 2
+Make yourself at home
+CVSROOT=/cvs
+$ . ~/obscripts/dotscripts/cvsr # Show stacked-command example
+    # list printed as above
+Which CVS? 3
+IP for ian? 
+1.2.3.4
+CVSROOT=ian@1.2.3.4:/cvs
+$ echo $CVSROOT
+ian@1.2.3.4:/cvs
+$ alias ". cvsr=$HOME/obscripts/dotscripts/cvsr" # Put this in .profile etc.
+$ cvsr
+CVSROOT=ian@1.2.3.4:/cvs
+     # list printed as above
+Which CVS? 5
+UofT At Your Service 
+CVSROOT=anoncvs@openbsd.cs.utoronto.ca:/cvs
+$ 
+.Ed
+.Sh SEE ALSO
+.Xr cvs 1
+.Sh AUTHORS
+Ian Darwin
+.Sh CAVEATS
+If the given number is out of range, invocation is silently ignored.
+If the command is invoked as a shell script instead of an invocation,
+it will appear to work but have no effect.
+.\" .Sh BUGS

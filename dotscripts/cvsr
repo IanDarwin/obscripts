@@ -1,0 +1,28 @@
+#!/bin/sh
+
+# cvsr - set CVS Root from list in file
+
+# Since I work on a bunch of machines, this script is a shortcut for
+# setting the CVSROOT.
+
+# N.B.: must be sourced (with "." in sh/ksh); of course you know
+# that shell scripts invoked "normally" can't change environment variables
+# in your main shell, right? :-)   Hint: alias cvsr=". ~/scripts/cvsr"
+
+FILE=$HOME/.cvsroots
+if [ ! -f ${FILE} ]; then
+	echo "$0: requires ${FILE}. RTFM"
+	exit 1
+fi
+
+function showit {
+	echo CVSROOT=${CVSROOT}
+}
+showit
+
+sed -e '/^#/d' -e 's/|.*//' ${FILE} | nl
+echo -n "Which CVS?"
+read num
+sed -e '/^#/d' ${FILE} | awk -F'|' 'NR=='${num}'{print $2}'
+eval $(sed -e '/^#/d' ${FILE} | awk -F'|' 'NR=='${num}'{print $3}')
+showit
