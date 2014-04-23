@@ -16,13 +16,13 @@ if [ ! -f ${FILE} ]; then
 fi
 
 function showit {
-	echo CVSROOT=${CVSROOT}
+	echo $1 CVSROOT=${CVSROOT}
 }
-showit
+showit Old
 
 sed -e '/^#/d' -e 's/|.*//' ${FILE} | nl
-echo -n "Which CVS?"
+echo -n "Which CVS? "
 read num
 sed -e '/^#/d' ${FILE} | awk -F'|' 'NR=='${num}'{print $2}'
 eval $(sed -e '/^#/d' ${FILE} | awk -F'|' 'NR=='${num}'{print $3}')
-showit
+showit New
