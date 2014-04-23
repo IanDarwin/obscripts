@@ -99,6 +99,9 @@ If the given number is out of range, invocation is silently ignored.
 If the command is invoked as a shell script instead of an invocation,
 it will appear to work but have no effect.
 .Sh BUGS
+If the config file does not exist, the script prints a message and
+exits, which-when invoked correctly-will terminate your login shell.
+.Pp
 As with anything that runs arbitrary shell commands, the onus is on the user
 to ensure that something sensible is done; in particular, you must
 ensure that none of the files or directories involved
