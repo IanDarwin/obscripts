@@ -1,0 +1,50 @@
+#!/bin/sh
+
+case $# in
+	3|4);;
+	*)	echo "Usage: $0 hackpackage version category [homepage]"
+		exit 1;;
+esac
+
+HACKPACK=$1
+VER=$2
+CATEGORY=$3
+HOMEPAGE=${4-"XXX HOMEPAGE NEEDED"}
+
+PORTSDIR=$mp/${CATEGORY}/hs-${HACKPACK}
+if [ -d ${PORTSDIR} ]; then
+	echo "${PORTSDIR} already exists, bailing!"
+	exit 1
+fi
+
+mkdir -p ${PORTSDIR}/pkg
+
+cd ${PORTSDIR}
+
+cat >Makefile <<!
+# $OpenBSD$
+
+COMMENT =		Haskell XXX package
+
+DISTNAME =		${HACKPACK}-${VER}
+CATEGORIES =	${CATEGORY}
+HOMEPAGE =		${HOMEPAGE}
+
+# BSD3|GPL XXX
+PERMIT_PACKAGE_CDROM =	Yes
+
+MODULES =		lang/ghc
+
+MODGHC_BUILD =	cabal hackage haddock register
+
+#RUN_DEPENDS =	${BUILD_DEPENDS}
+#BUILD_DEPENDS = \
+#				devel/hs-syb>=0.1,<0.5
+
+.include <bsd.port.mk>
+!
+echo "A very nice hackage" > pkg/DESCR
+
+make fetch makesum
+
+echo "Your new port is in $PWD"
