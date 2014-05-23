@@ -20,6 +20,7 @@ HOMEPAGE=${5-"XXX HOMEPAGE NEEDED"}
 
 # all the hot kids are using bz2; this should be settable with getopts.
 DISTFILE=${PACKAGE}-${VER}.bz2
+COMMENT="XXX Write a comment here"
 
 PORTSDIR=${MYPORTS}/${CATEGORY}/${PACKAGE}
 if [ -d ${PORTSDIR} ]; then
@@ -33,12 +34,12 @@ cd ${PORTSDIR}
 
 sed \
 	-e "/^COMMENT =/s@???@$COMMENT@" \
-	-e "/^PKGNAME =/s@???@$NAME@" \
-	-e "/^DISTNAME =/s@???@${DIST}@" \
-	-e "/^#HOMEPAGE =/s@@HOMEPAGE =@" \
+	-e "/^PKGNAME =/s@???@$PACKAGE@" \
+	-e "/^DISTNAME =/s@???@${DISTFILE}@" \
+	-e "/^#HOMEPAGE.*=/s@@HOMEPAGE =@" \
 	-e "/^HOMEPAGE =/s@???@${HOMEPAGE}@" \
-	-e "/\tURL$/s///" \
-	-e "/^CATEGORIES =/s@???@$CAT@" \
+	-e '/\tURL$/s///' \
+	-e "/^CATEGORIES =/s@???@$CATEGORY@" \
 	-e "/^MASTER_SITES/s@???@$ARCHIVESITE@" \
 	\
 	${TEMPLATE} > Makefile
