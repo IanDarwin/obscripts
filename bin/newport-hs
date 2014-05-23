@@ -1,5 +1,10 @@
 #!/bin/sh
 
+# newport-hs: scaffold a Haskell library port
+
+PORTSDIR=/usr/ports
+MYPORTS=${PORTSDIR}/mystuff
+
 case $# in
 	3|4);;
 	*)	echo "Usage: $0 hackpackage version category [homepage]"
@@ -11,7 +16,7 @@ VER=$2
 CATEGORY=$3
 HOMEPAGE=${4-"XXX HOMEPAGE NEEDED"}
 
-PORTSDIR=$mp/${CATEGORY}/hs-${HACKPACK}
+PORTSDIR=${MYPORTS}/${CATEGORY}/hs-${HACKPACK}
 if [ -d ${PORTSDIR} ]; then
 	echo "${PORTSDIR} already exists, bailing!"
 	exit 1
@@ -47,4 +52,4 @@ echo "A very nice hackage" > pkg/DESCR
 
 make fetch makesum
 
-echo "Your new port is in $PWD"
+echo "Your new port is in $PWD. You need to modify Makefile, populate DESCR, ..."
