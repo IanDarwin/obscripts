@@ -1,0 +1,63 @@
+#!/bin/sh
+
+# create a new DNS domain set of server files
+# Uses NSD file format.
+
+# TODO add arg parsing, slave support, etc etc etc
+
+. ~/.dns_params # must have host_ip4=nnn.nnn.nnn.nnn, may have dns_slave=n.n.n.n
+
+[ -w / ] || { echo You must eat and breathe the roots, grasshopper!; exit 1
+}
+
+cd /var/nsd
+
+case $# in
+0)	echo "Usage: $0 domainname [...]" >&2
+	exit 1
+	;;
+esac
+
+for DOMAIN
+do
+
+# First make an entry in nsd.conf, should look like this:
+#zone:
+#       name: "example.com"
+#       zonefile: "example.com"
+#       notify: 192.0.2.1 NOKEY
+#       provide-xfr: 192.0.2.1 NOKEY
+(
+echo "zone:
+	name:  \"${DOMAIN}\"
+	zonefile: \"${DOMAIN}\"\
+"
+if [ ! -z "${dns_slave}" ]; then
+echo "	notify: ${dns_slave} NOKEY
+	provide-xfr: ${dns_slave} NOKEY\
+"
+fi
+echo 
+) >> etc/nsd.conf
+
+echo "
+${DOMAIN}. IN SOA ns0.${DOMAIN}. hostmaster.${DOMAIN}. (
+		$(date +%Y%m%d)01     ; serial number, YYYYMMDDxx
+		10800          ; refresh rate in seconds (3 hours)
+		1800           ; retry in seconds (30 minutes)
+		1209600        ; expire in seconds (2 weeks)
+		604800 )       ; minimum in seconds (1 week)
+
+		IN NS    ns1.${DOMAIN}.
+		IN NS    ns2.${DOMAIN}.
+
+${DOMAIN}.    IN A        ${host_ip4}
+www			IN CNAME    ${DOMAIN}.
+smtp		IN CNAME    ${DOMAIN}.
+imap		IN CNAME    ${DOMAIN}.
+" > zones/${DOMAIN}
+
+# Now poke
+nsd-control reload ${DOMAIN}
+
+done
