@@ -58,6 +58,6 @@ imap		IN CNAME    ${DOMAIN}.
 " > zones/${DOMAIN}
 
 # Now poke
-nsd-control reload ${DOMAIN}
+nsd-control reload
 
 done
