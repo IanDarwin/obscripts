@@ -253,7 +253,10 @@ make t && ./t; rm -f t
 rm -f /usr/lib/libcompat* /usr/include/{re_comp,regexp}.h
 rm -f /usr/share/man/man3/{re_comp,re_exec,regexp}.3
 
-# Bye-bye heimdal
+# 20140419
+rm -rf /usr/include/altq
+
+# 201404 Bye-bye heimdal
 if [ -d /etc/kerberosV ]; then
 	rm -rf /etc/kerberosV/
 	rm -f /etc/rc.d/{kadmind,kdc,kpasswdd,ipropd_master,ipropd_slave}
