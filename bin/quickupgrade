@@ -10,7 +10,7 @@ BASE=YES
 X=NO
 KERNEL=YES
 VERBOSE=""
-MERGEMASTER=NO
+SYSMERGE=NO
 BACKUP=NO
 
 . ~/dotfiles/obrel
@@ -49,7 +49,7 @@ do
 		d)	DEST=${OPTARG};;
 		e)	BACKUP=YES;;
 		k)	KERNEL=NO;;
-		m)	MERGEMASTER=YES;;
+		m)	SYSMERGE=YES;;
 		p)	DOWNLOAD=${OPTARG};;
 		r)	REMOTEHOST=${OPTARG};;
 		s)	DIR=${RELDIR};;	# stable, not snapshots
@@ -162,8 +162,8 @@ localhost) cd ${DEST}/dev; sh MAKEDEV all;;
 *) ssh ${REMOTEHOST} "cd ${DEST}/dev; sudo sh MAKEDEV all";;
 esac
 
-if [ "$MERGEMASTER" = "YES" ]; then
-	sysmerge -f etc${REL}.tgz -x xetc${REL}.tgz
+if [ "$SYSMERGE" = "YES" ]; then
+	sysmerge
 else
 	echo "No -m, not running sysmerge" >&2
 fi
