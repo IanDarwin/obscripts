@@ -71,11 +71,8 @@ do
 		kill -HUP `cat /var/run/isakmpd.pid`
 		ipsecctl -f /etc/ipsec.conf
 		;;
-	named|bind)
-		#rndc reload
-		rndc stop
-		named -t /var/named
-
+	nsd|named|bind)
+		/etc/rc.d/nsd reload
 		sleep 1
 		echo "Now please check this logfile..."
 		watchlog -n25 daemon
