@@ -35,6 +35,10 @@ fi
 	exit 1
 }
 
+# Add missing password entries - now handled by sysmerge
+
+grep '^_hoststated:' /etc/passwd && echo "Warning: must remove hoststated user"
+
 # in 4.7 and 4.8 a bunch of stuff moved to ports, including g77 and groff
 
 (cd /usr/bin; rm -f perl5.8.8 sup tn3270 mset window protoize unprotoize gccbug)
@@ -139,79 +143,16 @@ rm -f /usr/share/man/man{9/{re,}lookup.9,/_Exit.3}
 
 ##### END OF REMOVAL STUFF #####
 
-# create entries in this format in the passwd and group files.
-# _tftpd:*:79:79::0:0:TFTP daemon:/var/empty:/sbin/nologin
-# _portmap:*:28:
-while read pw_nam pw_uid pw_gecos
-do
-	grep "^$pw_nam" /etc/passwd >/dev/null && continue
-	echo "Missing $pw_nam, adding it..."
-	# cannot use -g =uid as it was only added in 3.4 or 3.5
-	ksh -c "echo ${pw_nam}:*:${pw_uid}: >> /etc/group"
-	useradd -c "${pw_gecos}" -d /var/empty	\
-            -u ${pw_uid} -g ${pw_uid} \
-            -s /sbin/nologin ${pw_nam}
-	# OpenBSD's useradd will create the group automatically.
-done <<!
-_portmap 28 portmap
-_identd 29 identd
-_rstatd 30 rpc.rstatd
-_rusersd 32 rpc.rusersd
-_fingerd 33 fingerd
-_x11 35 X server
-_unbound 53 Unbound Daemon
-_isakmpd 68 isakmpd privsep
-_syslogd 73 Syslog Daemon
-_pflogd 74 pflogd privsep
-_bgpd 75 BGP Daemon
-_tcpdump 76 tcpdump
-_dhcp 77 dhcp programs
-_mopd 78 MOP daemon
-_tftpd 79 TFTP daemon
-_rbootd 80 rbootd Daemon
-_afs 81 afs daemon
-_ppp 82 PPP utilities
-_ntp 83 NTP Daemon
-_ftp 84 FTP Daemon
-_ospfd 85 OSPF Daemon
-_hostapd 86 HostAP Daemon
-_dvmrpd 87 DVMRP Daemon
-_ripd   88 RIP Daemon
-_relayd 89 Relay Daemon
-_ospf6d 90 OSPF6 Daemon
-_snmpd 91 91 SNMP Daemon
-_rtadvd 92 92 IPv6 Router Advertisement Daemon
-_ypldap 93 93 YP to LDAP Daemon
-_btd 94 94 Bluetooth Daemon
-_smtpd 95 95 SMTP Daemon
-_rwalld 96 96 rwall Daemon
-_nsd 97 97 NSD Daemon
-_ldpd 98 98 LDPD Daemon
-_sndio 99 99 sndio privsep
-_ldapd 100 100 LDAP Daemon
-_iked 101 101 IKEv2 Daemon
-_iscsid 102 102 iSCSI Daemon
-_smtpq 103 103 SMTPD Daemon Qrunner privsep
-!
-
-grep '^_hoststated:' /etc/passwd && echo "Warning: must remove hoststated user"
 
 if [ -f /usr/bin/f77 ]; then
 	echo "Fortran binary still in base, time to rm it?"
 fi
 
-case $(arch -k) in
-	vax|moko)
-		echo cc: not checked
-		;;
-	*)
-		if cc -v | grep 'gcc version 3' >/dev/null; then
-			echo cc: gcc4 arch still has gcc v3!!
-		else
-			echo cc: OK
-		fi
-		;;
-esac
+if cc -v | grep 'gcc version 3' >/dev/null; then
+	echo cc: gcc4 arch still has gcc v3!!
+else
+	echo cc: OK
+fi
 
 # 5.3 renaming stuff
 replace 'amd=YES' 'amd_flags='		/etc/rc.conf.local
@@ -340,3 +281,81 @@ if [ -d /etc/kerberosV ]; then
 	rm -f /usr/share/man/man8/string2key.8
 	rm -f /usr/share/man/man8/verify_krb5_conf.8
 fi
+
+# 5.6-5.7 removals
+
+cd /etc/X11/app-defaults
+rm -f Beforelight Bitmap Bitmap-color Bitmap-nocase Chooser Clock-color
+rm -f Editres Editres-color KOI8RXTerm SshAskpass UXTerm Viewres
+rm -f Viewres-color XCalc XCalc-color XClipboard XClock
+rm -f XClock-color XConsole XFontSel XLoad XLock XLogo
+rm -f XLogo-color XMore XSm XTerm XTerm-color Xedit
+rm -f Xedit-color Xfd Xgc Xgc-color Xmag Xman Xmessage
+rm -f Xmessage-color Xsystrace Xvidtune
+
+rm -f /etc/rc.d/named
+rm -f /usr/sbin/dnssec-keygen
+rm -f /usr/sbin/dnssec-signzone
+rm -f /usr/sbin/named
+rm -f /usr/sbin/named-checkconf
+rm -f /usr/sbin/named-checkzone
+rm -f /usr/sbin/nsupdate
+rm -f /usr/sbin/rndc
+rm -f /usr/sbin/rndc-confgen
+rm -f /usr/share/man/man5/named.conf.5
+rm -f /usr/share/man/man5/rndc.conf.5
+rm -f /usr/share/man/man8/dnssec-keygen.8
+rm -f /usr/share/man/man8/dnssec-signzone.8
+rm -f /usr/share/man/man8/named.8
+rm -f /usr/share/man/man8/named-checkconf.8
+rm -f /usr/share/man/man8/named-checkzone.8
+rm -f /usr/share/man/man8/nsupdate.8
+rm -f /usr/share/man/man8/rndc-confgen.8
+rm -f /usr/share/man/man8/rndc.8
+
+rm -f /usr/sbin/openssl
+rm -f /etc/rc.d/nginx
+rm -f /usr/sbin/nginx
+rm -f /usr/share/man/man8/nginx.8
+rm -f /usr/share/man/man5/nginx.conf.5
+rm -f /sbin/mount_procfs
+rm -f /usr/share/man/man8/mount_procfs.8
+rm -rf /usr/include/libmilter
+rm -rf /usr/libdata/perl5/site_perl/`uname -p`-openbsd/libmilter
+rm -rf /usr/libexec/sendmail
+rm -rf /usr/share/sendmail  # preserve mc files first if needed
+
+rm -f /etc/rc.d/sendmail
+rm -f /usr/lib/{libmilter.a,libmilter.so.3.0,libmilter_p.a}
+rm -f /usr/libexec/smrsh
+rm -f /usr/sbin/{editmap,mailstats,praliases}
+rm -f /usr/share/man/man1/{hoststat.1,praliases.1,purgestat.1}
+rm -f /usr/share/man/man8/{editmap.8,mailq.8,mailstats.8,smrsh.8}
+rm -f /var/log/sendmail.st
+rmdir /usr/libexec/sm.bin
+rm -rf /usr/lkm /usr/share/lkm /dev/lkm
+rm -f /usr/bin/modstat
+rm -f /sbin/mod{,un}load
+rm -f /usr/share/man/man8/mod{stat,load,unload}.8
+rm -f /usr/share/man/man4/lkm.4
+rm -f /usr/share/mk/bsd.lkm.mk /usr/include/sys/lkm.h
+
+rm -f /usr/include/ressl.h
+rm -f /usr/lib/libressl.* /usr/lib/libressl_*
+rm -f /usr/share/man/man3/ressl_*
+rm /usr/mdec/installboot /usr/share/man/man8/sparc64/installboot.8
+rm /etc/rc.d/rtsold /sbin/rtsol /usr/sbin/rtsold
+rm /usr/share/man/man8/rtsol.8 /usr/share/man/man8/rtsold.8
+rm -f /usr/X11R6/include/GL/glcorearb.h
+rm -f /usr/X11R6/include/EGL/eglextchromium.h
+
+rm -r /var/tmp
+ln -s /tmp /var/tmp
+
+groupdel _lkm
+userdel smmsp
+groupdel smmsp
+
+# 5.7 renames and removals
+perl -pi -e 's/dbus_daemon/messagebus/;' -e 's/puppetmasterd/puppetmaster/;' -e 's/puppetd/puppet/;' /etc/rc.conf.local
+rm /usr/bin/tip /usr/share/man/man1/tip.1
