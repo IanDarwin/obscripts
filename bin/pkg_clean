@@ -9,6 +9,10 @@ set -u
 
 cd $pdb || exit
 
+# If you do this as one huge command:
+# pkg_delete .??* partial*
+# then it natters about removing each one
+
 for pkg in .??* partial*
 do
 	pkg_delete -I $pkg

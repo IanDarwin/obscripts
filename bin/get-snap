@@ -70,7 +70,7 @@ do
 				SITE=mirror.public-internet.co.uk
 				FROMDIR=/ftp/OpenBSD
 				;;
-			ut)
+			ut|ut1)
 				SITE=openbsd1.cs.utoronto.ca;
 				;;
 			uwat)	# http://mirror.csclub.uwaterloo.ca/pub/OpenBSD/
@@ -98,8 +98,8 @@ shift `expr $OPTIND - 1`		 # leave just filenames
 
 # Now that 'ARCH' is set, we can figure out the files to get
 # Not all of these exist on all arches
-PLAINFILES="INSTALL.${ARCH} bsd bsd.rd bsd.mp cd${REL}.iso cdboot cdbr floppy${REL}{a,b,c}.fs miniroot${REL}.fs"
-BASE_SETS="{base,comp,etc,games,man}$REL.${EXT}"
+PLAINFILES="INSTALL.${ARCH} SHA256 SHA256.sig bsd bsd.rd bsd.mp cd${REL}.iso cdboot cdbr floppy${REL}{a,b,c}.fs miniroot${REL}.fs"
+BASE_SETS="{base,comp,etc,game,man}$REL.${EXT}"
 X_SETS="{xbase,xetc,xshare,xserv,xfont}$REL.${EXT}"
 FILES="${PLAINFILES} ${BASE_SETS} ${X_SETS}"
 
