@@ -2,7 +2,7 @@
 
 # get the current OpenBSD snapshot
 
-. ~/dotfiles/obrel
+. ~/obscripts/obrel
 SNAPDIR="snapshots"
 
 EXT=tgz
@@ -70,7 +70,7 @@ do
 				SITE=mirror.public-internet.co.uk
 				FROMDIR=/ftp/OpenBSD
 				;;
-			ut1)
+			ut)
 				SITE=openbsd1.cs.utoronto.ca;
 				;;
 			uwat)	# http://mirror.csclub.uwaterloo.ca/pub/OpenBSD/
