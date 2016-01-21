@@ -2,50 +2,6 @@
 
 # newport -- scaffold a new port, in my ports directory
 
-PORTSDIR=/usr/ports
-MYPORTS=${PORTSDIR}/mystuff
-TEMPLATE=${PORTSDIR}/infrastructure/templates/Makefile.template
+echo "newport is toast; portsgen has landed in the tree"
 
-case $# in
-	4|5);;
-	*)	echo "Usage: $0 package version category archivesite [homepage]"
-		exit 1;;
-esac
-
-PACKAGE=$1
-VER=$2
-CATEGORY=$3
-ARCHIVESITE=$4
-HOMEPAGE=${5-"XXX HOMEPAGE NEEDED"}
-
-# all the hot kids are using bz2; this should be settable with getopts.
-DISTFILE=${PACKAGE}-${VER}.bz2
-COMMENT="XXX Write a comment here"
-
-PORTSDIR=${MYPORTS}/${CATEGORY}/${PACKAGE}
-if [ -d ${PORTSDIR} ]; then
-	echo "${PORTSDIR} already exists, bailing!"
-	exit 1
-fi
-
-mkdir -p ${PORTSDIR}/pkg
-
-cd ${PORTSDIR}
-
-sed \
-	-e "/^COMMENT =/s@???@$COMMENT@" \
-	-e "/^PKGNAME =/s@???@$PACKAGE@" \
-	-e "/^DISTNAME =/s@???@${DISTFILE}@" \
-	-e "/^#HOMEPAGE.*=/s@@HOMEPAGE =@" \
-	-e "/^HOMEPAGE =/s@???@${HOMEPAGE}@" \
-	-e '/\tURL$/s///' \
-	-e "/^CATEGORIES =/s@???@$CATEGORY@" \
-	-e "/^MASTER_SITES/s@???@$ARCHIVESITE@" \
-	\
-	${TEMPLATE} > Makefile
-
-echo "${PACKAGE} - A nice package" > pkg/DESCR
-
-make fetch makesum
-
-echo "Your new port is in $PWD. You need to modify Makefile, populate DESCR, ..."
+exit 1
