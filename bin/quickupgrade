@@ -13,7 +13,7 @@ VERBOSE=""
 MERGEMASTER=NO
 BACKUP=NO
 
-. ~/dotfiles/obrel
+. ~/obscripts/obrel
 
 SNAPDIR=snapshots
 DIR=${SNAPDIR}
