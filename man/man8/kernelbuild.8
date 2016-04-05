@@ -1,0 +1,53 @@
+.Dd $Mdocdate$
+.Dt KERNELBUILD 8
+.Os
+.Sh NAME
+.Nm kernelbuild 
+.Nd front end for running config, running make, and rebooting.
+.Sh SYNOPSIS
+.Nm kernelbuild
+.Op Fl chgrl
+.Op Fl j Ar jobs
+.Op Fl k Ar kernelName
+.Sh DESCRIPTION
+The
+.Nm
+program automates part of the process of building kernels:
+running
+.Xr config 8 ,
+running
+.Xr make 1 ,
+and rebooting the installed kernel.
+It doesn't edit the configuration files, nor
+does it write new drivers; that's left as an exercise
+for the reader.
+.Pp
+The options are as follows:
+.Bl -tag -width Ds
+.It Fl c
+Give the 
+clean
+argument when running
+.Xr make 8 .
+.It Fl g
+Run the
+.Xr config 8
+program against the given kernel configuration file.
+.It Fl j Ar jobs
+The number of 
+.Xr make
+processes to run in parallel.
+.It Fl k Ar kernelName
+specifies which kernel configuration to build from.
+Defaults to the running kernel configuration.
+.It Fl r
+Reboot the system after the kernel has been installed.
+.Sh SEE ALSO
+.Xr config 8 ,
+.Xr make 1 ,
+.Xr reboot 8 .
+.Sh AUTHORS
+Ian Darwin
+.Sh CAVEATS
+This program is just a front-end: it is no substitue for
+knowing what you're doing.
