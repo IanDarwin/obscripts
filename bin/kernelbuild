@@ -1,0 +1,70 @@
+#!/bin/ksh
+
+set -e
+
+if (( $(sysctl -n hw.ncpu) > 1 )); then
+	KERNEL=GENERIC.MP
+else
+	KERNEL=GENERIC
+fi
+NCPU=0
+
+USAGE="$0 [-c][-g][-jN][-kKERN_NAME[-r|-h]"
+
+function usage {		# give usage message, and exit
+	echo "Usage: $USAGE" 2>&1
+	exit 1
+}
+
+CLEAN=no
+CONFIG=no
+NO=""
+REBOOT=""
+while getopts "cghj:k:nr" opt 
+do 
+ 	 case "$opt" in 
+		c)	CLEAN=YES;;
+		g)	CONFIG=YES
+			;;
+		h)	REBOOT=-h;;
+		j)	NCPU=${OPTARG};;
+		k)	KERNEL=${OPTARG};;
+		n)	NO=-n;;
+		r)	REBOOT=-r;;
+		*)	usage;;
+	esac
+done
+shift `expr $OPTIND - 1`		 # leave just filenames
+
+# arch is set in ~/.sh-env
+cd $arch 
+pwd
+
+# run config if requested
+if [ YES == ${CONFIG} ]; then
+	cd conf
+	echo Configging ${KERNEL}
+	config ${KERNEL}
+fi
+
+# Now build it.
+cd $arch/compile/${KERNEL}; [ -f Makefile ] || {
+	echo Cannot find compile directory.
+	exit 1
+}
+
+if [ $# -ne 0 ]; then
+	usage
+fi
+
+if [ "YES" == ${CLEAN} ]; then
+	make ${NO} clean
+fi
+
+if [ 0 == ${NCPU} ]; then
+	NCPU=$(sysctl hw.ncpu|awk -F= '{print $2}')
+fi
+
+set -x
+
+time make ${NO} -j${NCPU} && doas make ${NO} install && [ "${REBOOT}" != "" -a "${NO}" != "-n" ] && doas shutdown ${REBOOT} now
