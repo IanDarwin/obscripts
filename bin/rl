@@ -125,6 +125,9 @@ do
 		mv ${CATALINA_HOME}/logs/catalina.{out,bak} 2>/dev/null
 		/etc/rc.d/tomcat start
 		;;
+	wildfly|wf)
+		rcctl restart wildfly
+		;;
 	*[012])			# must be near last: rl0, sis0, ath0, etc.
 		sh /etc/netstart ${serv}
 		;;
