@@ -71,7 +71,7 @@ do
 				FROMDIR=/ftp/OpenBSD
 				;;
 			ut|ut1)
-				SITE=obsdacvs.cs.toronto.edu;
+				SITE=openbsd.cs.toronto.edu;
 				;;
 			uwat)	# http://mirror.csclub.uwaterloo.ca/pub/OpenBSD/
 				SITE=mirror.csclub.uwaterloo.ca
