@@ -36,29 +36,22 @@ do
 done
 shift `expr $OPTIND - 1`		 # leave just filenames
 
-# arch is set in ~/.sh-env
-cd $arch 
-pwd
-
-# run config if requested
-if [ YES == ${CONFIG} ]; then
-	cd conf
-	echo Configging ${KERNEL}
-	config ${KERNEL}
-fi
-
-# Now build it.
-cd $arch/compile/${KERNEL}; [ -f Makefile ] || {
-	echo Cannot find compile directory.
-	exit 1
-}
-
 if [ $# -ne 0 ]; then
 	usage
 fi
 
+# Now build it.
+cd /sys/arch/${arch}/compile/${KERNEL}
+doas make ${NO} obj &
+
 if [ "YES" == ${CLEAN} ]; then
 	make ${NO} clean
+fi
+
+# run config if requested
+if [ YES == ${CONFIG} ]; then
+	echo Configging ${KERNEL}
+	make config
 fi
 
 if [ 0 == ${NCPU} ]; then
@@ -67,4 +60,4 @@ fi
 
 set -x
 
-time make ${NO} -j${NCPU} && doas make ${NO} install && [ "${REBOOT}" != "" -a "${NO}" != "-n" ] && doas shutdown ${REBOOT} now
+time make -j${NCPU} && doas make ${NO} install && [ "${REBOOT}" != "" -a "${NO}" != "-n" ] && doas shutdown ${REBOOT} now
