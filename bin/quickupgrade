@@ -97,6 +97,8 @@ case ${ans} in
 	*)	exit 1;;
 esac
 
+signify -Cp /etc/signify/openbsd-${REL}-base.pub -x SHA256.sig *.tgz install*.iso
+
 if [ "$KERNEL" = "YES" ]; then
 	if [ -f bsd ]; then
 		case "${REMOTEHOST}" in
