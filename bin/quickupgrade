@@ -23,12 +23,11 @@ EXT=tgz
 
 DOWNLOAD=$HOME/pub/OpenBSD		# base dir for finding dist sets
 
-USAGE="$0 [-a arch][-b][-d dest][-x][-k][-m][-v]"
+USAGE="$0 [-a arch][-d dest][-k][-m][-v]"
 
 function usage {		# give usage message, and exit
 	echo "Usage: $USAGE
 	[-v]	add -v to 'tar x' command.
-	[-b]	do NOT install BASE
 	[-d dest]	Desination dir [${DEST}]
 	[-a arch]	i386, sparc, etc. [${ARCH}]
 	[-e]	exec format has changed, backup executables first
@@ -36,7 +35,6 @@ function usage {		# give usage message, and exit
 	[-p]	prefix for finding download files [/usr/download || ~ftp]
 	[-r remoteHost] Ssh upgrade (requires sudo access there)
 	[-s]	use snapshot [use release]
-	[-x]	include X11 [don't]
 	[-m]	Run sysmerge when done [don't]" 2>&1
 	exit 1
 }
@@ -45,7 +43,6 @@ while getopts "a:bd:ekmp:r:sxv" opt
 do 
  	 case "$opt" in 
 		a)	ARCH=${OPTARG};;
-		b)	BASE=NO;;
 		d)	DEST=${OPTARG};;
 		e)	BACKUP=YES;;
 		k)	KERNEL=NO;;
@@ -53,7 +50,6 @@ do
 		p)	DOWNLOAD=${OPTARG};;
 		r)	REMOTEHOST=${OPTARG};;
 		s)	DIR=${RELDIR};;	# stable, not snapshots
-		x)	X=YES;;
 		v)	VERBOSE='v';;
 		*)	usage;;
 	esac
@@ -119,20 +115,10 @@ else
 fi
 
 # NEVER include etc in this list, or you will die horribly!
-# xbase is in both as many packages now depend upon't
 BDIRS="comp man xbase"
-XDIRS="xbase xfont xserv xshare"
-DIRS=""
-if [ "NO" != ${BASE} ]; then
-	DIRS="${BDIRS}"
-fi
-if [ "YES" = ${X} ]; then
-	DIRS="${DIRS} ${XDIRS}"
-fi
+XDIRS="xfont xserv xshare"
 # do baseXX last because of tar failures (esp in 4.8-4.9 traversal)
-if [ "NO" != ${BASE} ]; then
-	DIRS="${DIRS} base"
-fi
+DIRS="${BDIRS} ${XDIRS} base"
 
 # This one backup step we do anyway, just in case
 case ${REMOTEHOST} in
