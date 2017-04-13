@@ -1,0 +1,2 @@
+mandb:
+	makewhatis -a man
