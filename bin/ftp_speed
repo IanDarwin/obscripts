@@ -1,0 +1,27 @@
+#!/bin/sh
+
+awk '
+
+function fmt(arg) {
+	return arg/1e6
+}
+/^Requesting / { file = $2
+	sub(/.*\//,"",file)
+	sub(/\r/,"",file)
+}
+/^[0-9]+ bytes received/ {
+	bytes=$1
+	if (bytes > 50000) {
+		bits=$1*8
+		seconds=$5 
+		print "Speed of",file,"is", fmt(bits/seconds),"Mbps"
+		totBits += bits
+		totSecs += seconds
+		n++
+	}
+}
+END	{
+	print "Average:", fmt(totBits/totSecs),"Mbps"
+}
+
+' $*

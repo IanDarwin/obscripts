@@ -1,0 +1,52 @@
+.\"	$OpenBSD: mdoc.template,v 1.15 2014/03/31 00:09:54 dlg Exp $
+.\"
+.\" Copyright (c) 2017 Ian F. Darwin
+.\"
+.\" Permission to use, copy, modify, and distribute this software for any
+.\" purpose with or without fee is hereby granted, provided that the above
+.\" copyright notice and this permission notice appear in all copies.
+.\"
+.\" THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+.\" WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+.\" MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+.\" ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+.\" WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+.\" ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+.\" OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+.\"
+.Dd $Mdocdate$
+.Dt FTP_SPEED 8
+.Os
+.Sh NAME
+.Nm ftp_speed
+.Nd extract and summarize network speed information from
+.Xr ftp 1
+output.
+.Sh SYNOPSIS
+.Xr some_ftp_script
+|
+.Nm ftp_speed
+.Sh DESCRIPTION
+The
+.Nm
+reads the verbose output of ftp and summarizes it.
+.Sh BUGS
+The name of the program is an artifact of its creation for handling
+.Xr get-snap 8
+output.
+.Sh EXAMPLES
+.Bd -literal
+$ get_snap | ftp_speed
+Speed of bsd is 1.82646 Mbps
+Speed of bsd.rd is 1.96835 Mbps
+Speed of bsd.mp is 1.91749 Mbps
+Speed of cd61.iso is 4.50608 Mbps
+Speed of cdboot is 2.72074 Mbps
+Speed of miniroot61.fs is 1.97313 Mbps
+Speed of base61.tgz is 3.57195 Mbps
+Speed of comp61.tgz is 3.25225 Mbps
+...
+Average: 3.3336 Mbps
+.Be
+.Sh SEE ALSO
+.Xr ftp 1
