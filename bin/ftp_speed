@@ -3,7 +3,7 @@
 awk '
 
 function fmt(arg) {
-	return arg/1e6
+	return arg/1048576
 }
 /^Requesting / { file = $2
 	sub(/.*\//,"",file)
