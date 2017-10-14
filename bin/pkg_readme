@@ -1,1 +1,3 @@
+#!/bin/sh
+
 more /usr/local/share/doc/pkg-readmes/$1*
