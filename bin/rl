@@ -1,7 +1,7 @@
 #!/bin/ksh
 
 # rl - reload various system servers' data
-# $Id$
+# Some are standard (ports), one or two are my own
 
 PROGNAME=$0; export PROGNAME
 
@@ -23,7 +23,7 @@ function reload_standard {
 
 function do_help {
 	echo "$0 reloads servers. Services available include:"
-	echo "pf `cd /var/run; ls *.pid|sed 's/\.pid//g' `"
+	echo "`cd /var/run; ls *.pid|sed 's/\.pid//g' pf`"
 }
 
 USAGE="$0 [-i][-v] service"
@@ -48,9 +48,6 @@ shift $(expr $OPTIND - 1)		 # leave just filenames
 
 for serv
 do
-	if [ -f /etc/rc.d/${serv} ]; then
-		/etc/rc.d/${serv} restart
-	else
 	case $serv in
 	help)
 		do_help
@@ -102,7 +99,8 @@ do
 		exec rl tun0
 		;;
 	pf)
-		pfctl -e /etc/pf.conf 2>/dev/null
+		pfctl -d 2>/dev/null
+		pfctl -e 2>/dev/null
 		pfctl -f /etc/pf.conf
 		;;
 	sendmail)
@@ -126,7 +124,9 @@ do
 		/etc/rc.d/tomcat start
 		;;
 	wildfly|wf)
-		rcctl restart wildfly
+		# rcctl restart wildfly
+		ps ax|grep java.*Standalone|awk '{print $1}'|xargs doas  kill -9
+		rcctl start wildfly
 		;;
 	*[012])			# must be near last: rl0, sis0, ath0, etc.
 		sh /etc/netstart ${serv}
@@ -136,5 +136,4 @@ do
 		reload_standard $serv
 		;;
 	esac
-	fi	# end of main loop "if" statment
 done
