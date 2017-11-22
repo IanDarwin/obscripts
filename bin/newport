@@ -2,6 +2,6 @@
 
 # newport -- scaffold a new port, in my ports directory
 
-echo "newport is toast; portsgen has landed in the tree"
+echo "newport is toast; portgen has landed in the tree"
 
 exit 1
