@@ -1,0 +1,11 @@
+#!/bin/sh
+
+echo -n arch?; read arch
+echo -n booted how?; read how
+echo -n i/u?; read iud
+echo -n ok?; read stat
+echo -n snap date?; read date
+echo -n short mach descr; read mach
+echo -n X remarks?; read X
+
+echo ian:$arch:$how:$iud:$stat:$date:$mach:${X}

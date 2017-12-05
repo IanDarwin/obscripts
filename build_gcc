@@ -1,0 +1,15 @@
+#!/bin/sh
+
+set -ex
+
+# standard steps in rebuilding gcc on OpenBSD on modern arches
+
+rm -fr /usr/obj/gnu/usr.bin/gcc/*
+
+cd /usr/src/gnu/usr.bin/gcc
+
+make -f Makefile.bsd-wrapper clean &&
+make -f Makefile.bsd-wrapper obj &&
+make -f Makefile.bsd-wrapper depend &&
+make -f Makefile.bsd-wrapper &&
+make -f Makefile.bsd-wrapper install
