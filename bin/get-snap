@@ -21,7 +21,14 @@ ECHO=""
 
 # how to get it - Linux lacks a working FTP command
 case $(uname) in
-	OpenBSD|Darwin)	FTP="ftp -a";;
+	OpenBSD)	FTP="ftp -a";;
+	# Mac deleted ftp client as of 10.13.1 "High Sierra"
+	Darwin)
+		echo You cannot use this script on your Mac because Apple deleted the ftp command
+		echo and left only the curl, which is not usable in this kind of script.
+		exit 1
+		;;
+	# Linux - who knows?
 	Linux)		FTP=wget;;
 	*)	echo No FTP set for $(uname)
 		exit 1;;
