@@ -1,0 +1,16 @@
+#!/bin/ksh
+
+# print the current obsd release
+
+. ~/obscripts/obrel
+
+echo "obrel file says ${REL}"
+
+KREL="$(uname -r)"
+echo "Running kernel says ${KREL}"
+
+if [ "${REL}" == "${KREL}" ]; then
+	echo "'s all good!"
+else
+	echo "Might want to check it out a bit..."
+fi
