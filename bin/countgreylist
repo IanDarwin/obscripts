@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# show how many times a given sender got greylisted.
+# sorts descending, omits count = 1
+
+grep GREY /var/log/daemon* | awk '{print $8}' | sort | uniq -c | sort -rn|awk '$1>1{print}'

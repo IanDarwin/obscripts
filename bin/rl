@@ -62,7 +62,7 @@ do
 		done
 		;;
 	bigmailers|bigm*)
-		grep -v '^#' /etc/mail/bigmailers*.txt |
+		grep -vh '^#' /etc/mail/bigmailers*.txt |
 			smtpctl spf walk |
 				pfctl -t spf-white -T add -f -
 		;;

@@ -10,7 +10,7 @@ BASE=YES
 X=NO
 KERNEL=YES
 VERBOSE=""
-SYSMERGE=NO
+SYSMERGE=YES
 BACKUP=NO
 
 . ~/obscripts/obrel
@@ -35,7 +35,7 @@ function usage {		# give usage message, and exit
 	[-p]	prefix for finding download files [/usr/download || ~ftp]
 	[-r remoteHost] Ssh upgrade (requires sudo access there)
 	[-s]	use snapshot [use release]
-	[-m]	Run sysmerge when done [don't]" 2>&1
+	[-m]	Don't run sysmerge when done [do]" 2>&1
 	exit 1
 }
 
@@ -46,7 +46,7 @@ do
 		d)	DEST=${OPTARG};;
 		e)	BACKUP=YES;;
 		k)	KERNEL=NO;;
-		m)	SYSMERGE=YES;;
+		m)	SYSMERGE=NO;;
 		p)	DOWNLOAD=${OPTARG};;
 		r)	REMOTEHOST=${OPTARG};;
 		s)	DIR=${RELDIR};;	# stable, not snapshots
