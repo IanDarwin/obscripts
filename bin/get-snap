@@ -44,7 +44,7 @@ else
 	exit 1
 fi
 
-USAGE="$0 [-s][-a arch ][-b local-Basedir][-f|-h host] [-p patt]
+USAGE="$0 [-r][-a arch ][-b local-Basedir][-f|-h host] [-p patt]
 -a arch := i386|amd64|sparc|hppa|...
 "
 
@@ -53,7 +53,7 @@ function usage {		# give usage message, and exit
 	exit 1
 }
 
-while getopts "a:b:f:h:inp:sw" opt 
+while getopts "a:b:f:h:inp:rw" opt 
 do 
  	 case "$opt" in 
 		a)	ARCH=$OPTARG ;;
@@ -91,9 +91,9 @@ do
 		n)	ECHO=echo;;
 		w)	PROTO=http;;
 		p)	PATT=${OPTARG};;
-		s)	SNAPDIR="${RELDIR}"
+		r)	SNAPDIR="${RELDIR}"
 			echo "****************************************************"
-			echo "$0: -s means to NOT use snapshot, using ${RELDIR}"
+			echo "$0: -r means to get RELEASE, so using ${RELDIR}"
 			echo "****************************************************"
 			echo -n "OK? "; read answer
 			;;
