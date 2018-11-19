@@ -2,6 +2,9 @@
 
 # quickupdate -- quickly update base files from snapshot
 
+# Tries to implement some of the advice in
+# https://www.openbsd.org/faq/upgrade64.html#NoInstKern
+
 # Set defaults before getopt...
 
 ARCH=`uname -m`
@@ -101,11 +104,15 @@ if [ "$KERNEL" = "YES" ]; then
 			localhost) 
 				k="$(if [ -f bsd.mp -a "$(sysctl hw.ncpu)" != 'hw.ncpu=1' ]; then echo bsd.mp; else echo bsd; fi)"
 echo $k
-				mv ${DEST}/bsd ${DEST}/obsd && cp ${k} ${DEST}/bsd && echo Kernel $k installed as ${DEST}/bsd;;
+				mv ${DEST}/bsd ${DEST}/obsd && cp ${k} ${DEST}/bsd && echo Kernel $k installed as ${DEST}/bsd
+				sha256 -h /var/db/kernel.SHA256 /bsd
+				;;
 			*) 
 				k=$(ssh ${REMOTEHOST} "if [ -f bsd.mp -a "$(sysctl hw.ncpu)" != 'hw.ncpu=1' ]; then echo bsd.mp; else echo bsd; fi")
 echo $k
-				ssh ${REMOTEHOST} sudo mv ${DEST}/bsd ${DEST}/obsd cp ${k} ${DEST}/bsd && echo Kernel $k installed as ${DEST}/bsd;;
+				ssh ${REMOTEHOST} sudo mv ${DEST}/bsd ${DEST}/obsd cp ${k} ${DEST}/bsd && echo Kernel $k installed as ${DEST}/bsd
+				ssh ${REMOTEHOST} sudo sha256 -h /var/db/kernel.SHA256 /bsd 
+				;;
 		esac
 	else
 		echo "File ./bsd not found, not installing /bsd" >&2
