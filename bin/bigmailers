@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# load or reload the bigmailers into pf
+
+grep -vh '^#' /etc/mail/bigmailers*.txt |
+	smtpctl spf walk |
+		pfctl -t spf-white -T add -f -
