@@ -2,25 +2,25 @@
 
 # mvn-deps-into-lrepo
 # Package all dependencies of a Maven project into a local repository.
+# Because bulk builds are not allowed to fetch files at build time.
 # Must be run in the root of the project to find pom.xml.
 
 TMPDIR=$(mktemp -d -p /tmp pkg-deps-lrep-XXXXXXXX)
-
 
 if [ ! -f pom.xml ]; then
 	echo No pom.xml in $PWD
 	exit 1
 fi
 
-mvn org.apache.maven.plugins:maven-dependency-plugin:2.1:copy-dependencies \
+mvn org.apache.maven.plugins:maven-dependency-plugin:2.8:go-offline \
 	-DaddParentPoms=true \
-	-DoutputDirectory=$TMPDIR \
-	-Dmdep.useRepositoryLayout=true
+	-Dmaven.repo.local=$TMPDIR
 
+# Now try it
+mvn -Dmaven.repo.local=$TMPDIR --offline compile || exit
 
+# Still here? Package
 cd ${TMPDIR}
+tar czvf ${PWD}/maven-repo.tgz .
 
-jar cvf LOCAL_REPOSIORY.jar *
-
-
-echo "Output is ${PWD}/LOCAL_REPOSITORY.jar; I suggest you mv it someplace safe, then rm -r ${PWD}"
+echo "Output is ${PWD}/maven-repo.tgz; I suggest you mv it someplace safe, then rm -r ${PWD}"
