@@ -2,7 +2,7 @@
 
 echo This is how import is done:
 echo 
-echo 'cvs -d ${CVSROOT} import -m "Initial port of XXX" ports/CAT/XXX ian $(moddate)'
+echo 'cvs -d ${CVSROOT} import -m "Initial port of XXX" ports/CAT/XXX ${USER} $(moddate)'
 echo
 echo "If this is a new OpenBSD port, remember to:
 	add it to ../Makefile!!
