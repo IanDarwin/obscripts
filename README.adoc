@@ -27,4 +27,4 @@ As with all root scripts, read them over to be sure I'm not
 trying to pwn you (or that my github account hasn't been hacked).
 
 If you find this useful, consider contributing back, either changes,
-man pages?, or your own scripts. Git pull, or patches.
+man pages?, or your own scripts. Pull request preferred, or patches.
