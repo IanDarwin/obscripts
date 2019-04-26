@@ -2,6 +2,8 @@
 
 # quickupdate -- quickly update base files from snapshot
 
+echo "WARNING: $0 has been supplanted by sysupgrade in 6.5" >&2
+
 # Tries to implement some of the advice in
 # https://www.openbsd.org/faq/upgrade64.html#NoInstKern
 
