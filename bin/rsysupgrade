@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# Shortcut sysupgrade from a sysupgraded machine to upgrade another machine on LAN
+
+HOST=$1
+
+D=/home/_sysupgrade
+
+ssh ${HOST} doas mkdir ${D}
+
+scp ${D}/* ${HOST}/${D}
+
+ssh ${HOST} doas "cp bsd.rd /bsd.upgrade && reboot"

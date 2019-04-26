@@ -2,6 +2,8 @@
 
 # quickupdate -- quickly update base files from snapshot
 
+echo "WARNING: $0 has been supplanted by sysupgrade in 6.5" >&2
+
 # Tries to implement some of the advice in
 # https://www.openbsd.org/faq/upgrade64.html#NoInstKern
 
@@ -30,8 +32,9 @@ USAGE="$0 [-a arch][-d dest][-k][-m][-v]"
 function usage {		# give usage message, and exit
 	echo "Usage: $USAGE
 	[-v]	add -v to 'tar x' command.
-	[-d dest]	Desination dir [${DEST}]
 	[-a arch]	i386, sparc, etc. [${ARCH}]
+	[-b bootDisk]	sd0, wd0, etc. - if omitted, don't run new installboot
+	[-d dest]	Desination dir [${DEST}]
 	[-e]	exec format has changed, backup executables first
 	[-h remoteHost] Ssh upgrade (requires sudo access there)
 	[-k]	do not include kernel [do]
@@ -41,16 +44,19 @@ function usage {		# give usage message, and exit
 	exit 1
 }
 
-while getopts "a:bd:eh:kmp:rsxv" opt 
+BOOT_DISK="not set"
+
+while getopts "a:b:d:eh:kmp:rsxv" opt 
 do 
  	 case "$opt" in 
 		a)	ARCH=${OPTARG};;
+		b)	BOOT_DISK=${OPTARG};;
 		d)	DEST=${OPTARG};;
 		e)	BACKUP=YES;;
+		h)	REMOTEHOST=${OPTARG};;
 		k)	KERNEL=NO;;
 		m)	SYSMERGE=NO;;
 		p)	DOWNLOAD=${OPTARG};;
-		h)	REMOTEHOST=${OPTARG};;
 		r)	DIR=${RELDIR};;	# stable, not snapshots
 		v)	VERBOSE='v';;
 		*)	usage;;
@@ -155,6 +161,11 @@ case "${REMOTEHOST}" in
 localhost) cd ${DEST}/dev; sh MAKEDEV all;;
 *) ssh ${REMOTEHOST} "cd ${DEST}/dev; sudo sh MAKEDEV all";;
 esac
+
+if [ "${BOOT_DISK}" != "" ]; then
+	echo installboot ${BOOT_DISK}
+	installboot ${BOOT_DISK}
+fi
 
 if [ "$SYSMERGE" = "YES" ]; then
 	sysmerge
