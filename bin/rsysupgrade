@@ -11,6 +11,7 @@ D=/home/_sysupgrade
 set -e
 
 ssh ${HOST} doas mkdir -p ${D}
+ssh ${HOST} doas chmod g+w ${D}
 
 scp ${D}/* ${HOST}:${D}
 
