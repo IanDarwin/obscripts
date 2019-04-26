@@ -2,12 +2,16 @@
 
 # Shortcut sysupgrade from a sysupgraded machine to upgrade another machine on LAN
 
+# don't run under doas because you dont want to ssh as root
+
 HOST=$1
 
 D=/home/_sysupgrade
 
-ssh ${HOST} doas mkdir ${D}
+set -e
 
-scp ${D}/* ${HOST}/${D}
+ssh ${HOST} doas mkdir -p ${D}
 
-ssh ${HOST} doas "cp bsd.rd /bsd.upgrade && reboot"
+# scp ${D}/* ${HOST}:${D}
+
+ssh ${HOST} doas "cp ${D}/bsd.rd /bsd.upgrade && doas reboot"
