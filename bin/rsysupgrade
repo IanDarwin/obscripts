@@ -1,13 +1,22 @@
 #!/bin/sh
 
 # Shortcut sysupgrade from a sysupgraded machine to upgrade another machine on LAN
+# Use ONLY after:
+#	(a) successfully doing sysupgrade on this machine
+#	(b) Making sure the remote host is the same arch!
+#	(c) If the remote is pre-6.5, you've upgraded the boot blocks to 6.5+
+# Don't run under doas because you dont want to ssh as root.
+# Only tested on i386 and amd64 - use at own risk!
 
 HOST=$1
 
 D=/home/_sysupgrade
 
-ssh ${HOST} doas mkdir ${D}
+set -e
 
-scp ${D}/* ${HOST}/${D}
+ssh ${HOST} doas mkdir -p ${D}
+ssh ${HOST} doas chmod g+w ${D}
 
-ssh ${HOST} doas "cp bsd.rd /bsd.upgrade && reboot"
+scp ${D}/* ${HOST}:${D}
+
+ssh ${HOST} doas "cp ${D}/bsd.rd /bsd.upgrade && doas reboot"
