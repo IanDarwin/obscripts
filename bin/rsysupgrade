@@ -4,8 +4,9 @@
 # Use ONLY after:
 #	(a) successfully doing sysupgrade on this machine
 #	(b) Making sure the remote host is the same arch!
-#	(c) If the remote is pre-6.5, install and run current installboot
+#	(c) If the remote is pre-6.5, you've upgraded the boot blocks to 6.5+
 # Don't run under doas because you dont want to ssh as root.
+# Only tested on i386 and amd64 - use at own risk!
 
 HOST=$1
 
