@@ -1,1 +1,1 @@
-doas openrsync -av --delete rsync://obsdacvs.cs.toronto.edu/obsdcvs /cvs/
+doas openrsync -av --delete rsync://obsdacvs.cs.toronto.edu/obsdcvs /repos/obsd_cvs/
