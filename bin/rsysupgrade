@@ -12,6 +12,6 @@ set -e
 
 ssh ${HOST} doas mkdir -p ${D}
 
-# scp ${D}/* ${HOST}:${D}
+scp ${D}/* ${HOST}:${D}
 
 ssh ${HOST} doas "cp ${D}/bsd.rd /bsd.upgrade && doas reboot"
