@@ -1,8 +1,11 @@
 #!/bin/sh
 
 # Shortcut sysupgrade from a sysupgraded machine to upgrade another machine on LAN
-
-# don't run under doas because you dont want to ssh as root
+# Use ONLY after:
+#	(a) successfully doing sysupgrade on this machine
+#	(b) Making sure the remote host is the same arch!
+#	(c) If the remote is pre-6.5, install and run current installboot
+# Don't run under doas because you dont want to ssh as root.
 
 HOST=$1
 
