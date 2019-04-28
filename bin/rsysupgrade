@@ -11,12 +11,13 @@
 
 [ -w / ] && {
 	echo Do not run $0 as root
-	exit
+	exit 1
 }
 
 case $# in
 	0)	echo "Usage: $0 host [...]" >&2
-		exit 1;;
+		exit 1
+		;;
 esac
 
 LOCAL_ARCH=$(arch)
