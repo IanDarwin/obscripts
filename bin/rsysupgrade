@@ -20,6 +20,13 @@
 
 HOST=$1
 
+LOCAL_ARCH=$(arch)
+REMOTE_ARCH=$(ssh ${HOST} arch)
+if [ ${LOCAL_ARCH} != "${REMOTE_ARCH}" ]; then
+	echo "This machine is ${LOCAL_ARCH} but ${HOST} is ${REMOTE_ARCH}" >&2
+	exit 1;
+fi
+
 D=/home/_sysupgrade
 
 set -e
