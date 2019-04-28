@@ -24,6 +24,7 @@ LOCAL_ARCH=$(arch)
 for HOST
 do
 
+	set -e
 	REMOTE_ARCH=$(ssh ${HOST} arch)
 	if [ ${LOCAL_ARCH} != "${REMOTE_ARCH}" ]; then
 		echo "This machine is ${LOCAL_ARCH} but ${HOST} is ${REMOTE_ARCH}" >&2
@@ -32,7 +33,6 @@ do
 
 	D=/home/_sysupgrade
 
-	set -e
 
 	ssh ${HOST} "doas mkdir -p ${D}; doas chmod g+w ${D}"
 
