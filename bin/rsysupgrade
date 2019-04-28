@@ -4,8 +4,17 @@
 # Use ONLY after:
 #	(a) successfully doing sysupgrade on this machine
 #	(b) Making sure the remote host is the same arch!
-#	(c) If the remote is pre-6.5, install and run current installboot
+#	(c) If the remote is pre-6.5, you've upgraded the boot blocks to 6.5+
+# Be aware that sysupgrade will only fetch release OR snaps depending on what
+# you run it on, and 6.5 release did not include necessary functionality,
+# so you might have to upgrade from the console the first time!
 # Don't run under doas because you dont want to ssh as root.
+# Lightly tested on i386 and amd64 - use at own risk!
+
+[ -w / ] && {
+	echo Do not run $0 as root
+	exit
+}
 
 HOST=$1
 
@@ -13,8 +22,7 @@ D=/home/_sysupgrade
 
 set -e
 
-ssh ${HOST} doas mkdir -p ${D}
-ssh ${HOST} doas chmod g+w ${D}
+ssh ${HOST} "doas mkdir -p ${D}; doas chmod g+w ${D}"
 
 scp ${D}/* ${HOST}:${D}
 
