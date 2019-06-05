@@ -21,7 +21,6 @@ BACKUP=NO
 . ~/obscripts/obrel
 
 DIR=snapshots
-REMOTEHOST=localhost
 
 EXT=tgz
 
@@ -36,7 +35,6 @@ function usage {		# give usage message, and exit
 	[-b bootDisk]	sd0, wd0, etc. - if omitted, don't run new installboot
 	[-d dest]	Desination dir [${DEST}]
 	[-e]	exec format has changed, backup executables first
-	[-h remoteHost] Ssh upgrade (requires sudo access there)
 	[-k]	do not include kernel [do]
 	[-p]	prefix for finding download files [/usr/download || ~ftp]
 	[-r]	use snapshot [use release]
@@ -53,7 +51,6 @@ do
 		b)	BOOT_DISK=${OPTARG};;
 		d)	DEST=${OPTARG};;
 		e)	BACKUP=YES;;
-		h)	REMOTEHOST=${OPTARG};;
 		k)	KERNEL=NO;;
 		m)	SYSMERGE=NO;;
 		p)	DOWNLOAD=${OPTARG};;
@@ -64,11 +61,6 @@ do
 done
 shift `expr $OPTIND - 1`		 # leave just filenames
 
-if [ ${REMOTEHOST} = localhost -a ${DEST} = '/' -a ${ARCH} != $(uname -m) ]; then
-	echo "$0: FAIL: localhost is not a ${ARCH}, you nimmie!"
-	exit 42
-fi
-
 if [ -d ${DOWNLOAD}/${DIR}/${ARCH} ]; then
 	cd ${DOWNLOAD}/${DIR}/${ARCH} || exit
 elif [ -d ~ftp/pub/OpenBSD/${DIR}/${ARCH} ]; then
@@ -76,17 +68,14 @@ elif [ -d ~ftp/pub/OpenBSD/${DIR}/${ARCH} ]; then
 fi
 
 # Check this AFTER getopts so -h works without sudo
-if [ ${REMOTEHOST} = localhost -a ! -w ${DEST} ]; then
+if [ -w ${DEST} ]; then
 	echo "$0: Need write permission on ${DEST}"
 	exit 1
 fi
 
 echo "Are you sure this is going to work? Is it running the current kernel?"
-if [ "${REMOTEHOST}" = localhost ]; then
-	echo -n "At the very least, have you opened a ROOT window on $(hostname) (afterwards is too late)? "
-else
-	echo -n "At the very least, have you opened a ROOT window on remote machine ${REMOTEHOST} (afterwards is too late)? "
-fi
+echo -n "At the very least, have you opened a ROOT window on $(hostname) (afterwards is too late)? "
+
 read answer junk
 case ${answer} in
 	y*)	;;
@@ -94,7 +83,7 @@ case ${answer} in
 esac
 
 ls -l 
-echo -n "quickupgrade from ${PWD} on `hostname` to ${DEST} on ${REMOTEHOST}? [nyq]"
+echo -n "quickupgrade from ${PWD} on `hostname` to ${DEST} on $(hostname)? [nyq]"
 read ans
 case ${ans} in
 	y*)	;;
@@ -105,20 +94,10 @@ signify -Cp /etc/signify/openbsd-${REL}-base.pub -x SHA256.sig *.tgz install*.is
 
 if [ "$KERNEL" = "YES" ]; then
 	if [ -f bsd ]; then
-		case "${REMOTEHOST}" in
-			localhost) 
 				k="$(if [ -f bsd.mp -a "$(sysctl hw.ncpu)" != 'hw.ncpu=1' ]; then echo bsd.mp; else echo bsd; fi)"
 echo $k
 				mv ${DEST}/bsd ${DEST}/obsd && cp ${k} ${DEST}/bsd && echo Kernel $k installed as ${DEST}/bsd
 				sha256 -h /var/db/kernel.SHA256 /bsd
-				;;
-			*) 
-				k=$(ssh ${REMOTEHOST} "if [ -f bsd.mp -a "$(sysctl hw.ncpu)" != 'hw.ncpu=1' ]; then echo bsd.mp; else echo bsd; fi")
-echo $k
-				ssh ${REMOTEHOST} sudo mv ${DEST}/bsd ${DEST}/obsd cp ${k} ${DEST}/bsd && echo Kernel $k installed as ${DEST}/bsd
-				ssh ${REMOTEHOST} sudo sha256 -h /var/db/kernel.SHA256 /bsd 
-				;;
-		esac
 	else
 		echo "File ./bsd not found, not installing /bsd" >&2
 	fi
@@ -129,16 +108,11 @@ fi
 # NEVER include etc in this list, or you will die horribly!
 BDIRS="comp man xbase"
 XDIRS="xfont xserv xshare"
-# do baseXX last because of tar failures (esp in 4.8-4.9 traversal)
+# do baseXX last because of tar failures when incompatible change
 DIRS="${BDIRS} ${XDIRS} base"
 
 # This one backup step we do anyway, just in case
-case ${REMOTEHOST} in
-	localhost) cp /sbin/reboot /sbin/oreboot;;
-	*) 	echo "==> bkup reboot"
-		ssh ${REMOTEHOST} sudo cp /sbin/reboot /sbin/oreboot
-		;;
-esac
+localhost) cp /sbin/reboot /sbin/oreboot;;
 echo Old reboot backed up as /sbin/oreboot.
 
 for f in ${DIRS}
@@ -150,17 +124,11 @@ do
 		echo "Cannot locate file ${FILE}"
 		exit
 	fi
-	case ${REMOTEHOST} in
-		localhost) (cd ${DEST} || exit; tar xzpf${VERBOSE} - ) < ${FILE};;
-		*) ssh ${REMOTEHOST} "(cd ${DEST} || exit; sudo tar xzpf${VERBOSE} -)" < ${FILE}
-	esac
+	(cd ${DEST} || exit; tar xzpf${VERBOSE} - ) < ${FILE};;
 done
 
 echo "Rebuilding /dev..."
-case "${REMOTEHOST}" in
-localhost) cd ${DEST}/dev; sh MAKEDEV all;;
-*) ssh ${REMOTEHOST} "cd ${DEST}/dev; sudo sh MAKEDEV all";;
-esac
+cd ${DEST}/dev; sh MAKEDEV all
 
 if [ "${BOOT_DISK}" != "" ]; then
 	echo installboot ${BOOT_DISK}
