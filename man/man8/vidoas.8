@@ -1,0 +1,44 @@
+.\" $OpenBSD$
+.\"
+.\"Copyright (c) 2018 Anthony Perkins <anthony@acperkins.com>
+.\"
+.\"Permission to use, copy, modify, and distribute this software for any
+.\"purpose with or without fee is hereby granted, provided that the above
+.\"copyright notice and this permission notice appear in all copies.
+.\"
+.\"THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+.\"WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+.\"MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+.\"ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+.\"WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+.\"ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+.\"OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+.Dd $Mdocdate: February 28 2018 $
+.Dt VIDOAS 8
+.Os
+.Sh NAME
+.Nm vidoas
+.Nd safely edit the doas config file
+.Sh SYNOPSIS
+.Nm vidoas
+.Sh DESCRIPTION
+The
+.Nm
+utility edits a copy of
+.Pa /etc/doas.conf .
+If the copy is valid the original file will be replaced.
+.Pp
+This helps to prevent you from accidentally
+locking yourself out from
+.Xr doas 1
+with a typo.
+It is inspired by the
+.Xr visudo 1
+utility.
+.Pp
+This utility takes no arguments.
+.Sh SEE ALSO
+.Xr doas 1 ,
+.Xr doas.conf 5
+.Sh AUTHORS
+.An Anthony Perkins <anthony@acperkins.com>

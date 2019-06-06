@@ -1,0 +1,36 @@
+#!/bin/sh
+
+# $OpenBSD$
+#
+# Copyright (c) 2018 Anthony Perkins <anthony@acperkins.com>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+doasconf=/etc/doas.conf
+tempfile=$(mktemp -t doas.XXXXXXXX) || exit 1
+if [ -w $doasconf ]; then
+	cp $doasconf $tempfile
+	${EDITOR:-vi} $tempfile
+	while ! doas -C $tempfile; do
+		echo "Press Enter to retry, Ctrl-C to abort."
+		read
+		${EDITOR:-vi} $tempfile
+	done
+	if doas -C $tempfile; then
+		cp -f $tempfile $doasconf
+		rm -f $tempfile
+	fi
+else
+	echo "$doasconf is not writable by this user."
+	exit 1
+fi
