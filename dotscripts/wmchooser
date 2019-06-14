@@ -50,7 +50,7 @@ fi
 # Finally, act on what the user said
 
 if [ "${WM}" == '' ]; then
-	echo exec ${paths[$DEFAULT]}
+	exec ${paths[$DEFAULT]}
 	exit
 fi
 
@@ -60,10 +60,10 @@ fi
 
 for short in ${shorts[*]}; do
 	if [[ $short =~ ^$WM ]]; then
-		echo exec ${paths[$short]}
+		exec ${paths[$short]}
 		exit
 	fi
 done
 
 # fallback if no "exec" done above
-echo exec /usr/X11R6/bin/xterm
+exec /usr/X11R6/bin/xterm
