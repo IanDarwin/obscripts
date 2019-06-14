@@ -1,0 +1,69 @@
+#!/usr/local/bin/ksh93
+
+# wmchooser - intended to be sourced from e.g., .xsession
+
+# Depends on ksh93 from ports AND ...
+# that the ksh implementation consistently hashes
+
+FILE=$HOME/.wms
+# create initial file ~/.wms if not created yet.
+# Each line has fields:
+#	fullpath shortname default
+# only one line should have default=true
+if [ ! -r ~/.wms ]; then
+cat >> $FILE <<!
+/usr/X11R6/bin/cwm cwm true
+/usr/X11R6/bin/fvwm fvwm 
+/usr/X11R6/bin/twm twm
+!
+fi
+
+PROMPT="Desktop: "
+DEFAULT="cwm"	# most-minimal ever
+
+typeset -A shorts
+typeset -A paths
+
+# Populate three arrays, build PROMT, set DEFAULT.
+while read fullpath shortname default
+do
+	if [ -x ${fullpath} ]; then
+		print ${shortname}
+		PROMPT=$PROMPT\ ${shortname}
+		shorts[${shortname}]="${shortname}"
+		paths[${shortname}]="${fullpath}"
+		if ${default}; then
+			DEFAULT=${shortname}
+		fi
+	fi
+done < $FILE
+
+# Now prompt the user for one of them.
+WMPROMPT="${PROMPT} Default ${DEFAULT}"
+if [ -x /usr/local/bin/xprompt ]; then
+	WM=`xprompt -geometry +250+300 -re -p "${WMPROMPT}?"`
+else
+	echo "WARNING: XPROMPT NOT INSTALLED" | tee /dev/console
+	exit
+fi
+
+# Finally, act on what the user said
+
+if [ "${WM}" == '' ]; then
+	echo exec ${paths[$DEFAULT]}
+	exit
+fi
+
+if [ "${WM}" == 'q' ]; then
+	exit 0
+fi
+
+for short in ${shorts[*]}; do
+	if [[ $short =~ ^$WM ]]; then
+		echo exec ${paths[$short]}
+		exit
+	fi
+done
+
+# fallback if no "exec" done above
+echo exec /usr/X11R6/bin/xterm
