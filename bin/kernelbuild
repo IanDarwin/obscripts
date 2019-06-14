@@ -65,4 +65,5 @@ fi
 
 set -x
 
+NCPU=2
 time make -j${NCPU} && doas make ${NO} install && [ "${REBOOT}" != "" -a "${NO}" != "-n" ] && doas shutdown ${REBOOT} now
