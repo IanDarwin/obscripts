@@ -8,11 +8,11 @@
 FILE=$HOME/.wms
 # create initial file ~/.wms if not created yet.
 # Each line has fields:
-#	fullpath shortname default
-# only one line should have default=true
+#	fullpath shortname [pre_wm] [default]
+# the line with a valid fullpath and default=true wins.
 if [ ! -r ~/.wms ]; then
 cat >> $FILE <<!
-/usr/X11R6/bin/cwm cwm true
+/usr/X11R6/bin/cwm cwm - true
 /usr/X11R6/bin/fvwm fvwm 
 /usr/X11R6/bin/twm twm
 !
@@ -23,15 +23,17 @@ DEFAULT="cwm"	# most-minimal ever
 
 typeset -A shorts
 typeset -A paths
+typeset -A preexecs
 
 # Populate three arrays, build PROMT, set DEFAULT.
-while read fullpath shortname default
+while read fullpath shortname pre_wm default
 do
 	if [ -x ${fullpath} ]; then
 		print ${shortname}
 		PROMPT=$PROMPT\ ${shortname}
 		shorts[${shortname}]="${shortname}"
 		paths[${shortname}]="${fullpath}"
+		preexecs[${shortname}]="${pre_wm}"
 		if ${default}; then
 			DEFAULT=${shortname}
 		fi
@@ -50,6 +52,7 @@ fi
 # Finally, act on what the user said
 
 if [ "${WM}" == '' ]; then
+	eval ${preexecs[$DEFAULT]}&
 	exec ${paths[$DEFAULT]}
 	exit
 fi
@@ -60,6 +63,7 @@ fi
 
 for short in ${shorts[*]}; do
 	if [[ $short =~ ^$WM ]]; then
+		eval ${preexecs[$short]}&
 		exec ${paths[$short]}
 		exit
 	fi
