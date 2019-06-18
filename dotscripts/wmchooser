@@ -3,7 +3,9 @@
 # wmchooser - intended to be sourced from e.g., .xsession
 
 # Depends on ksh93 from ports AND ...
-# that the ksh implementation consistently hashes
+# you MUST have ksh93 shebang on your .xsession file, AND ...
+# the ksh implementation must consistently hashes so the arrays
+# go in the same order (d'oh).
 
 FILE=$HOME/.wms
 # create initial file ~/.wms if not created yet.
@@ -12,7 +14,7 @@ FILE=$HOME/.wms
 # the line with a valid fullpath and default=true wins.
 if [ ! -r ~/.wms ]; then
 cat >> $FILE <<!
-/usr/X11R6/bin/cwm cwm - true
+/usr/X11R6/bin/cwm cwm xterm true
 /usr/X11R6/bin/fvwm fvwm 
 /usr/X11R6/bin/twm twm
 !
@@ -43,7 +45,7 @@ done < $FILE
 # Now prompt the user for one of them.
 WMPROMPT="${PROMPT} Default ${DEFAULT}"
 if [ -x /usr/local/bin/xprompt ]; then
-	WM=`xprompt -geometry +250+300 -re -p "${WMPROMPT}?"`
+	WM=$(xprompt -geometry +250+300 -re -p "${WMPROMPT}?")
 else
 	echo "WARNING: XPROMPT NOT INSTALLED" | tee /dev/console
 	exit
@@ -51,19 +53,23 @@ fi
 
 # Finally, act on what the user said
 
-if [ "${WM}" == '' ]; then
-	eval ${preexecs[$DEFAULT]}&
+if [ "${WM}" = "" ]; then
+	if [ X${preexecs[$DEFAULT]} != Xnone ]; then
+		eval ${preexecs[$DEFAULT]}&
+	fi
 	exec ${paths[$DEFAULT]}
 	exit
 fi
 
-if [ "${WM}" == 'q' ]; then
+if [ "${WM}" == "q" ]; then
 	exit 0
 fi
 
 for short in ${shorts[*]}; do
 	if [[ $short =~ ^$WM ]]; then
-		eval ${preexecs[$short]}&
+		if [ X${preexecs[$short]} != "Xnone" ]; then
+			eval ${preexecs[$short]}&
+		fi
 		exec ${paths[$short]}
 		exit
 	fi
