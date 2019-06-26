@@ -13,6 +13,7 @@ FILE=$HOME/.wms
 #	fullpath shortname [pre_wm] [default]
 # the line with a valid fullpath and default=true wins.
 if [ ! -r ~/.wms ]; then
+echo "Starting you off with a default ~/.wms file."
 cat >> $FILE <<!
 /usr/X11R6/bin/cwm cwm xterm true
 /usr/X11R6/bin/fvwm fvwm 
@@ -36,7 +37,7 @@ do
 		shorts[${shortname}]="${shortname}"
 		paths[${shortname}]="${fullpath}"
 		preexecs[${shortname}]="${pre_wm}"
-		if ${default}; then
+		if [ ${default} == true ]; then
 			DEFAULT=${shortname}
 		fi
 	fi
