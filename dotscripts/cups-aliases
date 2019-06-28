@@ -1,0 +1,4 @@
+for f in cancel lp lpoptions lpq lpr lprm lpstat
+do
+	alias $f=/usr/local/bin/$f
+done
