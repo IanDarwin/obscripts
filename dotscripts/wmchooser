@@ -37,7 +37,7 @@ do
 		shorts[${shortname}]="${shortname}"
 		paths[${shortname}]="${fullpath}"
 		preexecs[${shortname}]="${pre_wm}"
-		if [ ${default} == true ]; then
+		if [ "${default}" == true ]; then
 			DEFAULT=${shortname}
 		fi
 	fi
