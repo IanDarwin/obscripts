@@ -1,4 +1,4 @@
-#!/bin/sh -u
+#!/bin/ksh -u
 
 # quickupdate -- quickly update base files from snapshot
 
@@ -68,7 +68,7 @@ elif [ -d ~ftp/pub/OpenBSD/${DIR}/${ARCH} ]; then
 fi
 
 # Check this AFTER getopts so -h works without sudo
-if [ -w ${DEST} ]; then
+if [ ! -w ${DEST} ]; then
 	echo "$0: Need write permission on ${DEST}"
 	exit 1
 fi
@@ -112,7 +112,7 @@ XDIRS="xfont xserv xshare"
 DIRS="${BDIRS} ${XDIRS} base"
 
 # This one backup step we do anyway, just in case
-localhost) cp /sbin/reboot /sbin/oreboot;;
+cp /sbin/reboot /sbin/oreboot;;
 echo Old reboot backed up as /sbin/oreboot.
 
 for f in ${DIRS}
