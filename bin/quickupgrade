@@ -112,7 +112,7 @@ XDIRS="xfont xserv xshare"
 DIRS="${BDIRS} ${XDIRS} base"
 
 # This one backup step we do anyway, just in case
-cp /sbin/reboot /sbin/oreboot;;
+cp /sbin/reboot /sbin/oreboot
 echo Old reboot backed up as /sbin/oreboot.
 
 for f in ${DIRS}
