@@ -1,0 +1,32 @@
+#!/bin/sh
+
+# sens - respond to sensor events
+# drive with lins like this in /etc/sensorsd.conf
+
+# hw.sensors.acpisbs0.percent0:low=5:command=/home/ian/obscripts/bin/sens -l %l %t
+
+# hw.sensors.cpu0.temp0:high=80C:command=/home/ian/obscripts/bin/sens -h %l %t
+
+# -l if we care that it's low, -h if we care that it's high
+# (this is the whole reason for this script; our sensorsd KNOWS
+# that the sensor is high or low but won't run commands only on
+# transition in one direction, sigh)
+
+DIR=$1
+AMOUNT=$2
+SENSOR=$3
+
+case $DIR in
+	-l) if [ ${AMOUNT} == "below" ]; then
+		logger "$0: sensor ${SENSOR} is ${AMOUNT} threshold, suspending"
+		zzz
+	fi
+	;;
+	-h) if [ ${AMOUNT} == "above" ]; then
+		logger "$0: sensor ${SENSOR} is ${AMOUNT} threshold, suspending"
+		zzz
+	fi
+	;;
+	*)	logger $0: Do not know about $*
+	;;
+esac
