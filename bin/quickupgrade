@@ -124,7 +124,7 @@ do
 		echo "Cannot locate file ${FILE}"
 		exit
 	fi
-	(cd ${DEST} || exit; tar xzpf${VERBOSE} - ) < ${FILE};;
+	(cd ${DEST} || exit; tar xzpf${VERBOSE} - ) < ${FILE}
 done
 
 echo "Rebuilding /dev..."
