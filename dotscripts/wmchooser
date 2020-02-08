@@ -67,7 +67,7 @@ if [ "${WM}" == "q" ]; then
 fi
 
 for short in ${shorts[*]}; do
-	if [[ $short =~ ^$WM ]]; then
+	if [[ "$short" =~ "^$WM" ]]; then
 		if [ X${preexecs[$short]} != "Xnone" ]; then
 			eval ${preexecs[$short]}&
 		fi
