@@ -2,7 +2,7 @@
 
 echo This is how import is done, from e.g., cd ports/CATEGORY/XXX:
 if [ -d CVS ]; then
-	echo "WARNING: Already a CVS directory here!!'
+	echo "WARNING: Already a CVS directory here!!"
 	exit 1
 fi
 
