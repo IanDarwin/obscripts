@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# List the files in a package
+# From a discussion on misc@ in June, 2020
+
+env PKG_PATH= pkg_info -L $*
