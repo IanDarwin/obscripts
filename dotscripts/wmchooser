@@ -28,7 +28,7 @@ typeset -A shorts
 typeset -A paths
 typeset -A preexecs
 
-# Populate three arrays, build PROMT, set DEFAULT.
+# Populate three arrays, build PROMPT, set DEFAULT.
 while read fullpath shortname pre_wm default
 do
 	if [ -x ${fullpath} ]; then
