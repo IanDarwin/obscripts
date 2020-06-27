@@ -2,7 +2,7 @@
 
 # get the current OpenBSD snapshot
 
-echo "WARNING: $0 is probably not needed due to sysupgrade in 6.5" >&2
+echo "WARNING: $0 is usually not needed due to sysupgrade in 6.5+" >&2
 
 . ~/obscripts/obrel
 SNAPDIR="snapshots"
