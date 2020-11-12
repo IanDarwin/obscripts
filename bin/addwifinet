@@ -1,0 +1,40 @@
+#!/bin/sh
+
+[ -w / ] || {
+	echo "Run $0 as root"
+	exit 1;
+}
+
+USAGE="$0 [-v] ifname"
+
+function usage {		# give usage message, and exit
+	echo "Usage: ${USAGE}" 2>&1
+	exit 1
+}
+
+IF=iwn0	# most common? XXX Should be: ifconfig | (look for one with "groups: wlan")
+
+while getopts "i:v" opt
+do
+	case "$opt" in
+		i)	IF=$OPTARG;;
+		v)	VERBOSE=true;;
+		*)	usage;;
+	esac
+done
+
+[ -f /etc/hostname.$IF ] || {
+	echo "No file /etc/hostname.${IF}" 2>&1
+	exit 2
+}
+ifconfig | grep "^${IF}:" || {
+	echo "Warning: hostname.$IF present but interface not on this system." 2>&1
+}
+
+echo -n "Network Name:"; read name
+
+echo -n "WPAKey:"; stty -echo; read key; stty echo; echo
+
+sed -i -e "/^dhcp/i\\
+join \"${name}\" \"${key}\"
+" /etc/hostname.${IF}
