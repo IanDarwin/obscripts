@@ -10,7 +10,7 @@ SNAPDIR="snapshots"
 EXT=tgz
 PATT='[Ia-hj-z]*'		# what to go get, exclude HUGE install*.iso
 
-SITE=${PKG_SITE-ftp.openbsd.org}	# where to get it from
+SITE=${PKG_SITE-cdn.openbsd.org}	# where to get it from
 FROMDIR=pub/OpenBSD
 
 TODIR=OpenBSD				# where to put it
