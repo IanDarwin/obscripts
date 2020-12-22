@@ -1,0 +1,6 @@
+SOUNDFILE=/usr/local/share/asterisk/moh/manolo_camp-morning_coffee.wav
+if [ ! -f ${SOUNDFILE} ]; then
+	echo Please pkg_add asterisk-extrasounds
+	exit 1
+fi
+aucat -i ${SOUNDFILE}
