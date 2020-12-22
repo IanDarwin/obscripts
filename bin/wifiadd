@@ -1,0 +1,10 @@
+#!/bin/sh
+
+IF=iwn0
+
+echo -n "Wifi Name:"; read name
+
+echo -n "WPAKey:"; stty -echo; read key; stty echo; echo
+
+echo "join \"${name}\" \"${key}\"" | doas tee -a /etc/hostname.${IF} > /tmp/wifiadd.log
+
