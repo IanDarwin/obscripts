@@ -1,0 +1,2 @@
+doas vi /etc/vm.conf 
+doas rcctl restart vmd
