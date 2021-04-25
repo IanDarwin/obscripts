@@ -18,13 +18,13 @@ VERBOSE=""
 SYSMERGE=YES
 BACKUP=NO
 
-. ~/obscripts/obrel
+. ~ian/obscripts/obrel
 
 DIR=snapshots
 
 EXT=tgz
 
-DOWNLOAD=$HOME/pub/OpenBSD		# base dir for finding dist sets
+DOWNLOAD=~ian/pub/OpenBSD		# base dir for finding dist sets
 
 USAGE="$0 [-a arch][-d dest][-k][-m][-v]"
 
@@ -65,6 +65,9 @@ if [ -d ${DOWNLOAD}/${DIR}/${ARCH} ]; then
 	cd ${DOWNLOAD}/${DIR}/${ARCH} || exit
 elif [ -d ~ftp/pub/OpenBSD/${DIR}/${ARCH} ]; then
 	 cd ~ftp/pub/OpenBSD/${DIR}/${ARCH} || exit
+else
+	echo "Can't find sets" >&2
+	exit 1
 fi
 
 # Check this AFTER getopts so -h works without sudo
