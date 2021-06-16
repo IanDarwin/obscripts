@@ -21,4 +21,4 @@ apmd -C
 export TERM=vt220
 set +x
 
-echo "Now you can try suspending or hibernating..."
+echo "Now you can try one of the things..."
