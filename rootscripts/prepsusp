@@ -1,25 +1,31 @@
 #!/bin/sh
 
 # Set up a machine for minimally testing suspend/resume.
+# Invoke as . ./prepsusp if you want TERM set in your shell, else do sh prepsusp
 
 # Set this to the UUID of the disk your /tmp resides on, if you want it newfs'd
-# WARNING: omitting this is not supported yet, so no "if you want it" yet
+# WARNING: omitting this is NOT TESTED yet, so no "if you want it" yet
 TMP_UUID=239b56351e4575ef
 # set this to the partition of your /tmp; will get newfs'd(~) on reboot
 TMP_PART=d
 # set this to the minimal list of FSes you need
-REST="/var /usr /usr/X11R6"
+REST="/usr/X11R6"
 
 set -x
-fsck -p /
-mount   /
 
+for fs in / /var /usr; do
+	fsck -p ${fs}
+	mount   ${fs}
+done
+
+# We did /usr earlier so this grep can work.
 if [ ${TMP_UUID} != "" ]; then
 	grep "${TMP_UUID}.${TMP_PART} /tmp" /etc/fstab && newfs ${TMP_UUID}.${TMP_PART}
-	fsck -p /tmp
-	mount /tmp
-	chmod 01777 /tmp
 fi
+# Mount /tmp unconditionally
+fsck -p /tmp
+mount /tmp
+chmod 01777 /tmp
 
 for fs in ${REST}; do
 	fsck -p ${fs}
