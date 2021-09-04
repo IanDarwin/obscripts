@@ -65,8 +65,12 @@ fi
 
 set -x
 
-time make -j${NCPU} &&
-	doas make ${NO} install &&
-	[ "${REBOOT}" != "" -a "${NO}" != "-n" ] &&
-	doas ~ian/sscripts/bbqmitts off &&
-		doas shutdown ${REBOOT} now
+time make -j${NCPU} && doas make ${NO} install || exit
+
+if [ "$(cat /STATE)" = "SERVER" ]; then
+	doas ${NO} ~ian/sscripts/bbqmitts off
+fi
+
+if [ "${REBOOT}" != "" ]; then
+	doas ${NO} shutdown ${REBOOT} now
+fi
