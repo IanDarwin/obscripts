@@ -1,6 +1,7 @@
 #!/bin/sh
 
 # Set up a machine for minimally testing suspend/resume.
+# Lives in / but GIT copy is in ~/obscripts/rootscripts.
 # Invoke as . ./prepsusp if you want TERM set in your shell, else do sh prepsusp
 
 # Set this to the UUID of the disk your /tmp resides on, if you want it newfs'd
