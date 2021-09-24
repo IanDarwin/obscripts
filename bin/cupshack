@@ -1,0 +1,1 @@
+doas rcctl stop cupsd; doas vi /etc/cups/printers.conf; doas rcctl restart cupsd
