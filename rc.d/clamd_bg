@@ -1,0 +1,6 @@
+# clamd takes forever to start, so background it.
+# Can't add rc_bg to mainstream clamd; sthen says 
+# other daemons may depend on it being up
+
+export rc_bg=YES
+exec clamd $* &

@@ -134,7 +134,7 @@ do
 		rcctl start wildfly
 		;;
 	*[012])			# must be near last: rl0, sis0, ath0, etc.
-		dhcpleasectl send request $serv
+		dhcpleasectl $serv
 		;;
 	*)
 		# try it as a regular daemon
