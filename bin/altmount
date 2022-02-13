@@ -1,0 +1,20 @@
+#!/bin/sh
+
+# altmount - mount out of /mnt/etc/fstab
+# may be needed standalone so use minimal tools
+
+FSTAB=/mnt/etc/fstab
+
+[ -f /mnt/etc/fstab ] || {
+	echo No /mnt/etc/fstab
+	exit 1
+}
+
+DISK=$1
+shift
+
+for fs
+do
+	grep "$fs[ 	]" $FSTAB |
+		sed -e "s@.\{16\}\.@mount dev/${DISK}@" -e 's/ffs.*//'
+done
