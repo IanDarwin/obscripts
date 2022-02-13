@@ -1,12 +1,20 @@
 #!/bin/sh
 
 # altmount - mount out of /mnt/etc/fstab
-# may be needed standalone so use minimal tools
+# e.g., if $FSTAB contains
+# 893788590875f982.k /home ffs rw,nodev,nosuid 1 2
+# then altmount sd2 /home
+# will +mount /dev/sd2k /mnt/home
+#
+# May be needed standalone so use only ramdisk tools
+# CAVEAT: works with my fstab on several systems here. Fairly
+# dependent on exact format. Change 'sh -x' to "cat # " and test
+# BEFORE using!!!.
 
 FSTAB=/mnt/etc/fstab
 
-[ -f /mnt/etc/fstab ] || {
-	echo No /mnt/etc/fstab
+[ -f ${FSTAB} ] || {
+	echo No ${FSTAB}
 	exit 1
 }
 
@@ -16,6 +24,6 @@ shift
 for fs
 do
 	grep "$fs[ 	]" $FSTAB |
-		sed -e "s@.\{16\}\.@mount /dev/${DISK}@" -e 's/ffs.*//' |
+		sed -e "s@.\{16\}\.@mount /dev/${DISK}@" -e 's@ \(/.[^ ]*\) ffs.*@/ /mnt\1@' |
 			sh -x
 done
