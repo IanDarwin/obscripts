@@ -24,6 +24,6 @@ shift
 for fs
 do
 	grep "$fs[ 	]" $FSTAB |
-		sed -e "s@.\{16\}\.@mount /dev/${DISK}@" -e 's@ \(/.[^ ]*\) ffs.*@/ /mnt\1@' |
+		sed -e "s@.\{16\}\.@mount /dev/${DISK}@" -e 's@ \(/[^ ]*\) ffs.*@ /mnt\1@' |
 			sh -x
 done
