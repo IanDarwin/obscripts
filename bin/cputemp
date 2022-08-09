@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# Display the CPU0 temperature concisely, for use with taskbar tools
+# like xfce's 'Generic Monitor'
+
+# Just prints the temp and the unit, e.g., "49.00 C"
+
+sysctl hw.sensors.cpu0.temp0|sed -e 's/.*=//' -e 's/deg//'

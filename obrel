@@ -1,3 +1,7 @@
 # crank this one file when release number changes
+<<<<<<< HEAD
 REL=72
+=======
+REL=70
+>>>>>>> a017f77f67a061e654dae6f84330cf8ee948778f
 RELDIR=`echo $REL | sed -e 's/./&./'`	# e.g., "5.0" etc.

@@ -7,12 +7,8 @@ set -e
 	exit 1
 }
 
-if (( $(sysctl -n hw.ncpu) > 1 )); then
-	KERNEL=GENERIC.MP
-else
-	KERNEL=GENERIC
-fi
-NCPU=0
+KERNEL=GENERIC.MP
+NCPU=1
 
 USAGE="$0 [-c][-g][-jN][-kKERN_NAME[-r|-h]"
 
@@ -65,4 +61,12 @@ fi
 
 set -x
 
-time make -j${NCPU} && doas make ${NO} install && [ "${REBOOT}" != "" -a "${NO}" != "-n" ] && doas shutdown ${REBOOT} now
+time make -j${NCPU} && doas make ${NO} install || exit
+
+if [ "$(cat /STATE)" = "SERVER" ]; then
+	doas ${NO} ~ian/sscripts/bbqmitts off
+fi
+
+if [ "${REBOOT}" != "" ]; then
+	doas ${NO} shutdown ${REBOOT} now
+fi

@@ -1,18 +1,16 @@
-#!/bin/sh
+#!/bin/ksh
 
 # Shortcut sysupgrade from a sysupgraded machine to upgrade another machine on LAN
-# Use ONLY after:
-#	(a) successfully doing sysupgrade on the local machine
-#	(b) If the remote is pre-6.5, you should really do a full manual
+# Use ONLY immediately after successfully doing sysupgrade -k on the local machine
+# Note: If the remote is pre-6.5, you should really do a full manual
 #		upgrade; if not possible, be sure you've upgraded boot blocks to 6.5+
 #		(update installboot and /usr/mdec, then run installboot)
 # Don't run under doas because you dont want to ssh as root.
 # Lightly tested on i386 and amd64 - use at own risk!
+# Argument - list of machines same arch as laptop
+# that are on the same side of the slow downlink.
 
-[ -w / ] && {
-	echo Do not run $0 as root
-	exit 1
-}
+ARCH=$(arch -k)
 
 case $# in
 	0)	echo "Usage: $0 host [...]" >&2
@@ -24,23 +22,18 @@ LOCAL_ARCH=$(arch)
 
 for HOST
 do
-
-	set -e
-	REMOTE_ARCH=$(ssh ${HOST} arch)
-	if [ ${LOCAL_ARCH} != "${REMOTE_ARCH}" ]; then
-		echo "This machine is ${LOCAL_ARCH} but ${HOST} is ${REMOTE_ARCH}" >&2
-		exit 1;
+	ping -c 1 ${HOST} || {
+		echo "${HOST} is comatose, not running, skipping."
+		continue
+	}
+	RARCH=$(ssh ${HOST} arch -k)
+	if [ ${ARCH} == ${RARCH} ]; then
+		ssh ${HOST} doas chmod g+w /home/_sysupgrade /home/_sysupgrade/\*
+		scp /home/_sysupgrade/* ${HOST}:/home/_sysupgrade
+		ssh ${HOST} doas chmod g-w /home/_sysupgrade
+		ssh ${HOST} doas ksh -x /usr/sbin/sysupgrade
+	else
+		echo "${HOST} is ${RARCH}, NOT ${ARCH}, skipping"
 	fi
-
-	D=/home/_sysupgrade
-
-
-	ssh ${HOST} "doas mkdir -p ${D}; doas chmod g+w ${D}"
-
-	scp ${D}/* ${HOST}:${D}
-
-	set +e # reboot will fail ssh
-
-	ssh ${HOST} doas "cp ${D}/bsd.rd /bsd.upgrade && doas reboot"
-
 done
+

@@ -1,0 +1,16 @@
+#!/bin/ksh
+
+cd ~/pub/OpenBSD/snapshots/ || exit
+. ~/obscripts/obrel || exit
+
+for arch in ${*-*}
+do
+	(
+		cd ~/disks
+		ftp -o ~/disks/OpenBSD-$arch-install${REL}.iso \
+			https://cdn.openbsd.org/pub/OpenBSD/snapshots/${arch}/install${REL}.iso ||
+		ftp -o ~/disks/OpenBSD-$arch-install${REL}.img \
+			https://cdn.openbsd.org/pub/OpenBSD/snapshots/${arch}/install${REL}.img ||
+		echo $0: download of ${arch} FAILED
+	)
+done

@@ -1,24 +1,39 @@
 #!/bin/sh
 
 # Set up a machine for minimally testing suspend/resume.
+# Lives in / but GIT copy is in ~/obscripts/rootscripts.
+# Invoke as . ./prepsusp if you want TERM set in your shell, else do sh prepsusp
 
 # Set this to the UUID of the disk your /tmp resides on, if you want it newfs'd
-TMP_UUID=103d1286e8b0290c
+# WARNING: omitting this is NOT TESTED yet, so no "if you want it" yet
+TMP_UUID=6cf071adc2589727
 # set this to the partition of your /tmp; will get newfs'd(~) on reboot
 TMP_PART=d
+# set this to the minimal list of any other FSes you need
+REST=""
+
 set -x
-fsck -p /
-mount   /
-fsck -p /usr
-mount   /usr
-fsck -p /var
-mount   /var
-grep "${TMP_UUID}.${TMP_PART} /tmp" /etc/fstab && newfs ${TMP_UUID}.${TMP_PART}
+
+for fs in / /var /usr; do
+	fsck -p ${fs}
+	mount   ${fs}
+done
+
+# We mounted /usr earlier so this grep can work.
+if [ ${TMP_UUID} != "" ]; then
+	grep "${TMP_UUID}.${TMP_PART} /tmp" /etc/fstab && newfs ${TMP_UUID}.${TMP_PART}
+fi
 fsck -p /tmp
 mount /tmp
 chmod 01777 /tmp
+
+for fs in ${REST}; do
+	fsck -p ${fs}
+	mount   ${fs}
+done
+
 apmd -C
 export TERM=vt220
 set +x
 
-echo "Now you can try suspending or hibernating..."
+echo "Now you can try one of the things..."
