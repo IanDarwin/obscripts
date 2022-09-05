@@ -1,0 +1,55 @@
+#!/bin/sh
+
+# mrec - record a video+audio (aka "movie"), using aucat to capture audio,
+# video(1) to capture, well, video, and ffmpeg to merge the two.
+#
+# $Id: mrec,v 1.11 2011/03/21 15:04:33 ian Exp $
+
+WIDTH=640
+HEIGHT=480
+SIZE="${WIDTH}x${HEIGHT}"
+FRATE=15
+ARATE=44100
+ACHAN=2
+ADEV="default"	# ffmpeg requires a device name.  "default" works with
+		# aucat. if no aucat server, use "/dev/audioX".
+VDEV=/dev/video0
+OUTPUT_SW="-o"
+
+USAGE="$0 [-m][-a audiorate][-c audiochans][-d audiodev]
+    [-f videorate][-s videoWxH] output"
+
+function usage {
+	echo "Usage: ${USAGE}" 2>&1
+	exit 1
+}
+
+while getopts "a:c:d:f:ms:v:" opt
+do
+	case "$opt" in
+	a)	ARATE=${OPTARG};;
+	c)	ACHAN=${OPTARG};;
+	d)	ADEV=${OPTARG};;
+	f)	FRATE=${OPTARG};;
+	m)	OUTPUT_SW="-O";;
+	s)	SIZE=${OPTARG};;
+	v)	VDEV=${OPTARG};;
+	*)	usage;;
+	esac
+done
+shift `expr $OPTIND - 1`
+
+if [ $# != 1 ]
+then
+	usage
+	echo "(You need to specify one output filename)"
+fi
+OUTPUT=$1
+
+ffmpeg -y \
+	-f rawvideo -pix_fmt yuyv422 -s ${SIZE} -r ${FRATE} -i ${VDEV} \
+	-f sndio -ac ${ACHAN} -ar ${ARATE} -i ${ADEV} \
+	${OUTPUT}
+
+
+exit 0

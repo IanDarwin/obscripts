@@ -1,0 +1,87 @@
+.\"	$OpenBSD$
+.\"
+.Dd $Mdocdate: March 21 2011 $
+.Dt MREC 1
+.Os
+.Sh NAME
+.Nm mrec
+.Nd record a movie using aucat, video and ffmpeg
+.Sh SYNOPSIS
+.Nm program
+.Op Fl m
+.Op Fl a audiorate
+.Op Fl-c audiochans
+.Op Fl-d audiodevice
+.Op Fl-f videorate
+.Op Fl-s videoWxH
+.Op Fl-v videodevice
+output
+.Ar
+.Sh DESCRIPTION
+The
+.Nm
+script allows one to record videos under 
+.Ox .
+It is basically a wrapper around
+.Xr ffmpeg ,
+as in this example adapted from the
+.Xr ffmpeg
+man page:
+.Bd
+ffmpeg -f oss -i /dev/audio -f video4linux2 -i /dev/video0 /tmp/out.mpg
+.Ed
+.Pp
+However, at the time this script was written,
+.Xr ffmpeg 's 
+video4linux2 support did not work with our 
+.Xr video 4
+support.
+.Pp
+-m
+causes ffmpeg to display the frames as it renders them;
+this only works if your X driver supports yuy2 rendering,
+and may slow down encoding (resulting in loss of 
+audio-video synchronization) on slower machines.
+.Pp
+-a audiorate
+specifies the audio capture rate, e.g., 44100, 128k.
+.Pp
+-c audiochans
+specifies the number of audio channesl e.g., 1, 2.
+.Pp
+-d audiodev
+specifies the audio device. 
+The default is "default", which works if you are running
+.Xr aucat 1
+as a server (-l).
+Otherwise use the audio device, e.g., 
+/dev/audio.
+.Pp
+-f videorate
+specifies the frame rate in frames per second; default is 15.
+.Pp
+-s videoWxH
+specifies the size of video frames;
+the given format must be supported by your video device
+and by the
+.Xr video 4
+driver.
+.Pp
+-v videodev
+specifies the video device. 
+The default is "/dev/video0", the first video-conforming image source.
+.Pp
+outputFile
+must be specified; its extention determines the file format,
+e.g., foo.wav, bar.mp4.
+.Sh EXAMPLES
+mrec foo.mp4
+.Pp
+mrec -a 128k -c 2 -d /dev/audio -f 24 -s 800x600 blah.avi
+.Sh SEE ALSO
+.Xr ffmpeg 1 ,
+.Xr aucat 1 .
+.Sh AUTHORS
+Written by Ian Darwin and Jacob Meuser.
+.Sh BUGS
+This script should not be needed.

@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# What kernel relink does to mark a kernel as "the one"
+
+sha256 -h /var/db/kernel.SHA256 /bsd
