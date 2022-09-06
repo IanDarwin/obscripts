@@ -2,11 +2,7 @@
 
 # whichpkg -- which package does that file belong to?
 
-echo "whichpkg is deprecated, use pkglocate from pkglocatedb instead" >&2
+echo "whichpkg is deprecated, using pkglocate from pkglocatedb instead" >&2
 
-cd /var/db/pkg || exit
+exec pkglocate $*
 
-for file in $*
-do
-	egrep $file */+CONTENTS | sed -e 's=/+CONTENTS=='
-done
