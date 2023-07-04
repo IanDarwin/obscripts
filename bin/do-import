@@ -1,4 +1,0 @@
-#!/bin/sh
-
-echo This is obsolete, use /usr/ports/infrastructure/bin/portimport instead!
-exit -1
