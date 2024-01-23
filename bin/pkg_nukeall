@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# pkg_nukeall - nuke ALL packages
+
+cd /var/db/pkg
+
+echo "ARE YOU SURE YOU WANT TO DESTROY ALL $(ls | wc -l | sed -e 's/  *//') PACKAGES!!? [no|yes]\c"
+
+read answer junk
+
+case ${answer} in
+	yes)	echo "OK, it's your funeral."
+			[ -w / ] || {
+				echo "Well, maybe later. You might want to try again, as root."
+				exit 1
+			}
+			pkg_delete $(ls)
+			;;
+	*)		echo "Whew! Those packages die another day."
+			;;
+esac
