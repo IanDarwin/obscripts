@@ -1,8 +1,0 @@
-#!/bin/sh
-
-# whichpkg -- which package does that file belong to?
-
-echo "whichpkg is deprecated, using pkglocate from pkglocatedb instead" >&2
-
-exec pkglocate $*
-
