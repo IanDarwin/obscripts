@@ -3,6 +3,7 @@
 # get the current OpenBSD snapshot
 
 echo "WARNING: $0 is usually not needed due to sysupgrade in 6.5+" >&2
+# BUT still useful to get another arch
 
 . ~/obscripts/obrel
 SNAPDIR="snapshots"
@@ -24,13 +25,7 @@ ECHO=""
 # how to get it - Linux lacks a working FTP command
 case $(uname) in
 	OpenBSD)	FTP="ftp -a";;
-	# Mac deleted ftp client as of 10.13.1 "High Sierra"
-	Darwin)
-		echo You cannot use this script on your Mac because Apple deleted the ftp command
-		echo and left only the curl, which is not usable in this kind of script.
-		exit 1
-		;;
-	# Linux - who knows?
+	Darwin) 	FTP="curl -O;;
 	Linux)		FTP=wget;;
 	*)	echo No FTP set for $(uname)
 		exit 1;;
