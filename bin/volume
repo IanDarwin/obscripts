@@ -1,2 +1,9 @@
 # Avoid going deaf too quickly
-sndioctl output.level=${1-0.6}
+case $1 in
+	[0-9]*.[0-9]*) LEV=$1;;
+	[0-9]*) LEV=.$1;;
+	*) exec sndioctl output.level;;
+esac
+
+sndioctl output.level=$LEV
+
