@@ -1,0 +1,22 @@
+#!/bin/sh
+
+# tar up a port for mailing
+
+[ -d audio -a -d archivers ] || {
+	echo "Das ist nicht ein <<ports directory>>!"
+	exit 1
+}
+
+usage="$0 name [category]"
+
+usage() {
+	echo $usage >&2
+	exit 1
+}
+
+case $# in
+	1) tar czvf /tmp/$1.tar.gz */$1;;
+	2) tar czvf /tmp/$1.tar.gz $2/$1;;
+	*) usage;;
+esac
+ls -l /tmp/$1.tar.gz
