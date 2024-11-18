@@ -1,1 +1,5 @@
-dmesg | grep '^[sw]d'
+#!/bin/sh
+
+# list the disks in the current config
+
+dmesg | egrep '^[sw]d[0-9]'

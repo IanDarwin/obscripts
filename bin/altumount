@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# undo the mounts done by altmount.
+# Normally only needed on real system, so can use awk
+
+case $# in
+	1)	DISK=$1;;
+	*)	echo "Usage: $0 disk (e.g., sd2)" >&2
+		exit 1;;
+esac
+
+mount | awk "/${DISK}[a-z]/{ print "umount", $1 }" 

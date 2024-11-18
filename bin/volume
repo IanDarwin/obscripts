@@ -1,0 +1,2 @@
+# Avoid going deaf too quickly
+sndioctl output.level=${1-0.6}
