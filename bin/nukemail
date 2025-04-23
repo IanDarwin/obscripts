@@ -1,0 +1,18 @@
+#!/bin/sh
+
+[ -w / ] || {
+	echo be root
+	exit 1
+}
+
+
+case $1 in
+	"");;
+	-a) set -- `mailq | sed 's/|.*//'sed`
+		;;
+esac
+
+for f
+do
+	smtpctl remove $f
+done

@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# reset a DHCP-configured interface
+
+for iface; do
+	ifconfig $if inet -autoconf
+	dhcpleasectl $iface
+done
