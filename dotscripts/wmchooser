@@ -1,4 +1,4 @@
-#!/usr/local/bin/ksh93
+#!/bin/ksh
 
 # wmchooser - intended to be sourced from e.g., .xsession
 

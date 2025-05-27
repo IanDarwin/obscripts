@@ -1,0 +1,8 @@
+for f in /home/motion/*
+do
+	echo ===== $f =====
+	mplayer $f
+	# expand to allow refiling, rm'ing, etc.
+	read junk
+done
+

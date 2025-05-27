@@ -2,11 +2,6 @@
 
 set -e
 
-[ -w / ] || {
-	echo $0: must run as root nowadays
-	exit 1
-}
-
 KERNEL=GENERIC.MP
 NCPU=1
 
@@ -41,11 +36,16 @@ if [ $# -ne 0 ]; then
 	usage
 fi
 
+[ -w / ] || {
+	echo $0: must run as root nowadays
+	exit 1
+}
+
 # Now build it.
 cd /sys/arch/$(arch -ks)/compile/${KERNEL}
 doas make ${NO} obj
 
-if [ "YES" == ${CLEAN} ]; then
+if [ "YES" = ${CLEAN} ]; then
 	make ${NO} clean
 fi
 

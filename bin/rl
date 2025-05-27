@@ -112,16 +112,7 @@ do
 		reload_standard sendmail
 		;;
 	spam*)
-		# reload spamd
-		/usr/libexec/spamd-setup -d -D
-		# AND spamdb
-			# good guys
-			spamdb -a `awk '!/^#/{printf "%s ", $1}' /etc/mail/mywhite.txt`
-			# spam traps
-			while read address 
-			do
-				spamdb -T -a "$address"
-			done < /etc/mail/myspamtraps.txt
+		echo "Not updated for rspamd"
 		;;
 	tomcat)
 		/etc/rc.d/tomcat stop
@@ -133,8 +124,8 @@ do
 		ps ax|grep java.*Standalone|awk '{print $1}'|xargs doas  kill -9
 		rcctl start wildfly
 		;;
-	*[012])			# interface: must be near last: rl0, sis0, ath0, etc.
-		sh /etc/netstart $serv
+	*[012])			# interface: must be near last: rl0, iwx0, ure0, etc.
+		dhcpleasectl $serv
 		;;
 	*)
 		# try it as a regular daemon

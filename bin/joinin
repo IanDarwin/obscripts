@@ -1,0 +1,34 @@
+#!/bin/ksh
+
+# join a wifi network
+
+[ -w / ] || {
+	echo "Grow a root!"
+	exit 1
+}
+
+USAGE="$0 [-i iface] netname passwd"
+
+IF=iwx0
+if [ $1 == "-i" ]; then
+	IF=$2
+	shift 2
+fi
+
+
+case $# in
+	2)
+		netname=$1;
+		passwd=$2;
+		;;
+	*)	echo "$USAGE"
+		exit 1
+		;;
+esac
+
+echo "join $netname wpakey $passwd">> /etc/hostname.$IF
+
+ifconfig $IF join $netname wpakey $passwd
+
+ifconfig $IF
+

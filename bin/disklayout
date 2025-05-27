@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# diskpartsorder - disk partitions in order by disk layout
+
+disklabel -h sd2 | grep ' [a-z]:' | sort -k3
