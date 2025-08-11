@@ -1,0 +1,17 @@
+#!/bin/ksh -v
+
+TMP=$(mktemp /tmp/mqaXXXXXXXXX)
+
+doas mailq > $TMP
+
+# Count
+wc -l $TMP
+
+# Busiest target domains
+awk -F\| '{sub(".*@","",$6); print $6}' $TMP |sort |uniq -c |sort -rn
+
+# Busiest senders
+awk -F\| '{print $5}' $TMP |sort |uniq -c |sort -rn | head
+
+# Busiest recipients
+awk -F\| '{print $6}' $TMP |sort |uniq -c |sort -k1rn -k2i | head

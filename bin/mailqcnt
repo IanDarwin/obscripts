@@ -1,0 +1,5 @@
+#!/bin/ksh
+
+# count the size of the bloody mail queue
+
+doas mailq | wc -l
