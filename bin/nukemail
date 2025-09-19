@@ -5,13 +5,29 @@
 	exit 1
 }
 
+USAGE="$0 [-a][-h][-v][-r PATT]"
 
-case $1 in
-	-a) set -- `mailq | sed 's/\|.*//'`
-		;;
-esac
+function usage {		# give usage message, and exit
+	echo "Usage: ${USAGE}" 2>&1
+	exit 1
+}
 
-for f
+while getopts "ar:v" opt
 do
+	case "$opt" in
+		a) MSGS=$(mailq | sed 's/\|.*//');;
+		h) usage;; # i.e., without "-h: unknown option"
+		r) MSGS="$(mailq | rg ${OPTARG} | sed 's/\|.*//')";;
+		v) VERBOSE=true;;
+		*) usage;;
+	esac
+done
+shift `expr $OPTIND - 1`		 # leave just message ids
+
+for f in ${MSGS-$*}
+do
+	if $VERBOSE; then
+		echo Removing $f
+	fi
 	smtpctl remove $f
 done
